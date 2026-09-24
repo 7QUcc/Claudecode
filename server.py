@@ -5,7 +5,7 @@ Features: chat (send + live SSE + message list), code (CLI terminal session
 list/detail, live xterm via SSE), and usage (Claude + Codex usage panels).
 """
 
-import asyncio, html, json, sqlite3, os, hashlib, time, secrets, re, logging, subprocess, sys, uuid, threading
+import asyncio, html, json, sqlite3, os, hashlib, hmac, time, secrets, re, logging, subprocess, sys, uuid, threading
 import base64 as _b64
 import urllib.request as _urllib_request
 from typing import Optional, List
@@ -37,17 +37,26 @@ del _PW
 _TOKEN_STORE = os.path.expanduser("~/.cache/prism-oss/tokens.json")
 _HOME = os.path.expanduser("~")
 
+# Login tokens expire after TOKEN_TTL_DAYS of inactivity (sliding window).
+TOKEN_TTL_SECONDS = int(float(os.environ.get("TOKEN_TTL_DAYS", "30")) * 86400)
+
+
 def _load_tokens():
+    """Return {token: expires_at}. Tokens saved by older versions (a plain
+    list, no expiry) get a fresh TTL so existing logins keep working."""
+    now = time.time()
     try:
         with open(_TOKEN_STORE, "r", encoding="utf-8") as f:
             data = json.load(f)
         if isinstance(data, list):
-            return {str(token) for token in data if isinstance(token, str) and token}
+            return {str(t): now + TOKEN_TTL_SECONDS for t in data if isinstance(t, str) and t}
+        if isinstance(data, dict):
+            return {str(t): float(exp) for t, exp in data.items() if isinstance(t, str) and t and float(exp) > now}
     except FileNotFoundError:
         pass
     except Exception as exc:
         logging.warning("failed to load dashboard tokens: %s", exc)
-    return set()
+    return {}
 
 def _save_tokens():
     try:
@@ -55,12 +64,33 @@ def _save_tokens():
         tmp = _TOKEN_STORE + ".tmp"
         fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
         with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(sorted(valid_tokens), f)
+            json.dump(valid_tokens, f)
         os.replace(tmp, _TOKEN_STORE)
     except Exception as exc:
         logging.warning("failed to save dashboard tokens: %s", exc)
 
 valid_tokens = _load_tokens()
+_TOKEN_SAVE_AT = 0.0
+
+
+def _token_ok(token: Optional[str]) -> bool:
+    """Check a token and slide its expiry forward (persisted at most hourly)."""
+    global _TOKEN_SAVE_AT
+    if not token:
+        return False
+    exp = valid_tokens.get(token)
+    now = time.time()
+    if exp is None:
+        return False
+    if exp <= now:
+        valid_tokens.pop(token, None)
+        _save_tokens()
+        return False
+    valid_tokens[token] = now + TOKEN_TTL_SECONDS
+    if now - _TOKEN_SAVE_AT > 3600:
+        _TOKEN_SAVE_AT = now
+        _save_tokens()
+    return True
 BJT = timedelta(hours=8)
 
 # Login rate limiting: IP -> (fail_count, last_fail_time)
@@ -69,7 +99,11 @@ MAX_LOGIN_ATTEMPTS = 5
 LOGIN_LOCKOUT_SECONDS = 300  # 5 minutes
 
 app = FastAPI(title="Prism Dashboard", docs_url=None)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+# The web app is served from this same origin, so cross-origin access is off
+# unless ALLOWED_ORIGINS (comma-separated) is set explicitly.
+_ALLOWED_ORIGINS = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "").split(",") if o.strip()]
+if _ALLOWED_ORIGINS:
+    app.add_middleware(CORSMiddleware, allow_origins=_ALLOWED_ORIGINS, allow_methods=["*"], allow_headers=["*"])
 
 
 @app.middleware("http")
@@ -93,8 +127,15 @@ class AuthRequest(BaseModel):
 
 
 @app.post("/api/auth")
-def authenticate(req: AuthRequest, x_real_ip: Optional[str] = Header(None), x_forwarded_for: Optional[str] = Header(None)):
-    ip = x_real_ip or (x_forwarded_for.split(",")[0].strip() if x_forwarded_for else "unknown")
+def authenticate(req: AuthRequest, request: Request,
+                 cf_connecting_ip: Optional[str] = Header(None),
+                 x_real_ip: Optional[str] = Header(None),
+                 x_forwarded_for: Optional[str] = Header(None)):
+    # Behind Cloudflare Tunnel every request comes from localhost, so the real
+    # client address is in CF-Connecting-IP.
+    ip = (cf_connecting_ip or x_real_ip
+          or (x_forwarded_for.split(",")[0].strip() if x_forwarded_for else "")
+          or (request.client.host if request.client else "unknown"))
     # Check rate limit
     if ip in login_attempts:
         fails, last_time = login_attempts[ip]
@@ -103,10 +144,10 @@ def authenticate(req: AuthRequest, x_real_ip: Optional[str] = Header(None), x_fo
             raise HTTPException(429, f"尝试太多次了，请{remaining}秒后再试")
         if time.time() - last_time >= LOGIN_LOCKOUT_SECONDS:
             login_attempts.pop(ip, None)
-    if hashlib.sha256(req.password.encode()).hexdigest() == PASSWORD_HASH:
+    if hmac.compare_digest(hashlib.sha256(req.password.encode()).hexdigest(), PASSWORD_HASH):
         login_attempts.pop(ip, None)
         token = secrets.token_hex(32)
-        valid_tokens.add(token)
+        valid_tokens[token] = time.time() + TOKEN_TTL_SECONDS
         _save_tokens()
         return {"success": True, "token": token}
     # Record failed attempt
@@ -117,7 +158,7 @@ def authenticate(req: AuthRequest, x_real_ip: Optional[str] = Header(None), x_fo
 def require_auth(authorization: Optional[str] = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(401, "未登录")
-    if authorization[7:] not in valid_tokens:
+    if not _token_ok(authorization[7:]):
         raise HTTPException(401, "登录已过期")
     return True
 
@@ -157,9 +198,9 @@ class _NewSessionReq(BaseModel):
 
 def _require_auth_qs(token: Optional[str] = Query(None), authorization: Optional[str] = Header(None)):
     # SSE: EventSource can't set headers, so accept ?token=
-    if authorization and authorization.startswith("Bearer ") and authorization[7:] in valid_tokens:
+    if authorization and authorization.startswith("Bearer ") and _token_ok(authorization[7:]):
         return True
-    if token and token in valid_tokens:
+    if _token_ok(token):
         return True
     raise HTTPException(401, "未登录")
 
@@ -1397,4 +1438,7 @@ def api_usage(_=Depends(require_auth)):
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", "8001"))
-    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
+    # Default to localhost only: reach it through Cloudflare Tunnel / a reverse
+    # proxy. Set HOST=0.0.0.0 to expose it on the LAN on purpose.
+    host = os.environ.get("HOST", "127.0.0.1")
+    uvicorn.run(app, host=host, port=port, log_level="info", proxy_headers=True, forwarded_allow_ips="127.0.0.1")
