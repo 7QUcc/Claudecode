@@ -2301,8 +2301,11 @@ function _inflightSketchMarkup() {
       '<path class="sketch-spark spark-b" d="M55.5 7.5c.9-1.4 1.3-2.9 1.3-4.4M59.5 8.8c1.2-1 2.5-1.6 4-1.9"/>' +
     '</svg>';
 }
+function _inflightSparkMarkup() {
+  return '<svg class="ch-spark-thinker" aria-hidden="true"><use href="#xk-spark"/></svg>';
+}
 function _inflightThinkerMarkup() {
-  return _inflightCrabMarkup() + _inflightSketchMarkup();
+  return _inflightSparkMarkup() + _inflightCrabMarkup() + _inflightSketchMarkup();
 }
 function _startInflightRotation() {
   if (_inflightRotateTimer) return;
@@ -2320,6 +2323,264 @@ function _startInflightRotation() {
       }, 300);
     });
   }, 3000);
+}
+
+// ===== 小克的家: Claude-app style tool rows + detail sheet =====
+const _XK_TOOL_KIND = {
+  read: ['Read', 'NotebookRead', 'view_image', 'image_query', 'read_file'],
+  edit: ['Edit', 'MultiEdit', 'NotebookEdit', 'edit', 'apply_patch', 'apply_diff'],
+  create: ['Write', 'write', 'write_file', 'create_file'],
+  run: ['Bash', 'BashOutput', 'KillShell', 'exec_command', 'write_stdin', 'shell'],
+  search: ['Grep', 'Glob', 'find', 'search_query', 'grep'],
+  web: ['WebSearch'],
+  fetch: ['WebFetch', 'open'],
+  todo: ['TodoWrite', 'update_plan'],
+  agent: ['Task', 'Agent', 'parallel'],
+};
+function _xkKind(name) {
+  for (const [k, names] of Object.entries(_XK_TOOL_KIND)) if (names.includes(name)) return k;
+  return 'other';
+}
+const _XK_PHRASE = {
+  // [verb, singular noun, plural noun]
+  read: ['read', 'a file', 'files'], edit: ['edited', 'a file', 'files'], create: ['created', 'a file', 'files'],
+  run: ['ran', 'a command', 'commands'], search: ['searched', 'code', 'patterns'], web: ['searched', 'the web', 'the web'],
+  fetch: ['fetched', 'a page', 'pages'], todo: ['updated', 'todos', 'todos'], agent: ['ran', 'an agent', 'agents'],
+  other: ['used', 'a tool', 'tools'],
+};
+const _XK_ING = { read: 'Reading', edit: 'Editing', create: 'Creating', run: 'Running', search: 'Searching',
+  web: 'Searching the web', fetch: 'Fetching', todo: 'Updating todos', agent: 'Running agent', other: 'Using' };
+function _xkEsc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+function _xkBase(p) { return String(p || '').split('/').filter(Boolean).pop() || p || ''; }
+function _xkToolName(name) {
+  const n = String(name || 'Tool');
+  const m = n.match(/^mcp__[^_]+(?:_[^_]+)*?__(.+)$/);
+  return m ? m[1] : n;
+}
+function _xkStripEmoji(s) { return String(s || '').replace(/^[^\w一-鿿`"'/(]+/u, '').trim(); }
+// What the single-tool row / sheet title says, e.g. "Ran Build the project".
+function _xkToolObject(t) {
+  const i = t.input || {};
+  switch (_xkKind(t.name)) {
+    case 'run': return i.description || i.command || _xkStripEmoji(t.summary);
+    case 'read': case 'edit': case 'create': return _xkBase(i.file_path || i.notebook_path || i.path) || _xkStripEmoji(t.summary);
+    case 'search': return i.pattern ? 'for ' + i.pattern : _xkStripEmoji(t.summary);
+    case 'web': return i.query ? 'the web for ' + i.query : 'the web';
+    case 'fetch': try { return new URL(i.url).host; } catch (e) { return i.url || _xkStripEmoji(t.summary); }
+    case 'agent': return i.description || 'an agent';
+    case 'todo': return 'todos';
+    default: return _xkToolName(t.name);
+  }
+}
+function _xkCap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function _xkToolSummary(tools) {
+  const pending = tools.filter(t => !t.done);
+  if (pending.length) {
+    const t = pending[pending.length - 1];
+    const k = _xkKind(t.name);
+    const i = t.input || {};
+    // Bash descriptions are already phrased as actions ("Run tests"), so show them as-is.
+    const text = k === 'run' && i.description ? i.description : _XK_ING[k] + ' ' + _xkToolObject(t);
+    return { html: '<span class="xk-shimmer">' + _xkEsc(text) + '…</span>', live: true };
+  }
+  const error = tools.some(t => t.error);
+  let add = 0, del = 0, hasDiff = false;
+  tools.forEach(t => { if (Array.isArray(t.diff)) { hasDiff = true; add += t.diff[0] || 0; del += t.diff[1] || 0; } });
+  const diff = hasDiff ? `<span class="xk-add">+${add}</span> <span class="xk-del">-${del}</span>` : '';
+  if (tools.length === 1) {
+    const t = tools[0];
+    const [verb] = _XK_PHRASE[_xkKind(t.name)];
+    const v = t.error ? `<em class="xk-bad">${_xkCap(verb)}</em>` : _xkCap(verb);
+    return { html: v + ' ' + _xkEsc(_xkToolObject(t)), error, diff };
+  }
+  const order = [], counts = {}, errs = {};
+  tools.forEach(t => {
+    const k = _xkKind(t.name);
+    if (!(k in counts)) { order.push(k); counts[k] = 0; }
+    counts[k] += 1;
+    if (t.error) errs[k] = true;
+  });
+  const parts = order.map((k, i) => {
+    const [verb, one, many] = _XK_PHRASE[k];
+    const n = counts[k];
+    const noun = n === 1 ? one : (k === 'search' ? `${n} ${many}` : (k === 'web' || k === 'todo' ? many : `${n} ${many}`));
+    const vv = i === 0 ? _xkCap(verb) : verb;
+    return (errs[k] ? `<em class="xk-bad">${vv}</em>` : vv) + ' ' + noun;
+  });
+  return { html: parts.join(', '), error, diff };
+}
+const _XK_WARN_SVG = '<svg class="xk-act-lead xk-warn" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2 22 20.5H2z" fill="currentColor"/><path d="M12 9.5v5" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.3" fill="#fff"/></svg>';
+const _XK_CHEV_SVG = '<svg class="xk-act-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
+const _XK_CLOCK_SVG = '<svg class="xk-act-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3 4.5V8.5h4"/><path d="M12 7.5V12l3 2"/></svg>';
+
+function _xkBuildToolRow(tools) {
+  const sum = _xkToolSummary(tools);
+  const row = document.createElement('button');
+  row.type = 'button';
+  row.className = 'xk-act' + (sum.live ? ' live' : '');
+  row.innerHTML =
+    (sum.live ? '<span class="xk-act-spin" aria-hidden="true"></span>' : (sum.error ? _XK_WARN_SVG : '')) +
+    '<span class="xk-act-text">' + sum.html + '</span>' +
+    (sum.diff ? '<span class="xk-act-diff">' + sum.diff + '</span>' : '') +
+    _XK_CHEV_SVG;
+  row.onclick = () => xkOpenToolSheet(tools);
+  return row;
+}
+
+// ---- bottom sheet (Thought process / Bash / tool list) ----
+let _xkSheetStack = [];
+function _xkSheet() {
+  let sheet = document.getElementById('xkSheet');
+  if (sheet) return sheet;
+  sheet = document.createElement('div');
+  sheet.id = 'xkSheet';
+  sheet.className = 'xk-sheet';
+  sheet.innerHTML =
+    '<div class="xk-sheet-bg"></div>' +
+    '<div class="xk-sheet-panel" role="dialog" aria-modal="true">' +
+      '<div class="xk-sheet-grab"></div>' +
+      '<div class="xk-sheet-head"><button type="button" class="xk-circle" aria-label="关闭"></button><div class="xk-sheet-title"></div><span></span></div>' +
+      '<div class="xk-sheet-vp"></div>' +
+    '</div>';
+  document.body.appendChild(sheet);
+  sheet.querySelector('.xk-sheet-bg').onclick = () => xkCloseSheet();
+  sheet.querySelector('.xk-circle').onclick = () => (_xkSheetStack.length > 1 ? _xkSheetBack() : xkCloseSheet());
+  // Drag the handle / header down to dismiss.
+  const panel = sheet.querySelector('.xk-sheet-panel');
+  let y0 = null, dy = 0;
+  const start = e => { if (e.target.closest('button')) return; y0 = e.touches[0].clientY; dy = 0; panel.classList.add('dragging'); };
+  const move = e => { if (y0 === null) return; dy = Math.max(0, e.touches[0].clientY - y0); panel.style.transform = `translateY(${dy}px)`; };
+  const end = () => { if (y0 === null) return; y0 = null; panel.classList.remove('dragging'); panel.style.transform = ''; if (dy > 110) xkCloseSheet(); };
+  ['.xk-sheet-grab', '.xk-sheet-head'].forEach(sel => {
+    const el = sheet.querySelector(sel);
+    el.addEventListener('touchstart', start, { passive: true });
+    el.addEventListener('touchmove', move, { passive: true });
+    el.addEventListener('touchend', end);
+  });
+  return sheet;
+}
+function _xkSheetRender(dir) {
+  const sheet = _xkSheet();
+  const entry = _xkSheetStack[_xkSheetStack.length - 1];
+  const vp = sheet.querySelector('.xk-sheet-vp');
+  const old = vp.querySelector('.xk-sheet-page:not(.gone)');
+  const page = document.createElement('div');
+  page.className = 'xk-sheet-page' + (dir === 'fwd' ? ' from-right' : dir === 'back' ? ' from-left' : '');
+  sheet.querySelector('.xk-sheet-title').textContent = entry.title;
+  entry.render(page);
+  vp.appendChild(page);
+  const btn = sheet.querySelector('.xk-circle');
+  const back = _xkSheetStack.length > 1;
+  btn.setAttribute('aria-label', back ? '返回' : '关闭');
+  btn.innerHTML = back
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  if (old) {
+    old.classList.add('gone', dir === 'back' ? 'to-right' : 'to-left');
+    setTimeout(() => old.remove(), 420);
+  }
+  requestAnimationFrame(() => requestAnimationFrame(() => page.classList.remove('from-right', 'from-left')));
+}
+function _xkSheetOpen(entry) {
+  const sheet = _xkSheet();
+  sheet.querySelector('.xk-sheet-vp').innerHTML = '';
+  _xkSheetStack = [entry];
+  _xkSheetRender();
+  requestAnimationFrame(() => sheet.classList.add('open'));
+}
+function _xkSheetPush(entry) { _xkSheetStack.push(entry); _xkSheetRender('fwd'); }
+function _xkSheetBack() { _xkSheetStack.pop(); _xkSheetRender('back'); }
+function xkCloseSheet() {
+  const sheet = document.getElementById('xkSheet');
+  if (sheet) sheet.classList.remove('open');
+}
+
+function _xkKV(label, html, cls) {
+  return `<div class="xk-kv"><div class="xk-kv-label">${label}</div><pre class="xk-kv-box ${cls || ''}">${html}</pre></div>`;
+}
+function _xkHlCommand(cmd) {
+  return _xkEsc(cmd)
+    .replace(/(&quot;.*?&quot;|'[^']*')/g, m => `<span class="xk-hl-s">${m}</span>`)
+    .replace(/^((?:\w+=\S+\s+)*)([\w./-]+)/, (m, env, c) => env + `<span class="xk-hl-c">${c}</span>`);
+}
+function _xkDiffHtml(oldStr, newStr) {
+  const lines = [];
+  String(oldStr || '').split('\n').forEach(l => { if (oldStr) lines.push(`<span class="xk-del">- ${_xkEsc(l)}</span>`); });
+  String(newStr || '').split('\n').forEach(l => { if (newStr) lines.push(`<span class="xk-add">+ ${_xkEsc(l)}</span>`); });
+  return lines.join('\n');
+}
+function _xkRenderToolDetail(page, t, d) {
+  const i = (d && d.input) || t.input || {};
+  const k = _xkKind(d ? d.name : t.name);
+  let html = '';
+  if (k === 'run') html += _xkKV('Command', _xkHlCommand(i.command || _xkStripEmoji(t.summary)));
+  else if (k === 'read' || k === 'edit' || k === 'create') html += _xkKV('File', _xkEsc(i.file_path || i.notebook_path || i.path || _xkStripEmoji(t.summary)));
+  else if (k === 'search') html += _xkKV('Pattern', _xkEsc(i.pattern || _xkStripEmoji(t.summary))) + (i.path ? _xkKV('Path', _xkEsc(i.path)) : '');
+  else if (k === 'fetch') html += _xkKV('URL', _xkEsc(i.url || '')) + (i.prompt ? _xkKV('Prompt', _xkEsc(i.prompt)) : '');
+  else if (k === 'web') html += _xkKV('Query', _xkEsc(i.query || ''));
+  else if (k === 'agent') html += _xkKV('Task', _xkEsc(i.description || '')) + (i.prompt ? _xkKV('Prompt', _xkEsc(i.prompt)) : '');
+  else if (d && d.input && Object.keys(d.input).length) html += _xkKV('Input', _xkEsc(JSON.stringify(d.input, null, 2)));
+  else html += _xkKV('Tool', _xkEsc(_xkStripEmoji(t.summary) || t.name));
+  if (d && k === 'edit' && ('old_string' in i || 'new_string' in i)) html += _xkKV('Changes', _xkDiffHtml(i.old_string, i.new_string));
+  else if (d && k === 'edit' && Array.isArray(i.edits)) html += _xkKV('Changes', i.edits.map(e => _xkDiffHtml(e.old_string, e.new_string)).join('\n\n'));
+  else if (d && k === 'create' && i.content) html += _xkKV('Content', _xkEsc(i.content));
+  if (!t.done) html += _xkKV('Output', '<span class="xk-shimmer">Running…</span>');
+  else if (d === undefined) html += _xkKV('Output', '<span class="xk-muted">加载中…</span>');
+  else if (d && d.output != null && String(d.output).length) html += _xkKV('Output' + (d.error ? ' · <span class="xk-bad-text">Error</span>' : ''), _xkEsc(d.output), d.error ? 'err' : '');
+  else if (d && d.output != null) html += _xkKV('Output', '<span class="xk-muted">（没有输出）</span>');
+  page.innerHTML = html;
+}
+function _xkToolEntry(t) {
+  return {
+    title: _xkToolName(t.name),
+    render(page) {
+      _xkRenderToolDetail(page, t, undefined);
+      const session = typeof activeChat !== 'undefined' ? activeChat : null;
+      if (!session || !t.id || t.id === 'inflight' || !t.done) { if (t.done) _xkRenderToolDetail(page, t, null); return; }
+      fetch(API + '/sessions/' + encodeURIComponent(session) + '/tool-detail/' + encodeURIComponent(t.id), { headers: { Authorization: 'Bearer ' + TOKEN } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => { if (page.isConnected) _xkRenderToolDetail(page, t, d); })
+        .catch(() => { if (page.isConnected) _xkRenderToolDetail(page, t, null); });
+    },
+  };
+}
+function xkOpenToolSheet(tools) {
+  if (tools.length === 1) { _xkSheetOpen(_xkToolEntry(tools[0])); return; }
+  _xkSheetOpen({
+    title: _xkToolSummary(tools).html.replace(/<[^>]+>/g, ''),
+    render(page) {
+      const list = document.createElement('div');
+      list.className = 'xk-step-list';
+      tools.forEach(t => {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'xk-step' + (t.error ? ' err' : '');
+        const k = _xkKind(t.name);
+        const verb = t.done ? _xkCap(_XK_PHRASE[k][0]) : _XK_ING[k];
+        const diff = Array.isArray(t.diff) ? `<span class="xk-add">+${t.diff[0]}</span> <span class="xk-del">-${t.diff[1]}</span>` : (t.error ? '<span class="xk-bad-text">Error</span>' : '');
+        row.innerHTML =
+          (t.done ? (t.error ? _XK_WARN_SVG : _toolIcon(t.name)) : '<span class="xk-act-spin"></span>') +
+          `<span class="xk-step-text"><b>${_xkEsc(verb)}</b> ${_xkEsc(_xkToolObject(t))}</span>` +
+          (diff ? `<span class="xk-step-meta">${diff}</span>` : '') + _XK_CHEV_SVG;
+        row.onclick = () => _xkSheetPush(_xkToolEntry(t));
+        list.appendChild(row);
+      });
+      page.appendChild(list);
+    },
+  });
+}
+function xkOpenThoughtSheet(text) {
+  _xkSheetOpen({
+    title: 'Thought process',
+    render(page) {
+      const body = document.createElement('div');
+      body.className = 'xk-thought';
+      body.textContent = text || '';
+      page.appendChild(body);
+    },
+  });
 }
 
 function buildToolGroup(group) {
@@ -2348,6 +2609,13 @@ function buildToolGroup(group) {
   else if (isInflight) label = tools[0].summary || tools[0].name;
   else if (allDone) label = `使用 ${total} 个工具`;
   else label = `正在执行 ${lastTool.summary || lastTool.name}`;
+
+  if (!isThinkingInflight) {
+    wrap.classList.add('xk-tool-group');
+    wrap.appendChild(_xkBuildToolRow(tools));
+    askTools.forEach(t => wrap.appendChild(_buildAskCard(t)));
+    return wrap;
+  }
 
   const head = document.createElement('div');
   head.className = 'ch-tool-group-head';
@@ -3101,11 +3369,15 @@ function buildThinkingBlock(block) {
   const strip = document.createElement('div');
   strip.className = 'ch-thinking-strip';
   strip.innerHTML =
-    '<svg class="ch-ts-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+    _XK_CLOCK_SVG +
     '<span class="ch-ts-text"></span>' +
-    '<svg class="ch-ts-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
-  strip.querySelector('.ch-ts-text').textContent = preview.slice(0, 120) || 'Thought process';
-  strip.onclick = () => openThinkingSheet(text);
+    _XK_CHEV_SVG;
+  strip.classList.add('xk-act');
+  strip.setAttribute('role', 'button');
+  strip.tabIndex = 0;
+  strip.title = preview.slice(0, 120);
+  strip.querySelector('.ch-ts-text').textContent = 'Thought process';
+  strip.onclick = () => xkOpenThoughtSheet(text);
   return strip;
 }
 
@@ -3534,7 +3806,10 @@ async function renderChatMessages(name, cachedData = null) {
         } else if (blk.type === 'thinking') {
           bubble.appendChild(buildThinkingBlock(blk));
         } else if (blk.type === 'process_group') {
-          bubble.appendChild(buildProcessGroup(blk));
+          (blk.children || []).forEach(child => {
+            if (child.type === 'thinking') bubble.appendChild(buildThinkingBlock(child));
+            else if (child.type === 'tool_group') bubble.appendChild(buildToolGroup(child));
+          });
         } else if (blk.type === 'delivery') {
           bubble.appendChild(buildDeliveryMark(blk));
         }

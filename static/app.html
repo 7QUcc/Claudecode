@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="sketch">
+<html lang="zh-CN" class="claude">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -255,7 +255,7 @@ section[data-view="settings"][data-sub="appearance"] .st-appearance { display: f
   display: flex; align-items: center; justify-content: center;
   color: transparent;
 }
-.st-choice.active .st-choice-check { background: #a06a52; border-color: #a06a52; color: white; }
+.st-choice.active .st-choice-check { background: var(--xk-accent, #a06a52); border-color: var(--xk-accent, #a06a52); color: white; }
 .st-choice-check svg { width: 13px; height: 13px; }
 .st-preview {
   height: 42px; display: flex; align-items: center; gap: 7px;
@@ -376,7 +376,7 @@ section[data-view="settings"][data-sub="appearance"] .st-appearance { display: f
   stroke-linecap: round;
 }
 .cl-head .ic-btn.primary {
-  background: #a06a52;
+  background: var(--xk-accent, #a06a52);
   color: #fff1d8;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.7),
@@ -502,7 +502,7 @@ section[data-view="settings"][data-sub="appearance"] .st-appearance { display: f
   border: 1.5px dashed #c8c0b3;
 }
 .cl-card .av.cc {
-  background: #a06a52;
+  background: var(--xk-accent, #a06a52);
   color: #fff1d8;
   border: none;
 }
@@ -741,7 +741,7 @@ section[data-view="settings"][data-sub="appearance"] .st-appearance { display: f
   position: relative;
 }
 .ch-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.ch-avatar.cc { background: #a06a52; color: #fff1d8; }
+.ch-avatar.cc { background: var(--xk-accent, #a06a52); color: #fff1d8; }
 .ch-avatar.codex { background: #fffdfa; color: #7a9dff; border: 1px solid #eee7dd; }
 .ch-avatar.opencode { background: #1a1625; color: #c9a0ff; }
 .ch-avatar svg { width: 26px; height: 26px; }
@@ -1036,8 +1036,8 @@ button.ch-compact-head { cursor:pointer; }
   background: transparent;
 }
 .ch-text .ch-task.done {
-  background: #a06a52;
-  border-color: #a06a52;
+  background: var(--xk-accent, #a06a52);
+  border-color: var(--xk-accent, #a06a52);
 }
 .ch-text .ch-task.done::after {
   content: '';
@@ -1183,7 +1183,7 @@ button.ch-compact-head { cursor:pointer; }
   margin: 6px 0;
   color: var(--text-mute);
 }
-.ch-text a { color: #a06a52; text-decoration: underline; }
+.ch-text a { color: var(--xk-accent, #a06a52); text-decoration: underline; }
 .ch-text hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .ch-text table {
   border-collapse: collapse; margin: 8px 0;
@@ -1230,7 +1230,7 @@ button.ch-compact-head { cursor:pointer; }
   flex-shrink: 0;
 }
 .ch-pg-word {
-  background: linear-gradient(90deg, #c084d8, #e88aad, #a06a52, #e0b870, #8bbfe0);
+  background: linear-gradient(90deg, #c084d8, #e88aad, var(--xk-accent, #a06a52), #e0b870, #8bbfe0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1304,7 +1304,7 @@ button.ch-compact-head { cursor:pointer; }
 .ch-tool-group-head .spinner {
   width: 12px; height: 12px;
   border: 1.5px solid rgba(0,0,0,0.18);
-  border-top-color: #a06a52;
+  border-top-color: var(--xk-accent, #a06a52);
   border-radius: 50%;
   animation: ch-spin 0.8s linear infinite;
   flex-shrink: 0;
@@ -1339,7 +1339,7 @@ button.ch-compact-head { cursor:pointer; }
   transition: opacity 0.3s ease;
 }
 .ch-gradient-text {
-  background: linear-gradient(90deg, #c084d8, #e88aad, #a06a52, #e0b870, #8bbfe0, #c084d8);
+  background: linear-gradient(90deg, #c084d8, #e88aad, var(--xk-accent, #a06a52), #e0b870, #8bbfe0, #c084d8);
   background-size: 400% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1438,7 +1438,7 @@ button.ch-compact-head { cursor:pointer; }
 .ch-tool-row.done .status { color: #4a9b6e; }
 .ch-tool-row.pending .status {
   border: 1.5px solid rgba(0,0,0,0.18);
-  border-top-color: #a06a52;
+  border-top-color: var(--xk-accent, #a06a52);
   border-radius: 50%;
   animation: ch-spin 0.8s linear infinite;
 }
@@ -1689,7 +1689,7 @@ button.ch-compact-head { cursor:pointer; }
   flex-shrink: 0;
   width: 22px; height: 22px;
   display: flex; align-items: center; justify-content: center;
-  color: #a06a52;
+  color: var(--xk-accent, #a06a52);
   opacity: 0;
   transition: opacity 0.12s;
 }
@@ -1697,11 +1697,11 @@ button.ch-compact-head { cursor:pointer; }
 
 .ch-ask-opt.picked {
   background: #fff1e5;
-  border-color: #a06a52;
+  border-color: var(--xk-accent, #a06a52);
   box-shadow: inset 0 0 0 1px rgba(160,106,82,0.35);
 }
 .ch-ask-opt.picked .ch-ask-opt-num {
-  background: #a06a52; color: #fff;
+  background: var(--xk-accent, #a06a52); color: #fff;
 }
 .ch-ask-opt.picked .ch-ask-opt-check { opacity: 1; }
 
@@ -1730,7 +1730,7 @@ button.ch-compact-head { cursor:pointer; }
   color: #3d2a22;
   outline: none;
 }
-.ch-ask-type-input input:focus { border-color: #a06a52; }
+.ch-ask-type-input input:focus { border-color: var(--xk-accent, #a06a52); }
 .ch-ask-type-send {
   padding: 0 14px;
   border: none;
@@ -1887,7 +1887,7 @@ button.ch-compact-head { cursor:pointer; }
   width: 36px; height: 36px;
   border-radius: 50%;
   background: rgba(160,106,82,0.14);
-  color: #a06a52;
+  color: var(--xk-accent, #a06a52);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
@@ -2365,7 +2365,7 @@ button.ch-compact-head { cursor:pointer; }
 }
 .ch-disclaimer-logo {
   width: 28px; height: 28px;
-  color: #a06a52;
+  color: var(--xk-accent, #a06a52);
   flex-shrink: 0;
 }
 .ch-disclaimer span {
@@ -2643,7 +2643,7 @@ button.ch-compact-head { cursor:pointer; }
 .ch-bs-item .ch-bs-check {
   width: 20px; height: 20px;
   display: flex; align-items: flex-start; justify-content: center;
-  color: #a06a52; padding-top: 3px;
+  color: var(--xk-accent, #a06a52); padding-top: 3px;
   visibility: hidden;
 }
 .ch-bs-item.active .ch-bs-check { visibility: visible; }
@@ -2659,7 +2659,7 @@ button.ch-compact-head { cursor:pointer; }
 .ch-send {
   width: 34px; height: 34px;
   border-radius: 50%;
-  background: #a06a52; color: white;
+  background: var(--xk-accent, #a06a52); color: white;
   border: none; cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
   flex-shrink: 0;
@@ -2687,7 +2687,7 @@ button.ch-compact-head { cursor:pointer; }
 .ch-msg-action:hover { color: var(--text); }
 .ch-msg-action:active { transform: scale(0.9); }
 .ch-msg-action svg { width: 100%; height: 100%; stroke-width: 1.5; display: block; }
-.ch-msg-action.active { color: #a06a52; }
+.ch-msg-action.active { color: var(--xk-accent, #a06a52); }
 .ch-attach-row {
   display: flex; flex-wrap: wrap; gap: 8px;
   padding: 4px 0;
@@ -2769,7 +2769,7 @@ button.ch-compact-head { cursor:pointer; }
 @keyframes ch-drop-fade { from { opacity: 0; } to { opacity: 1; } }
 .ch-drop-zone-label {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
-  color: #a06a52;
+  color: var(--xk-accent, #a06a52);
   font-size: 0.92rem;
   font-weight: 500;
 }
@@ -2954,7 +2954,7 @@ button.ch-compact-head { cursor:pointer; }
     inset 0 -1px 0 rgba(255,255,255,0.35);
 }
 .cd-lock.unlocked {
-  background: #a06a52;
+  background: var(--xk-accent, #a06a52);
   color: #fff1d8;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.7),
@@ -3008,7 +3008,7 @@ button.ch-compact-head { cursor:pointer; }
   flex-shrink: 0;
   background: var(--text-mute);
 }
-.cd-tab .kind-dot.cc { background: #a06a52; }
+.cd-tab .kind-dot.cc { background: var(--xk-accent, #a06a52); }
 .cd-tab .kind-dot.codex { background: #7a9dff; }
 .cd-tab .kind-dot.opencode { background: #c9a0ff; }
 .cd-tab .kind-dot.shell { background: #4a6b8a; }
@@ -3017,7 +3017,7 @@ button.ch-compact-head { cursor:pointer; }
   min-width: 0;
 }
 .cd-tab.active {
-  background: #a06a52;
+  background: var(--xk-accent, #a06a52);
   color: #fff1d8;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.28),
@@ -4354,89 +4354,89 @@ body.sketch .st-card::after {
 }
 
 /* --- Sketch thinking animation --- */
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-tool-group.inflight.thinking-inflight {
+body[data-thinking-style="sketch"] .ch-tool-group.inflight.thinking-inflight {
   padding: 4px 0 8px;
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-tool-group.inflight.thinking-inflight::after {
+body[data-thinking-style="sketch"] .ch-tool-group.inflight.thinking-inflight::after {
   display: none !important;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-tool-group.inflight.thinking-inflight .ch-tool-group-head {
+body[data-thinking-style="sketch"] .ch-tool-group.inflight.thinking-inflight .ch-tool-group-head {
   gap: 9px;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-tool-group.inflight.thinking-inflight .label {
+body[data-thinking-style="sketch"] .ch-tool-group.inflight.thinking-inflight .label {
   font-family: "American Typewriter", "Courier New", "SF Mono", Menlo, monospace;
   color: rgba(51,46,39,0.72);
   font-size: 0.96rem;
   font-weight: 600;
   letter-spacing: 0;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-tool-group.inflight.thinking-inflight .ch-gradient-text {
+body[data-thinking-style="sketch"] .ch-tool-group.inflight.thinking-inflight .ch-gradient-text {
   background: none;
   -webkit-text-fill-color: currentColor;
   animation: ch-sketch-text-flicker 2.8s steps(2, end) infinite;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-pixel-thinker {
+body[data-thinking-style="sketch"] .ch-pixel-thinker {
   width: 64px;
   height: 36px;
   animation: ch-sketch-thinker-drift 2.6s ease-in-out infinite;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-pixel-thinker .ch-crab-thinker { display: none; }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-pixel-thinker .ch-sketch-thinker {
+body[data-thinking-style="sketch"] .ch-pixel-thinker .ch-crab-thinker { display: none; }
+body[data-thinking-style="sketch"] .ch-pixel-thinker .ch-sketch-thinker {
   display: block;
   width: 64px;
   height: 36px;
   overflow: visible;
   filter: url(#sketch-rough);
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-paper,
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-line,
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-pencil,
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-pencil-edge,
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-spark {
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-paper,
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-line,
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-pencil,
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-pencil-edge,
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-spark {
   vector-effect: non-scaling-stroke;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-paper {
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-paper {
   stroke: rgba(51,46,39,0.48);
   stroke-width: 1.25;
   fill: rgba(251,248,241,0.46);
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-paper-back {
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-paper-back {
   stroke: rgba(51,46,39,0.18);
   stroke-width: 0.9;
   fill: transparent;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-line {
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-line {
   stroke: rgba(51,46,39,0.58);
   stroke-width: 1.25;
   stroke-dasharray: 31;
   stroke-dashoffset: 31;
   animation: ch-sketch-line-draw 2.2s ease-in-out infinite;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .line-b { animation-delay: 0.16s; }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .line-c { animation-delay: 0.32s; }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-pencil {
+body[data-thinking-style="sketch"] .ch-sketch-thinker .line-b { animation-delay: 0.16s; }
+body[data-thinking-style="sketch"] .ch-sketch-thinker .line-c { animation-delay: 0.32s; }
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-pencil {
   stroke: rgba(51,46,39,0.64);
   stroke-width: 1.25;
   fill: rgba(211,184,145,0.24);
   animation: ch-sketch-pencil-scratch 2.2s ease-in-out infinite;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-pencil-edge {
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-pencil-edge {
   stroke: rgba(51,46,39,0.5);
   stroke-width: 1;
   animation: ch-sketch-pencil-scratch 2.2s ease-in-out infinite;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .sketch-spark {
+body[data-thinking-style="sketch"] .ch-sketch-thinker .sketch-spark {
   stroke: rgba(51,46,39,0.42);
   stroke-width: 1.1;
   opacity: 0.65;
   animation: ch-sketch-spark 2.2s ease-in-out infinite;
 }
-body:is(.sketch, [data-thinking-style="sketch"]) .ch-sketch-thinker .spark-b { animation-delay: 0.48s; }
+body[data-thinking-style="sketch"] .ch-sketch-thinker .spark-b { animation-delay: 0.48s; }
 @keyframes ch-sketch-line-draw {
   0% { stroke-dashoffset: 31; opacity: 0.18; }
   28%, 74% { stroke-dashoffset: 0; opacity: 0.78; }
@@ -4589,103 +4589,103 @@ body.sketch .ch-compact-card {
 /* ============================================
    DARK APPEARANCE — 深夜模式
    Sketch dark variant + universal overrides (sketch thinker, ask card).
-   Triggered by html[data-appearance="dark"]; JS resolves "auto" against
+   Triggered by html.sketch[data-appearance="dark"]; JS resolves "auto" against
    prefers-color-scheme before applying.
    ============================================ */
 
 /* sketch-pencil THINKING animation — invert pencil to bright cream on dark
    (applies regardless of theme; thinking-style is orthogonal to theme) */
-html[data-appearance="dark"] .ch-sketch-thinker .sketch-paper {
+html.sketch[data-appearance="dark"] .ch-sketch-thinker .sketch-paper {
   stroke: rgba(255,245,225,0.78);
   fill: rgba(255,245,225,0.08);
 }
-html[data-appearance="dark"] .ch-sketch-thinker .sketch-paper-back {
+html.sketch[data-appearance="dark"] .ch-sketch-thinker .sketch-paper-back {
   stroke: rgba(255,245,225,0.32);
 }
-html[data-appearance="dark"] .ch-sketch-thinker .sketch-line { stroke: rgba(255,245,225,0.92); }
-html[data-appearance="dark"] .ch-sketch-thinker .sketch-pencil {
+html.sketch[data-appearance="dark"] .ch-sketch-thinker .sketch-line { stroke: rgba(255,245,225,0.92); }
+html.sketch[data-appearance="dark"] .ch-sketch-thinker .sketch-pencil {
   stroke: rgba(255,245,225,0.94);
   fill: rgba(232,200,135,0.42);
 }
-html[data-appearance="dark"] .ch-sketch-thinker .sketch-pencil-edge { stroke: rgba(255,245,225,0.82); }
-html[data-appearance="dark"] .ch-sketch-thinker .sketch-spark { stroke: rgba(255,245,225,0.72); }
+html.sketch[data-appearance="dark"] .ch-sketch-thinker .sketch-pencil-edge { stroke: rgba(255,245,225,0.82); }
+html.sketch[data-appearance="dark"] .ch-sketch-thinker .sketch-spark { stroke: rgba(255,245,225,0.72); }
 /* also the inline sketch preview in the settings picker */
-html[data-appearance="dark"] .st-preview-sketch path[stroke="rgba(51,46,39,0.5)"] { stroke: rgba(255,245,225,0.78) !important; }
-html[data-appearance="dark"] .st-preview-sketch path[stroke="rgba(51,46,39,0.58)"] { stroke: rgba(255,245,225,0.92) !important; }
-html[data-appearance="dark"] .st-preview-sketch path[stroke="rgba(51,46,39,0.64)"] { stroke: rgba(255,245,225,0.94) !important; }
-html[data-appearance="dark"] .st-preview-sketch path[fill="rgba(251,248,241,0.46)"] { fill: rgba(255,245,225,0.08) !important; }
-html[data-appearance="dark"] .st-preview-sketch path[fill="rgba(211,184,145,0.24)"] { fill: rgba(232,200,135,0.42) !important; }
+html.sketch[data-appearance="dark"] .st-preview-sketch path[stroke="rgba(51,46,39,0.5)"] { stroke: rgba(255,245,225,0.78) !important; }
+html.sketch[data-appearance="dark"] .st-preview-sketch path[stroke="rgba(51,46,39,0.58)"] { stroke: rgba(255,245,225,0.92) !important; }
+html.sketch[data-appearance="dark"] .st-preview-sketch path[stroke="rgba(51,46,39,0.64)"] { stroke: rgba(255,245,225,0.94) !important; }
+html.sketch[data-appearance="dark"] .st-preview-sketch path[fill="rgba(251,248,241,0.46)"] { fill: rgba(255,245,225,0.08) !important; }
+html.sketch[data-appearance="dark"] .st-preview-sketch path[fill="rgba(211,184,145,0.24)"] { fill: rgba(232,200,135,0.42) !important; }
 
 /* AskUserQuestion interactive card (.ch-ask-*) — dark */
-html[data-appearance="dark"] body .ch-ask-card {
+html.sketch[data-appearance="dark"] body .ch-ask-card {
   background: linear-gradient(180deg, #1f1a16 0%, #1a1612 100%);
   border-color: rgba(255,240,220,0.12);
   box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
-html[data-appearance="dark"] body .ch-ask-card.answered {
+html.sketch[data-appearance="dark"] body .ch-ask-card.answered {
   background: rgba(255,255,255,0.03);
   border-color: rgba(255,255,255,0.06);
 }
-html[data-appearance="dark"] body .ch-ask-head { color: #f0e0c8; }
-html[data-appearance="dark"] body .ch-ask-card.answered .ch-ask-head { color: var(--text-mute); }
-html[data-appearance="dark"] body .ch-ask-question { border-top-color: rgba(255,240,220,0.1); }
-html[data-appearance="dark"] body .ch-ask-q-tag {
+html.sketch[data-appearance="dark"] body .ch-ask-head { color: #f0e0c8; }
+html.sketch[data-appearance="dark"] body .ch-ask-card.answered .ch-ask-head { color: var(--text-mute); }
+html.sketch[data-appearance="dark"] body .ch-ask-question { border-top-color: rgba(255,240,220,0.1); }
+html.sketch[data-appearance="dark"] body .ch-ask-q-tag {
   background: rgba(215,131,103,0.22);
   color: #f0b89c;
 }
-html[data-appearance="dark"] body .ch-ask-q-title { color: #f0e0c8; }
-html[data-appearance="dark"] body .ch-ask-q-hint { color: var(--text-mute); }
-html[data-appearance="dark"] body .ch-ask-opt {
+html.sketch[data-appearance="dark"] body .ch-ask-q-title { color: #f0e0c8; }
+html.sketch[data-appearance="dark"] body .ch-ask-q-hint { color: var(--text-mute); }
+html.sketch[data-appearance="dark"] body .ch-ask-opt {
   background: rgba(255,255,255,0.05);
   border-color: rgba(255,240,220,0.12);
   color: #f0e0c8;
 }
-html[data-appearance="dark"] body .ch-ask-opt:hover:not(:disabled) {
+html.sketch[data-appearance="dark"] body .ch-ask-opt:hover:not(:disabled) {
   background: rgba(215,131,103,0.1);
   border-color: rgba(215,131,103,0.55);
 }
-html[data-appearance="dark"] body .ch-ask-opt-num {
+html.sketch[data-appearance="dark"] body .ch-ask-opt-num {
   background: rgba(255,240,220,0.1);
   color: #d9c0a0;
 }
-html[data-appearance="dark"] body .ch-ask-opt-desc { color: var(--text-mute); }
-html[data-appearance="dark"] body .ch-ask-opt.picked {
+html.sketch[data-appearance="dark"] body .ch-ask-opt-desc { color: var(--text-mute); }
+html.sketch[data-appearance="dark"] body .ch-ask-opt.picked {
   background: rgba(215,131,103,0.18);
   border-color: #d78367;
   box-shadow: inset 0 0 0 1px rgba(215,131,103,0.55);
 }
-html[data-appearance="dark"] body .ch-ask-opt.picked .ch-ask-opt-num {
+html.sketch[data-appearance="dark"] body .ch-ask-opt.picked .ch-ask-opt-num {
   background: #d78367; color: #1a1612;
 }
-html[data-appearance="dark"] body .ch-ask-opt-check { color: #d78367; }
-html[data-appearance="dark"] body .ch-ask-opt-type {
+html.sketch[data-appearance="dark"] body .ch-ask-opt-check { color: #d78367; }
+html.sketch[data-appearance="dark"] body .ch-ask-opt-type {
   background: rgba(255,255,255,0.025);
   border-style: dashed;
 }
-html[data-appearance="dark"] body .ch-ask-opt-type .ch-ask-opt-label { color: #d9c0a0; }
-html[data-appearance="dark"] body .ch-ask-type-input input {
+html.sketch[data-appearance="dark"] body .ch-ask-opt-type .ch-ask-opt-label { color: #d9c0a0; }
+html.sketch[data-appearance="dark"] body .ch-ask-type-input input {
   background: #1a1612;
   border-color: rgba(255,240,220,0.2);
   color: var(--text);
 }
-html[data-appearance="dark"] body .ch-ask-type-input input:focus { border-color: #d78367; }
-html[data-appearance="dark"] body .ch-ask-type-send,
-html[data-appearance="dark"] body .ch-ask-submit-btn {
+html.sketch[data-appearance="dark"] body .ch-ask-type-input input:focus { border-color: #d78367; }
+html.sketch[data-appearance="dark"] body .ch-ask-type-send,
+html.sketch[data-appearance="dark"] body .ch-ask-submit-btn {
   background: linear-gradient(135deg, #d78367 0%, #b25a3d 100%);
   color: #fff;
   text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
-html[data-appearance="dark"] body .ch-ask-submit-btn:disabled {
+html.sketch[data-appearance="dark"] body .ch-ask-submit-btn:disabled {
   background: rgba(255,255,255,0.06);
   color: var(--text-mute);
   text-shadow: none;
 }
-html[data-appearance="dark"] body .ch-ask-cancel { color: var(--text-mute); }
+html.sketch[data-appearance="dark"] body .ch-ask-cancel { color: var(--text-mute); }
 
 
 /* ---- Sketch theme (素描稿纸) dark ---- */
 /* Dark pencil sketchbook: charcoal paper, light cream pencil. */
-html[data-appearance="dark"] body.sketch {
+html.sketch[data-appearance="dark"] body.sketch {
   --bg: #141414;
   --bg-side: #0c0c0c;
   --bg-pill: #2a2a2a;
@@ -4701,388 +4701,388 @@ html[data-appearance="dark"] body.sketch {
   --sketch-line-soft: rgba(240,232,216,0.2);
   --sketch-smudge: rgba(240,232,216,0.07);
 }
-html[data-appearance="dark"].sketch { background: #141414 !important; }
-html[data-appearance="dark"] body.sketch {
+html.sketch[data-appearance="dark"].sketch { background: #141414 !important; }
+html.sketch[data-appearance="dark"] body.sketch {
   background:
     linear-gradient(180deg, rgba(255,250,240,0.025), rgba(255,250,240,0.005)),
     #141414 !important;
 }
-html[data-appearance="dark"].sketch.sidebar-open,
-html[data-appearance="dark"] body.sketch.sidebar-open { background: #0c0c0c !important; }
-html[data-appearance="dark"] body.sketch::before { background: #141414 !important; }
-html[data-appearance="dark"] body.sketch.sidebar-open::before { background: #0c0c0c !important; }
-html[data-appearance="dark"].sketch.codex-chrome:not(.sidebar-open),
-html[data-appearance="dark"] body.sketch.codex-chrome:not(.sidebar-open) { background: #141414 !important; }
-html[data-appearance="dark"] body.sketch.codex-chrome:not(.sidebar-open)::before { background: #141414 !important; }
-html[data-appearance="dark"] body.sketch::after { opacity: 0.28; mix-blend-mode: screen; }
+html.sketch[data-appearance="dark"].sketch.sidebar-open,
+html.sketch[data-appearance="dark"] body.sketch.sidebar-open { background: #0c0c0c !important; }
+html.sketch[data-appearance="dark"] body.sketch::before { background: #141414 !important; }
+html.sketch[data-appearance="dark"] body.sketch.sidebar-open::before { background: #0c0c0c !important; }
+html.sketch[data-appearance="dark"].sketch.codex-chrome:not(.sidebar-open),
+html.sketch[data-appearance="dark"] body.sketch.codex-chrome:not(.sidebar-open) { background: #141414 !important; }
+html.sketch[data-appearance="dark"] body.sketch.codex-chrome:not(.sidebar-open)::before { background: #141414 !important; }
+html.sketch[data-appearance="dark"] body.sketch::after { opacity: 0.28; mix-blend-mode: screen; }
 
-html[data-appearance="dark"] body.sketch .sidebar {
+html.sketch[data-appearance="dark"] body.sketch .sidebar {
   background: rgba(12,12,12,0.94);
   border-right: 1.5px solid var(--border);
   box-shadow: inset -1px 0 0 rgba(240,232,216,0.06);
 }
-html[data-appearance="dark"] body.sketch .sb-brand,
-html[data-appearance="dark"] body.sketch .sb-item { color: var(--text); }
-html[data-appearance="dark"] body.sketch .sb-toggle { color: rgba(240,232,216,0.72); }
-html[data-appearance="dark"] body.sketch .sb-toggle:hover { background: var(--sketch-smudge); }
-html[data-appearance="dark"] body.sketch .sb-item:hover { background: rgba(240,232,216,0.05); }
-html[data-appearance="dark"] body.sketch .sb-item.active {
+html.sketch[data-appearance="dark"] body.sketch .sb-brand,
+html.sketch[data-appearance="dark"] body.sketch .sb-item { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .sb-toggle { color: rgba(240,232,216,0.72); }
+html.sketch[data-appearance="dark"] body.sketch .sb-toggle:hover { background: var(--sketch-smudge); }
+html.sketch[data-appearance="dark"] body.sketch .sb-item:hover { background: rgba(240,232,216,0.05); }
+html.sketch[data-appearance="dark"] body.sketch .sb-item.active {
   background: var(--sketch-wash);
   box-shadow: inset 0 0 0 1px rgba(240,232,216,0.06);
 }
-html[data-appearance="dark"] body.sketch .sb-foot { color: rgba(240,232,216,0.46); }
+html.sketch[data-appearance="dark"] body.sketch .sb-foot { color: rgba(240,232,216,0.46); }
 
-html[data-appearance="dark"] body.sketch .ic-btn {
+html.sketch[data-appearance="dark"] body.sketch .ic-btn {
   background: rgba(30,30,30,0.82); border-color: rgba(240,232,216,0.28); color: var(--text);
 }
-html[data-appearance="dark"] body.sketch .ic-btn:hover { background: rgba(45,45,45,0.92); }
-html[data-appearance="dark"] body.sketch .ic-btn.primary {
+html.sketch[data-appearance="dark"] body.sketch .ic-btn:hover { background: rgba(45,45,45,0.92); }
+html.sketch[data-appearance="dark"] body.sketch .ic-btn.primary {
   background: #d3b891; border-color: rgba(240,232,216,0.32); color: #141414;
 }
-html[data-appearance="dark"] body.sketch .ic-btn.primary:hover { background: #c2a47e; }
+html.sketch[data-appearance="dark"] body.sketch .ic-btn.primary:hover { background: #c2a47e; }
 
-html[data-appearance="dark"] body.sketch .cd-actions-pill {
+html.sketch[data-appearance="dark"] body.sketch .cd-actions-pill {
   background: var(--sketch-panel); border-color: rgba(240,232,216,0.24);
 }
-html[data-appearance="dark"] body.sketch .cd-actions-pill .cd-pill-btn:hover { background: rgba(240,232,216,0.06); }
-html[data-appearance="dark"] body.sketch .cl-head { background: rgba(20,20,20,0.92); border-bottom-color: rgba(240,232,216,0.08); }
-html[data-appearance="dark"] body.sketch .cd-head { background: rgba(20,20,20,0.88); border-bottom-color: rgba(240,232,216,0.08); }
-html[data-appearance="dark"] body.sketch .cl-title,
-html[data-appearance="dark"] body.sketch .cd-title { color: var(--text); }
-html[data-appearance="dark"] body.sketch .cd-sub { color: rgba(240,232,216,0.56); }
-html[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"][data-sub="detail"] .cd-head { background: rgba(20,20,20,0.92); }
-html[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"][data-sub="detail"] .cd-head::after {
+html.sketch[data-appearance="dark"] body.sketch .cd-actions-pill .cd-pill-btn:hover { background: rgba(240,232,216,0.06); }
+html.sketch[data-appearance="dark"] body.sketch .cl-head { background: rgba(20,20,20,0.92); border-bottom-color: rgba(240,232,216,0.08); }
+html.sketch[data-appearance="dark"] body.sketch .cd-head { background: rgba(20,20,20,0.88); border-bottom-color: rgba(240,232,216,0.08); }
+html.sketch[data-appearance="dark"] body.sketch .cl-title,
+html.sketch[data-appearance="dark"] body.sketch .cd-title { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .cd-sub { color: rgba(240,232,216,0.56); }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"][data-sub="detail"] .cd-head { background: rgba(20,20,20,0.92); }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"][data-sub="detail"] .cd-head::after {
   background: linear-gradient(to bottom, rgba(20,20,20,0.82), rgba(20,20,20,0));
 }
 
-html[data-appearance="dark"] body.sketch .cl-search {
+html.sketch[data-appearance="dark"] body.sketch .cl-search {
   border-color: rgba(240,232,216,0.22);
   border-bottom-color: var(--sketch-line-soft);
   background: rgba(26,26,26,0.58);
 }
-html[data-appearance="dark"] body.sketch .cl-search-icon,
-html[data-appearance="dark"] body.sketch .cl-search-clear,
-html[data-appearance="dark"] body.sketch .cl-search-cancel { color: rgba(240,232,216,0.5); }
-html[data-appearance="dark"] body.sketch .cl-sr-chip,
-html[data-appearance="dark"] body.sketch .cl-resource-row,
-html[data-appearance="dark"] body.sketch .cl-sr-item,
-html[data-appearance="dark"] body.sketch .ch-unified-input,
-html[data-appearance="dark"] body.sketch .ch-detail-search-row input,
-html[data-appearance="dark"] body.sketch .cl-archive-search {
+html.sketch[data-appearance="dark"] body.sketch .cl-search-icon,
+html.sketch[data-appearance="dark"] body.sketch .cl-search-clear,
+html.sketch[data-appearance="dark"] body.sketch .cl-search-cancel { color: rgba(240,232,216,0.5); }
+html.sketch[data-appearance="dark"] body.sketch .cl-sr-chip,
+html.sketch[data-appearance="dark"] body.sketch .cl-resource-row,
+html.sketch[data-appearance="dark"] body.sketch .cl-sr-item,
+html.sketch[data-appearance="dark"] body.sketch .ch-unified-input,
+html.sketch[data-appearance="dark"] body.sketch .ch-detail-search-row input,
+html.sketch[data-appearance="dark"] body.sketch .cl-archive-search {
   background: rgba(26,26,26,0.78);
   border-color: var(--sketch-line-soft);
   color: var(--text);
 }
-html[data-appearance="dark"] body.sketch .cl-chip {
+html.sketch[data-appearance="dark"] body.sketch .cl-chip {
   background: rgba(26,26,26,0.6); border-color: rgba(240,232,216,0.22); color: var(--text);
 }
-html[data-appearance="dark"] body.sketch .cl-chip.active {
+html.sketch[data-appearance="dark"] body.sketch .cl-chip.active {
   background: var(--sketch-wash); border-color: rgba(240,232,216,0.24);
 }
 
-html[data-appearance="dark"] body.sketch .cl-card {
+html.sketch[data-appearance="dark"] body.sketch .cl-card {
   background: rgba(26,26,26,0.78); border-color: rgba(240,232,216,0.2);
 }
-html[data-appearance="dark"] body.sketch .cl-card:hover { background: rgba(40,40,40,0.86); }
-html[data-appearance="dark"] body.sketch .cl-card .av,
-html[data-appearance="dark"] body.sketch .ch-avatar {
+html.sketch[data-appearance="dark"] body.sketch .cl-card:hover { background: rgba(40,40,40,0.86); }
+html.sketch[data-appearance="dark"] body.sketch .cl-card .av,
+html.sketch[data-appearance="dark"] body.sketch .ch-avatar {
   background: #262626; border: 1px dashed rgba(240,232,216,0.22); color: rgba(240,232,216,0.82);
 }
 /* per-kind avatar tints — keep candy-color identity, darken backdrop */
-html[data-appearance="dark"] body.sketch .cl-card .av.cc,
-html[data-appearance="dark"] body.sketch .ch-avatar.cc {
+html.sketch[data-appearance="dark"] body.sketch .cl-card .av.cc,
+html.sketch[data-appearance="dark"] body.sketch .ch-avatar.cc {
   background: #3a2620;
   border-color: rgba(232,168,136,0.3);
   color: #e8a888;
 }
-html[data-appearance="dark"] body.sketch .cl-card .av.codex,
-html[data-appearance="dark"] body.sketch .ch-avatar.codex,
-html[data-appearance="dark"] body.sketch .ch-avatar.opencode {
+html.sketch[data-appearance="dark"] body.sketch .cl-card .av.codex,
+html.sketch[data-appearance="dark"] body.sketch .ch-avatar.codex,
+html.sketch[data-appearance="dark"] body.sketch .ch-avatar.opencode {
   background: #1f2820;
   border-color: rgba(158,201,149,0.28);
   color: #9ec995;
 }
-html[data-appearance="dark"] body.sketch .cl-card .av.shell,
-html[data-appearance="dark"] body.sketch .ch-avatar.shell {
+html.sketch[data-appearance="dark"] body.sketch .cl-card .av.shell,
+html.sketch[data-appearance="dark"] body.sketch .ch-avatar.shell {
   background: #1c2528;
   border-color: rgba(142,179,192,0.3);
   color: #8eb3c0;
 }
-html[data-appearance="dark"] body.sketch .cl-card .av.opencode {
+html.sketch[data-appearance="dark"] body.sketch .cl-card .av.opencode {
   background: #251f2e;
   border-color: rgba(184,163,216,0.28);
   color: #b8a3d8;
 }
 
 /* sketch thinking text — settings preview + live in-chat strip */
-html[data-appearance="dark"] .st-preview.sketch-thinking {
+html.sketch[data-appearance="dark"] .st-preview.sketch-thinking {
   color: rgba(255,245,225,0.78);
 }
-html[data-appearance="dark"] body[data-thinking-style="sketch"] .ch-tool-group.inflight.thinking-inflight .label {
+html.sketch[data-appearance="dark"] body[data-thinking-style="sketch"] .ch-tool-group.inflight.thinking-inflight .label {
   color: rgba(255,245,225,0.78);
 }
-html[data-appearance="dark"] body.sketch .cl-card .summary,
-html[data-appearance="dark"] body.sketch .ch-preview { color: rgba(240,232,216,0.55); }
+html.sketch[data-appearance="dark"] body.sketch .cl-card .summary,
+html.sketch[data-appearance="dark"] body.sketch .ch-preview { color: rgba(240,232,216,0.55); }
 
-html[data-appearance="dark"] body.sketch .ch-row .ch-item { border-bottom-color: rgba(240,232,216,0.07); }
-html[data-appearance="dark"] body.sketch .ch-row .ch-item:hover { background: rgba(240,232,216,0.04); }
-html[data-appearance="dark"] body.sketch .ch-row .ch-item:active { background: rgba(240,232,216,0.06); }
-html[data-appearance="dark"] body.sketch .ch-time { color: rgba(240,232,216,0.5); }
+html.sketch[data-appearance="dark"] body.sketch .ch-row .ch-item { border-bottom-color: rgba(240,232,216,0.07); }
+html.sketch[data-appearance="dark"] body.sketch .ch-row .ch-item:hover { background: rgba(240,232,216,0.04); }
+html.sketch[data-appearance="dark"] body.sketch .ch-row .ch-item:active { background: rgba(240,232,216,0.06); }
+html.sketch[data-appearance="dark"] body.sketch .ch-time { color: rgba(240,232,216,0.5); }
 
-html[data-appearance="dark"] body.sketch .ch-bubble.user {
+html.sketch[data-appearance="dark"] body.sketch .ch-bubble.user {
   background: var(--sketch-wash);
   border-color: rgba(240,232,216,0.22);
   box-shadow: 1px 1px 0 rgba(240,232,216,0.05);
 }
-html[data-appearance="dark"] body.sketch .ch-bubble.assistant { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .ch-bubble.assistant { color: var(--text); }
 /* sketch dark — message bubble timestamp + ancillary brown text needs lift */
-html[data-appearance="dark"] body.sketch .ch-bubble-time,
-html[data-appearance="dark"] body.sketch .ch-bubble.user .ch-bubble-time { color: rgba(240,232,216,0.5); }
-html[data-appearance="dark"] body.sketch .ch-bubble.user .ch-delivery-meta-key { color: rgba(240,232,216,0.5); }
-html[data-appearance="dark"] body.sketch .ch-delivery-mark { background: rgba(240,232,216,0.06); color: rgba(240,232,216,0.55); }
-html[data-appearance="dark"] body.sketch .ch-delivery-body { border-top-color: rgba(240,232,216,0.1); color: rgba(240,232,216,0.62); }
-html[data-appearance="dark"] body.sketch .ch-pending-state { color: rgba(240,232,216,0.55); }
-html[data-appearance="dark"] body.sketch .ch-pending-action {
+html.sketch[data-appearance="dark"] body.sketch .ch-bubble-time,
+html.sketch[data-appearance="dark"] body.sketch .ch-bubble.user .ch-bubble-time { color: rgba(240,232,216,0.5); }
+html.sketch[data-appearance="dark"] body.sketch .ch-bubble.user .ch-delivery-meta-key { color: rgba(240,232,216,0.5); }
+html.sketch[data-appearance="dark"] body.sketch .ch-delivery-mark { background: rgba(240,232,216,0.06); color: rgba(240,232,216,0.55); }
+html.sketch[data-appearance="dark"] body.sketch .ch-delivery-body { border-top-color: rgba(240,232,216,0.1); color: rgba(240,232,216,0.62); }
+html.sketch[data-appearance="dark"] body.sketch .ch-pending-state { color: rgba(240,232,216,0.55); }
+html.sketch[data-appearance="dark"] body.sketch .ch-pending-action {
   background: rgba(240,232,216,0.05);
   border-color: rgba(240,232,216,0.18);
   color: rgba(240,232,216,0.7);
 }
-html[data-appearance="dark"] body.sketch .ch-msg-actions { color: rgba(240,232,216,0.5); }
-html[data-appearance="dark"] body.sketch .ch-ga-section-label { color: rgba(240,232,216,0.5); }
-html[data-appearance="dark"] body.sketch .ch-terminal-prompt-label { color: rgba(240,232,216,0.72); }
-html[data-appearance="dark"] body.sketch .ch-terminal-prompt-text { color: rgba(240,232,216,0.8); }
+html.sketch[data-appearance="dark"] body.sketch .ch-msg-actions { color: rgba(240,232,216,0.5); }
+html.sketch[data-appearance="dark"] body.sketch .ch-ga-section-label { color: rgba(240,232,216,0.5); }
+html.sketch[data-appearance="dark"] body.sketch .ch-terminal-prompt-label { color: rgba(240,232,216,0.72); }
+html.sketch[data-appearance="dark"] body.sketch .ch-terminal-prompt-text { color: rgba(240,232,216,0.8); }
 
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .cd-actions-pill,
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input-bar {
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .cd-actions-pill,
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input-bar {
   background: rgba(26,26,26,0.86); border-color: rgba(240,232,216,0.2);
 }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .cd-actions-pill .cd-pill-btn { color: var(--text); }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .cd-actions-pill .cd-pill-btn:hover,
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input-btn:hover,
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-model-pill:hover { background: rgba(240,232,216,0.06); }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input,
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input-btn { color: var(--text); }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input::placeholder { color: rgba(240,232,216,0.4); }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-send-mode { color: rgba(240,232,216,0.66); }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-send-mode.direct {
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .cd-actions-pill .cd-pill-btn { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .cd-actions-pill .cd-pill-btn:hover,
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input-btn:hover,
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-model-pill:hover { background: rgba(240,232,216,0.06); }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input,
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input-btn { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-input::placeholder { color: rgba(240,232,216,0.4); }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-send-mode { color: rgba(240,232,216,0.66); }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-send-mode.direct {
   background: rgba(240,232,216,0.1); color: var(--text);
 }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-model-pill { color: rgba(240,232,216,0.66); }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-effort-label { color: rgba(240,232,216,0.54); }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-send {
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-model-pill { color: rgba(240,232,216,0.66); }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-effort-label { color: rgba(240,232,216,0.54); }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-send {
   background: #d3b891; color: #141414; border-color: rgba(240,232,216,0.2);
 }
-html[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-send:disabled {
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-sub="detail"] .ch-send:disabled {
   background: rgba(240,232,216,0.14); color: rgba(240,232,216,0.45);
 }
 
-html[data-appearance="dark"] body.sketch .ch-scroll-bottom {
+html.sketch[data-appearance="dark"] body.sketch .ch-scroll-bottom {
   background: rgba(26,26,26,0.9); border-color: rgba(240,232,216,0.24); color: var(--text);
 }
-html[data-appearance="dark"] body.sketch .ch-usage-pill {
+html.sketch[data-appearance="dark"] body.sketch .ch-usage-pill {
   background: rgba(38,38,38,0.78); border-color: rgba(240,232,216,0.22);
 }
-html[data-appearance="dark"] body.sketch .ch-session-divider-pill { border-color: rgba(240,232,216,0.12); }
+html.sketch[data-appearance="dark"] body.sketch .ch-session-divider-pill { border-color: rgba(240,232,216,0.12); }
 
-html[data-appearance="dark"] body.sketch .ch-code {
+html.sketch[data-appearance="dark"] body.sketch .ch-code {
   background: rgba(14,14,14,0.86); border-color: rgba(240,232,216,0.2);
   box-shadow: 1px 1px 0 rgba(240,232,216,0.04);
 }
-html[data-appearance="dark"] body.sketch .ch-code-head {
+html.sketch[data-appearance="dark"] body.sketch .ch-code-head {
   background: rgba(240,232,216,0.03); border-bottom-color: rgba(240,232,216,0.08); color: var(--text-mute);
 }
-html[data-appearance="dark"] body.sketch .ch-code,
-html[data-appearance="dark"] body.sketch .ch-code .hljs,
-html[data-appearance="dark"] body.sketch .ch-code pre code { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .ch-code,
+html.sketch[data-appearance="dark"] body.sketch .ch-code .hljs,
+html.sketch[data-appearance="dark"] body.sketch .ch-code pre code { color: var(--text); }
 
-html[data-appearance="dark"] body.sketch .ch-file-card.inline {
+html.sketch[data-appearance="dark"] body.sketch .ch-file-card.inline {
   background: rgba(26,26,26,0.78); border-color: rgba(240,232,216,0.2);
 }
 
-html[data-appearance="dark"] body.sketch .ch-process-group { color: rgba(240,232,216,0.78); }
-html[data-appearance="dark"] body.sketch .ch-pg-head { border-bottom-color: rgba(240,232,216,0.18); }
-html[data-appearance="dark"] body.sketch .ch-pg-title::before {
+html.sketch[data-appearance="dark"] body.sketch .ch-process-group { color: rgba(240,232,216,0.78); }
+html.sketch[data-appearance="dark"] body.sketch .ch-pg-head { border-bottom-color: rgba(240,232,216,0.18); }
+html.sketch[data-appearance="dark"] body.sketch .ch-pg-title::before {
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f0e8d8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 22l4-4'/%3E%3Cpath d='M6 18C8 15.5 10 12 14 8c3-3 6-5 8-6 0 0-1 5-4 9-3 3-6 5-8.5 7C8 19.5 6 18 6 18z'/%3E%3Cpath d='M14 8c-1.5 0-3 .5-4 1.5'/%3E%3C/svg%3E") no-repeat center / contain;
 }
-html[data-appearance="dark"] body.sketch .ch-pg-word { color: rgba(240,232,216,0.78); }
-html[data-appearance="dark"] body.sketch .ch-pg-stat {
+html.sketch[data-appearance="dark"] body.sketch .ch-pg-word { color: rgba(240,232,216,0.78); }
+html.sketch[data-appearance="dark"] body.sketch .ch-pg-stat {
   background: rgba(26,26,26,0.72); border-color: rgba(240,232,216,0.2); color: rgba(240,232,216,0.78);
 }
-html[data-appearance="dark"] body.sketch .ch-pg-stat::after { border-color: rgba(240,232,216,0.08); }
-html[data-appearance="dark"] body.sketch .ch-pg-stat-num { color: rgba(240,232,216,0.85); }
-html[data-appearance="dark"] body.sketch .ch-pg-body { border-left-color: rgba(240,232,216,0.18); }
-html[data-appearance="dark"] body.sketch .ch-pg-body > .ch-tool-group,
-html[data-appearance="dark"] body.sketch .ch-pg-body > .ch-thinking-strip { background: rgba(240,232,216,0.04); }
-html[data-appearance="dark"] body.sketch .ch-tool-group,
-html[data-appearance="dark"] body.sketch .ch-thinking-strip {
+html.sketch[data-appearance="dark"] body.sketch .ch-pg-stat::after { border-color: rgba(240,232,216,0.08); }
+html.sketch[data-appearance="dark"] body.sketch .ch-pg-stat-num { color: rgba(240,232,216,0.85); }
+html.sketch[data-appearance="dark"] body.sketch .ch-pg-body { border-left-color: rgba(240,232,216,0.18); }
+html.sketch[data-appearance="dark"] body.sketch .ch-pg-body > .ch-tool-group,
+html.sketch[data-appearance="dark"] body.sketch .ch-pg-body > .ch-thinking-strip { background: rgba(240,232,216,0.04); }
+html.sketch[data-appearance="dark"] body.sketch .ch-tool-group,
+html.sketch[data-appearance="dark"] body.sketch .ch-thinking-strip {
   background: rgba(240,232,216,0.03); border-color: rgba(240,232,216,0.12);
 }
 
-html[data-appearance="dark"] body.sketch .cd-menu,
-html[data-appearance="dark"] body.sketch .cd-model-picker,
-html[data-appearance="dark"] body.sketch .as-group {
+html.sketch[data-appearance="dark"] body.sketch .cd-menu,
+html.sketch[data-appearance="dark"] body.sketch .cd-model-picker,
+html.sketch[data-appearance="dark"] body.sketch .as-group {
   background: rgba(26,26,26,0.96); border-color: rgba(240,232,216,0.24);
   box-shadow: 2px 3px 8px rgba(0,0,0,0.5);
 }
-html[data-appearance="dark"] body.sketch .cd-menu-item,
-html[data-appearance="dark"] body.sketch .as-item { color: var(--text); }
-html[data-appearance="dark"] body.sketch .cd-menu-item:hover,
-html[data-appearance="dark"] body.sketch .as-item:active { background: rgba(240,232,216,0.06); }
-html[data-appearance="dark"] body.sketch .cd-menu-sep,
-html[data-appearance="dark"] body.sketch .cd-model-sep,
-html[data-appearance="dark"] body.sketch .as-sep { background: rgba(240,232,216,0.1); }
+html.sketch[data-appearance="dark"] body.sketch .cd-menu-item,
+html.sketch[data-appearance="dark"] body.sketch .as-item { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .cd-menu-item:hover,
+html.sketch[data-appearance="dark"] body.sketch .as-item:active { background: rgba(240,232,216,0.06); }
+html.sketch[data-appearance="dark"] body.sketch .cd-menu-sep,
+html.sketch[data-appearance="dark"] body.sketch .cd-model-sep,
+html.sketch[data-appearance="dark"] body.sketch .as-sep { background: rgba(240,232,216,0.1); }
 
-html[data-appearance="dark"] body.sketch .st-card {
+html.sketch[data-appearance="dark"] body.sketch .st-card {
   background: rgba(26,26,26,0.86); border-color: rgba(240,232,216,0.22);
 }
-html[data-appearance="dark"] body.sketch .st-row,
-html[data-appearance="dark"] body.sketch .st-choice { color: var(--text); }
-html[data-appearance="dark"] body.sketch .st-group-title,
-html[data-appearance="dark"] body.sketch .st-row-note,
-html[data-appearance="dark"] body.sketch .st-row-value,
-html[data-appearance="dark"] body.sketch .st-choice-note { color: var(--text-mute); }
-html[data-appearance="dark"] body.sketch .st-row-icon {
+html.sketch[data-appearance="dark"] body.sketch .st-row,
+html.sketch[data-appearance="dark"] body.sketch .st-choice { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .st-group-title,
+html.sketch[data-appearance="dark"] body.sketch .st-row-note,
+html.sketch[data-appearance="dark"] body.sketch .st-row-value,
+html.sketch[data-appearance="dark"] body.sketch .st-choice-note { color: var(--text-mute); }
+html.sketch[data-appearance="dark"] body.sketch .st-row-icon {
   background: rgba(211,184,145,0.22); color: #d9bc8e;
 }
-html[data-appearance="dark"] body.sketch .st-choice + .st-choice { border-top-color: rgba(240,232,216,0.07); }
-html[data-appearance="dark"] body.sketch .st-choice-check { border-color: rgba(240,232,216,0.25); }
-html[data-appearance="dark"] body.sketch .st-choice.active .st-choice-check {
+html.sketch[data-appearance="dark"] body.sketch .st-choice + .st-choice { border-top-color: rgba(240,232,216,0.07); }
+html.sketch[data-appearance="dark"] body.sketch .st-choice-check { border-color: rgba(240,232,216,0.25); }
+html.sketch[data-appearance="dark"] body.sketch .st-choice.active .st-choice-check {
   background: var(--accent); border-color: var(--accent); color: #141414;
 }
-html[data-appearance="dark"] body.sketch .st-usage-plan { background: rgba(240,232,216,0.08); color: rgba(240,232,216,0.7); }
-html[data-appearance="dark"] body.sketch .st-usage-window-label { color: rgba(240,232,216,0.7); }
-html[data-appearance="dark"] body.sketch .st-usage-bar { background: rgba(240,232,216,0.08); }
-html[data-appearance="dark"] body.sketch .st-usage-reset { color: rgba(240,232,216,0.5); }
-html[data-appearance="dark"] body.sketch .st-usage-extra { background: rgba(240,232,216,0.05); color: rgba(240,232,216,0.68); }
-html[data-appearance="dark"] body.sketch .st-usage-name,
-html[data-appearance="dark"] body.sketch .st-usage-window-pct { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .st-usage-plan { background: rgba(240,232,216,0.08); color: rgba(240,232,216,0.7); }
+html.sketch[data-appearance="dark"] body.sketch .st-usage-window-label { color: rgba(240,232,216,0.7); }
+html.sketch[data-appearance="dark"] body.sketch .st-usage-bar { background: rgba(240,232,216,0.08); }
+html.sketch[data-appearance="dark"] body.sketch .st-usage-reset { color: rgba(240,232,216,0.5); }
+html.sketch[data-appearance="dark"] body.sketch .st-usage-extra { background: rgba(240,232,216,0.05); color: rgba(240,232,216,0.68); }
+html.sketch[data-appearance="dark"] body.sketch .st-usage-name,
+html.sketch[data-appearance="dark"] body.sketch .st-usage-window-pct { color: var(--text); }
 
-html[data-appearance="dark"] body.sketch .sb-item:active,
-html[data-appearance="dark"] body.sketch .ch-row .ch-item:active {
+html.sketch[data-appearance="dark"] body.sketch .sb-item:active,
+html.sketch[data-appearance="dark"] body.sketch .ch-row .ch-item:active {
   background: rgba(240,232,216,0.06);
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
 }
-html[data-appearance="dark"] body.sketch .ic-btn:active { box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
-html[data-appearance="dark"] body.sketch .cl-chip:active {
+html.sketch[data-appearance="dark"] body.sketch .ic-btn:active { box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
+html.sketch[data-appearance="dark"] body.sketch .cl-chip:active {
   background: rgba(240,232,216,0.08); box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
 }
 
-html[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"] .ch-detail,
-html[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"] .ch-msgs-wrap,
-html[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"] .ch-msgs { background: #141414; }
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"] .ch-detail,
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"] .ch-msgs-wrap,
+html.sketch[data-appearance="dark"] body.sketch #chatsView[data-agent-kind="codex"] .ch-msgs { background: #141414; }
 
-html[data-appearance="dark"] body.sketch .ch-archive-card {
+html.sketch[data-appearance="dark"] body.sketch .ch-archive-card {
   background: rgba(26,26,26,0.72); border-color: rgba(240,232,216,0.2);
 }
-html[data-appearance="dark"] body.sketch .ch-archive-head:active { background: rgba(240,232,216,0.04); }
-html[data-appearance="dark"] body.sketch .ch-archive-icon {
+html.sketch[data-appearance="dark"] body.sketch .ch-archive-head:active { background: rgba(240,232,216,0.04); }
+html.sketch[data-appearance="dark"] body.sketch .ch-archive-icon {
   background: rgba(38,38,38,0.92); border: 1px dashed rgba(240,232,216,0.22); color: rgba(240,232,216,0.78);
 }
-html[data-appearance="dark"] body.sketch .ch-archive-body,
-html[data-appearance="dark"] body.sketch .ch-unified-search {
+html.sketch[data-appearance="dark"] body.sketch .ch-archive-body,
+html.sketch[data-appearance="dark"] body.sketch .ch-unified-search {
   border-top-color: rgba(240,232,216,0.08); border-bottom-color: rgba(240,232,216,0.08);
 }
-html[data-appearance="dark"] body.sketch .ch-thinking-sheet .ch-ts-panel {
+html.sketch[data-appearance="dark"] body.sketch .ch-thinking-sheet .ch-ts-panel {
   background: #1a1a1a; border-color: rgba(240,232,216,0.16);
   box-shadow: 0 -4px 16px rgba(0,0,0,0.5); color: var(--text);
 }
-html[data-appearance="dark"] body.sketch .ch-thinking-sheet .ch-ts-handle-bar { background: rgba(240,232,216,0.2); }
-html[data-appearance="dark"] body.sketch .ch-compact-card {
+html.sketch[data-appearance="dark"] body.sketch .ch-thinking-sheet .ch-ts-handle-bar { background: rgba(240,232,216,0.2); }
+html.sketch[data-appearance="dark"] body.sketch .ch-compact-card {
   background: rgba(26,26,26,0.78); border-color: rgba(240,232,216,0.18);
 }
 
 /* sketch dark — code/terminal detail input bar */
-html[data-appearance="dark"] body.sketch .cd-input-bar { background: var(--bg); }
-html[data-appearance="dark"] body.sketch .cd-input-shell {
+html.sketch[data-appearance="dark"] body.sketch .cd-input-bar { background: var(--bg); }
+html.sketch[data-appearance="dark"] body.sketch .cd-input-shell {
   background: rgba(26,26,26,0.92);
   box-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 0 1px rgba(240,232,216,0.1);
 }
-html[data-appearance="dark"] body.sketch .cd-input { color: var(--text); }
-html[data-appearance="dark"] body.sketch .cd-input::placeholder { color: rgba(240,232,216,0.38); }
-html[data-appearance="dark"] body.sketch .cd-input-handle-bar { background: rgba(240,232,216,0.18); }
-html[data-appearance="dark"] body.sketch .cd-input-handle:hover .cd-input-handle-bar,
-html[data-appearance="dark"] body.sketch .cd-input-handle:active .cd-input-handle-bar { background: rgba(240,232,216,0.32); }
-html[data-appearance="dark"] body.sketch .cd-input-side { color: var(--text); }
-html[data-appearance="dark"] body.sketch .cd-input-side:hover { background: rgba(240,232,216,0.08); }
-html[data-appearance="dark"] body.sketch .cd-shortcuts-btn { color: var(--text); }
-html[data-appearance="dark"] body.sketch .cd-att-chip {
+html.sketch[data-appearance="dark"] body.sketch .cd-input { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .cd-input::placeholder { color: rgba(240,232,216,0.38); }
+html.sketch[data-appearance="dark"] body.sketch .cd-input-handle-bar { background: rgba(240,232,216,0.18); }
+html.sketch[data-appearance="dark"] body.sketch .cd-input-handle:hover .cd-input-handle-bar,
+html.sketch[data-appearance="dark"] body.sketch .cd-input-handle:active .cd-input-handle-bar { background: rgba(240,232,216,0.32); }
+html.sketch[data-appearance="dark"] body.sketch .cd-input-side { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .cd-input-side:hover { background: rgba(240,232,216,0.08); }
+html.sketch[data-appearance="dark"] body.sketch .cd-shortcuts-btn { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .cd-att-chip {
   background: rgba(38,38,38,0.92);
   box-shadow: 0 0 0 1px rgba(240,232,216,0.12);
 }
-html[data-appearance="dark"] body.sketch .cd-att-chip.is-file { color: var(--text); }
-html[data-appearance="dark"] body.sketch .cd-scroll-bottom {
+html.sketch[data-appearance="dark"] body.sketch .cd-att-chip.is-file { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .cd-scroll-bottom {
   background: rgba(26,26,26,0.82);
   border-color: rgba(240,232,216,0.18);
   box-shadow: 0 4px 14px rgba(0,0,0,0.5);
   color: var(--text);
 }
-html[data-appearance="dark"] body.sketch .cd-shortcuts {
+html.sketch[data-appearance="dark"] body.sketch .cd-shortcuts {
   background: rgba(26,26,26,0.96);
   box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(240,232,216,0.16);
 }
-html[data-appearance="dark"] body.sketch .cd-shortcut:hover { background: rgba(240,232,216,0.06); }
-html[data-appearance="dark"] body.sketch .cd-shortcut .desc { color: rgba(240,232,216,0.6); }
-html[data-appearance="dark"] body.sketch .code-login {
+html.sketch[data-appearance="dark"] body.sketch .cd-shortcut:hover { background: rgba(240,232,216,0.06); }
+html.sketch[data-appearance="dark"] body.sketch .cd-shortcut .desc { color: rgba(240,232,216,0.6); }
+html.sketch[data-appearance="dark"] body.sketch .code-login {
   background: rgba(215,131,103,0.12);
   border-bottom-color: rgba(215,131,103,0.28);
   color: var(--text);
 }
-html[data-appearance="dark"] body.sketch .code-login-title,
-html[data-appearance="dark"] body.sketch .code-login-close { color: #e8a888; }
-html[data-appearance="dark"] body.sketch .code-login-hint { color: rgba(240,232,216,0.6); }
-html[data-appearance="dark"] body.sketch .code-login-input {
+html.sketch[data-appearance="dark"] body.sketch .code-login-title,
+html.sketch[data-appearance="dark"] body.sketch .code-login-close { color: #e8a888; }
+html.sketch[data-appearance="dark"] body.sketch .code-login-hint { color: rgba(240,232,216,0.6); }
+html.sketch[data-appearance="dark"] body.sketch .code-login-input {
   background: #1a1a1a; color: var(--text); border-color: rgba(215,131,103,0.32);
 }
-html[data-appearance="dark"] body.sketch .code-recovery {
+html.sketch[data-appearance="dark"] body.sketch .code-recovery {
   background: rgba(232,200,120,0.1);
   border-bottom-color: rgba(232,200,120,0.24);
   color: #e8c878;
 }
 
 /* sketch dark — model picker bottom sheet */
-html[data-appearance="dark"] body.sketch .ch-bs-backdrop { background: rgba(0,0,0,0.55); }
-html[data-appearance="dark"] body.sketch .ch-bs-panel {
+html.sketch[data-appearance="dark"] body.sketch .ch-bs-backdrop { background: rgba(0,0,0,0.55); }
+html.sketch[data-appearance="dark"] body.sketch .ch-bs-panel {
   background: rgba(26,26,26,0.94);
   box-shadow:
     inset 0 1px 0 rgba(240,232,216,0.06),
     0 -10px 38px rgba(0,0,0,0.5);
   color: var(--text);
 }
-html[data-appearance="dark"] body.sketch .ch-bs-grabber { background: rgba(240,232,216,0.22); }
-html[data-appearance="dark"] body.sketch .ch-bs-label,
-html[data-appearance="dark"] body.sketch .ch-bs-label .ch-bs-chev { color: rgba(240,232,216,0.6); }
-html[data-appearance="dark"] body.sketch .ch-bs-list {
+html.sketch[data-appearance="dark"] body.sketch .ch-bs-grabber { background: rgba(240,232,216,0.22); }
+html.sketch[data-appearance="dark"] body.sketch .ch-bs-label,
+html.sketch[data-appearance="dark"] body.sketch .ch-bs-label .ch-bs-chev { color: rgba(240,232,216,0.6); }
+html.sketch[data-appearance="dark"] body.sketch .ch-bs-list {
   background: rgba(240,232,216,0.04);
   box-shadow: inset 0 1px 0 rgba(240,232,216,0.06), inset 0 0 0 0.5px rgba(240,232,216,0.06);
 }
-html[data-appearance="dark"] body.sketch .ch-bs-item { color: var(--text); }
-html[data-appearance="dark"] body.sketch .ch-bs-item:active { background: rgba(240,232,216,0.08); }
-html[data-appearance="dark"] body.sketch .ch-bs-item .ch-bs-desc { color: rgba(240,232,216,0.6); }
-html[data-appearance="dark"] body.sketch #chModelSheet.codex-mode .ch-bs-backdrop { background: rgba(0,0,0,0.5); }
-html[data-appearance="dark"] body.sketch #chModelSheet.codex-mode .ch-bs-panel {
+html.sketch[data-appearance="dark"] body.sketch .ch-bs-item { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .ch-bs-item:active { background: rgba(240,232,216,0.08); }
+html.sketch[data-appearance="dark"] body.sketch .ch-bs-item .ch-bs-desc { color: rgba(240,232,216,0.6); }
+html.sketch[data-appearance="dark"] body.sketch #chModelSheet.codex-mode .ch-bs-backdrop { background: rgba(0,0,0,0.5); }
+html.sketch[data-appearance="dark"] body.sketch #chModelSheet.codex-mode .ch-bs-panel {
   background: rgba(26,26,26,0.96);
   border: 1px solid rgba(240,232,216,0.1);
 }
-html[data-appearance="dark"] body.sketch #chModelSheet.codex-mode .ch-bs-list {
+html.sketch[data-appearance="dark"] body.sketch #chModelSheet.codex-mode .ch-bs-list {
   background: rgba(240,232,216,0.04);
   box-shadow: inset 0 0 0 1px rgba(240,232,216,0.08);
 }
-html[data-appearance="dark"] body.sketch #chModelSheet.codex-mode .ch-bs-item.active .ch-bs-check { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch #chModelSheet.codex-mode .ch-bs-item.active .ch-bs-check { color: var(--text); }
 
 /* sketch pencil-after frame inversion */
-html[data-appearance="dark"] body.sketch .ic-btn::after,
-html[data-appearance="dark"] body.sketch .cd-actions-pill::after,
-html[data-appearance="dark"] body.sketch .cl-search::after,
-html[data-appearance="dark"] body.sketch .cl-chip::after,
-html[data-appearance="dark"] body.sketch .cl-card::after,
-html[data-appearance="dark"] body.sketch .ch-input-bar::after,
-html[data-appearance="dark"] body.sketch .ch-archive-card::after,
-html[data-appearance="dark"] body.sketch .st-card::after,
-html[data-appearance="dark"] body.sketch .ch-code::after,
-html[data-appearance="dark"] body.sketch .ch-file-card.inline::after,
-html[data-appearance="dark"] body.sketch .ch-tool-group::after,
-html[data-appearance="dark"] body.sketch .ch-thinking-strip::after,
-html[data-appearance="dark"] body.sketch .ch-compact-card::after {
+html.sketch[data-appearance="dark"] body.sketch .ic-btn::after,
+html.sketch[data-appearance="dark"] body.sketch .cd-actions-pill::after,
+html.sketch[data-appearance="dark"] body.sketch .cl-search::after,
+html.sketch[data-appearance="dark"] body.sketch .cl-chip::after,
+html.sketch[data-appearance="dark"] body.sketch .cl-card::after,
+html.sketch[data-appearance="dark"] body.sketch .ch-input-bar::after,
+html.sketch[data-appearance="dark"] body.sketch .ch-archive-card::after,
+html.sketch[data-appearance="dark"] body.sketch .st-card::after,
+html.sketch[data-appearance="dark"] body.sketch .ch-code::after,
+html.sketch[data-appearance="dark"] body.sketch .ch-file-card.inline::after,
+html.sketch[data-appearance="dark"] body.sketch .ch-tool-group::after,
+html.sketch[data-appearance="dark"] body.sketch .ch-thinking-strip::after,
+html.sketch[data-appearance="dark"] body.sketch .ch-compact-card::after {
   border-color: rgba(240,232,216,0.16);
   box-shadow:
     1px 0 0 rgba(240,232,216,0.04),
@@ -5090,53 +5090,53 @@ html[data-appearance="dark"] body.sketch .ch-compact-card::after {
 }
 
 /* sketch dark — new-session / dir-picker modal */
-html[data-appearance="dark"] body.sketch .modal-bg { background: rgba(0,0,0,0.65); }
-html[data-appearance="dark"] body.sketch .modal {
+html.sketch[data-appearance="dark"] body.sketch .modal-bg { background: rgba(0,0,0,0.65); }
+html.sketch[data-appearance="dark"] body.sketch .modal {
   background: #1a1a1a;
   color: var(--text);
   border: 1.4px solid rgba(240,232,216,0.2);
   box-shadow: 2px 3px 8px rgba(0,0,0,0.5);
 }
-html[data-appearance="dark"] body.sketch .modal label { color: rgba(240,232,216,0.62); }
-html[data-appearance="dark"] body.sketch .modal input[type=text] {
+html.sketch[data-appearance="dark"] body.sketch .modal label { color: rgba(240,232,216,0.62); }
+html.sketch[data-appearance="dark"] body.sketch .modal input[type=text] {
   background: #0e0e0e; color: var(--text); border-color: rgba(240,232,216,0.2);
 }
-html[data-appearance="dark"] body.sketch .modal input[type=text]:focus { border-color: var(--accent); }
-html[data-appearance="dark"] body.sketch .dir-picker {
+html.sketch[data-appearance="dark"] body.sketch .modal input[type=text]:focus { border-color: var(--accent); }
+html.sketch[data-appearance="dark"] body.sketch .dir-picker {
   background: #0e0e0e; border-color: rgba(240,232,216,0.2);
 }
-html[data-appearance="dark"] body.sketch .dir-crumbs {
+html.sketch[data-appearance="dark"] body.sketch .dir-crumbs {
   background: rgba(240,232,216,0.04);
   border-bottom-color: rgba(240,232,216,0.12);
   color: rgba(240,232,216,0.6);
 }
-html[data-appearance="dark"] body.sketch .dir-crumbs .crumb { color: var(--text); }
-html[data-appearance="dark"] body.sketch .dir-list .dir-item {
+html.sketch[data-appearance="dark"] body.sketch .dir-crumbs .crumb { color: var(--text); }
+html.sketch[data-appearance="dark"] body.sketch .dir-list .dir-item {
   border-bottom-color: rgba(240,232,216,0.06);
 }
-html[data-appearance="dark"] body.sketch .dir-list .dir-item:hover { background: rgba(240,232,216,0.05); }
-html[data-appearance="dark"] body.sketch .dir-cur {
+html.sketch[data-appearance="dark"] body.sketch .dir-list .dir-item:hover { background: rgba(240,232,216,0.05); }
+html.sketch[data-appearance="dark"] body.sketch .dir-cur {
   background: rgba(240,232,216,0.03);
   border-top-color: rgba(240,232,216,0.12);
   color: rgba(240,232,216,0.6);
 }
-html[data-appearance="dark"] body.sketch .dir-cur code { color: var(--accent); }
-html[data-appearance="dark"] body.sketch .btn-primary {
+html.sketch[data-appearance="dark"] body.sketch .dir-cur code { color: var(--accent); }
+html.sketch[data-appearance="dark"] body.sketch .btn-primary {
   background: linear-gradient(135deg, #d3b891 0%, #b8956d 100%);
   border-color: rgba(240,232,216,0.16);
   color: #1a1a1a;
   box-shadow: 0 1px 2px rgba(0,0,0,0.45);
   text-shadow: none;
 }
-html[data-appearance="dark"] body.sketch .btn-secondary {
+html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
   background: var(--bg-pill); color: var(--text);
 }
 
 @media (max-width: 720px) {
-  html[data-appearance="dark"] body.sketch .m-topbar {
+  html.sketch[data-appearance="dark"] body.sketch .m-topbar {
     background: rgba(12,12,12,0.94); border-bottom-color: rgba(240,232,216,0.1);
   }
-  html[data-appearance="dark"] body.sketch .m-topbar .m-burger {
+  html.sketch[data-appearance="dark"] body.sketch .m-topbar .m-burger {
     background: rgba(26,26,26,0.82); border-color: rgba(240,232,216,0.2); color: var(--text);
   }
 }
@@ -5144,9 +5144,13 @@ html[data-appearance="dark"] body.sketch .btn-secondary {
 
 
 </style>
+<!-- 小克的家: Claude 暖白 theme + motion + PWA/iOS polish -->
+<link rel="stylesheet" href="static/theme.css">
 </head>
-<body class="sketch">
+<body class="claude" data-thinking-style="spark">
 
+<!-- 小克的家 spark mark -->
+<svg style="position:absolute;width:0;height:0" aria-hidden="true"><symbol id="xk-spark" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="2.3" stroke-linecap="round" fill="none"><path d="M12 12 22.19 11.47"/><path d="M12 12 19.13 16.81"/><path d="M12 12 17.34 20.22"/><path d="M12 12 11.43 20.18"/><path d="M12 12 7.28 21.27"/><path d="M12 12 4.09 15.86"/><path d="M12 12 2.41 12.50"/><path d="M12 12 5.04 7.30"/><path d="M12 12 6.55 3.61"/><path d="M12 12 12.60 3.42"/><path d="M12 12 16.27 3.62"/><path d="M12 12 19.46 8.36"/></g></symbol></svg>
 <!-- Sketch hand-drawn SVG filter -->
 <svg style="position:absolute;width:0;height:0" aria-hidden="true">
   <filter id="sketch-rough">
@@ -5158,8 +5162,9 @@ html[data-appearance="dark"] body.sketch .btn-secondary {
 <!-- Login -->
 <div class="login-overlay" id="loginOverlay" style="display:none;">
   <div class="login-card">
-    <h1>Prism</h1>
-    <p>请输入密码</p>
+    <svg class="xk-login-mark" aria-hidden="true"><use href="#xk-spark"/></svg>
+    <h1>小克的家</h1>
+    <p>小晨，输入密码回家</p>
     <input type="password" id="pw" placeholder="密码" autocomplete="current-password">
     <button onclick="doLogin()">进入</button>
     <div class="login-err" id="loginErr"></div>
@@ -5169,7 +5174,7 @@ html[data-appearance="dark"] body.sketch .btn-secondary {
 <div class="shell" data-sidebar="closed" id="shell">
   <aside class="sidebar">
     <div class="sb-top">
-      <span class="sb-brand">Prism</span>
+      <span class="sb-brand"><svg class="xk-brand-mark" aria-hidden="true"><use href="#xk-spark"/></svg><span>小克的家</span></span>
       <button class="sb-toggle" onclick="toggleSidebar()" title="折叠">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
@@ -5190,7 +5195,7 @@ html[data-appearance="dark"] body.sketch .btn-secondary {
         <span class="sb-item-label">Settings</span>
       </div>
     </nav>
-    <div class="sb-foot">v0.1 · prism</div>
+    <div class="sb-foot">小克的家 · 基于 Prism（AGPL-3.0）</div>
   </aside>
 
   <main class="main">
@@ -5201,7 +5206,7 @@ html[data-appearance="dark"] body.sketch .btn-secondary {
           <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
         </svg>
       </div>
-      <div class="m-title" id="mTitle">控制台</div>
+      <div class="m-title" id="mTitle">小克的家</div>
     </div>
 
     <!-- Home -->
@@ -5390,14 +5395,14 @@ html[data-appearance="dark"] body.sketch .btn-secondary {
             <button class="st-choice" type="button" data-appearance-choice="light" onclick="setAppearance('light')">
               <span class="st-choice-info">
                 <span class="st-choice-title">浅色</span>
-                <span class="st-choice-note">素描稿纸 · 浅色</span>
+                <span class="st-choice-note">米白纸面</span>
               </span>
               <span class="st-choice-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg></span>
             </button>
             <button class="st-choice" type="button" data-appearance-choice="dark" onclick="setAppearance('dark')">
               <span class="st-choice-info">
                 <span class="st-choice-title">深色</span>
-                <span class="st-choice-note">炭黑纸 · 米色铅笔</span>
+                <span class="st-choice-note">暖炭灰，夜里不刺眼</span>
               </span>
               <span class="st-choice-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg></span>
             </button>
@@ -5405,6 +5410,14 @@ html[data-appearance="dark"] body.sketch .btn-secondary {
 
           <div class="st-group-title">Theme</div>
           <div class="st-card">
+            <button class="st-choice" type="button" data-theme-choice="claude" onclick="setTheme('claude')">
+              <span class="st-choice-info">
+                <span class="st-choice-title">Claude 暖白</span>
+                <span class="lg-preview xk-claude"></span>
+                <span class="st-choice-note">跟 Claude App 一样的米白和赭橙，回复用衬线字体</span>
+              </span>
+              <span class="st-choice-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg></span>
+            </button>
             <button class="st-choice" type="button" data-theme-choice="sketch" onclick="setTheme('sketch')">
               <span class="st-choice-info">
                 <span class="st-choice-title">素描稿纸</span>
@@ -5417,6 +5430,21 @@ html[data-appearance="dark"] body.sketch .btn-secondary {
 
           <div class="st-group-title">Thinking 动画</div>
           <div class="st-card">
+            <button class="st-choice" type="button" data-thinking-style="spark" onclick="setThinkingAppearance('spark')">
+              <span class="st-choice-info">
+                <span class="st-choice-title">Claude 光芒</span>
+                <span class="st-preview xk-spark-preview"><svg class="xk-spark-spin" aria-hidden="true"><use href="#xk-spark"/></svg><span class="st-preview-text">Thinking…</span></span>
+                <span class="st-choice-note">橙色光芒边转边呼吸</span>
+              </span>
+              <span class="st-choice-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg></span>
+            </button>
+            <button class="st-choice" type="button" data-thinking-style="crab" onclick="setThinkingAppearance('crab')">
+              <span class="st-choice-info">
+                <span class="st-choice-title">像素小螃蟹</span>
+                <span class="st-choice-note">一只在忙活的像素小螃蟹</span>
+              </span>
+              <span class="st-choice-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg></span>
+            </button>
             <button class="st-choice" type="button" data-thinking-style="sketch" onclick="setThinkingAppearance('sketch')">
               <span class="st-choice-info">
                 <span class="st-choice-title">素描铅笔</span>
@@ -5891,9 +5919,12 @@ function updateThemeChrome() {
   document.body.classList.toggle('codex-chrome', Boolean(codexDetail));
   const meta = document.getElementById('metaThemeColor');
   const isDark = document.documentElement.getAttribute('data-appearance') === 'dark';
-  const nextColor = isDark
-    ? (opened ? '#0c0c0c' : '#141414')
-    : (opened ? '#f2ede5' : '#f7f4ef');
+  const claude = document.documentElement.classList.contains('claude');
+  const nextColor = claude
+    ? (isDark ? (opened ? '#1F1E1C' : '#262624') : (opened ? '#F3F1EA' : '#FAF9F5'))
+    : isDark
+      ? (opened ? '#0c0c0c' : '#141414')
+      : (opened ? '#f2ede5' : '#f7f4ef');
   if (meta && meta.getAttribute('content') !== nextColor) {
     // iOS Safari sometimes ignores dynamic <meta theme-color> attribute changes
     // (especially on light↔dark flips). Replace the node to force a re-read.
@@ -5907,18 +5938,19 @@ function updateThemeChrome() {
 
 /* --- Theme (sketch) --- */
 const THEME_KEY = 'prism:theme';
-const THEME_LABELS = { 'sketch': '素描稿纸' };
-const THEME_CLASSES = ['sketch'];
+const THEME_LABELS = { 'claude': 'Claude 暖白', 'sketch': '素描稿纸' };
+const THEME_CLASSES = ['claude', 'sketch'];
+const THEME_DEFAULT = 'claude';
 
 function readTheme() {
   try {
     const saved = localStorage.getItem(THEME_KEY);
-    return THEME_LABELS[saved] ? saved : 'sketch';
-  } catch (e) { return 'sketch'; }
+    return THEME_LABELS[saved] ? saved : THEME_DEFAULT;
+  } catch (e) { return THEME_DEFAULT; }
 }
 
 function applyTheme(theme, persist) {
-  const next = THEME_LABELS[theme] ? theme : 'sketch';
+  const next = THEME_LABELS[theme] ? theme : THEME_DEFAULT;
   THEME_CLASSES.forEach(cls => {
     const on = cls === next;
     document.documentElement.classList.toggle(cls, on);
@@ -5988,20 +6020,23 @@ applyAppearance(readAppearance(), false);
 
 const THINKING_APPEARANCE_KEY = 'prism:thinking-appearance';
 const THINKING_APPEARANCE_LABELS = {
+  spark: 'Claude 光芒',
+  crab: '像素小螃蟹',
   sketch: '素描铅笔',
 };
+const THINKING_APPEARANCE_DEFAULT = 'spark';
 
 function readThinkingAppearance() {
   try {
     const saved = localStorage.getItem(THINKING_APPEARANCE_KEY);
-    return THINKING_APPEARANCE_LABELS[saved] ? saved : 'sketch';
+    return THINKING_APPEARANCE_LABELS[saved] ? saved : THINKING_APPEARANCE_DEFAULT;
   } catch (e) {
-    return 'sketch';
+    return THINKING_APPEARANCE_DEFAULT;
   }
 }
 
 function applyThinkingAppearance(style, persist) {
-  const next = THINKING_APPEARANCE_LABELS[style] ? style : 'sketch';
+  const next = THINKING_APPEARANCE_LABELS[style] ? style : THINKING_APPEARANCE_DEFAULT;
   document.body.setAttribute('data-thinking-style', next);
   if (persist) {
     try { localStorage.setItem(THINKING_APPEARANCE_KEY, next); } catch (e) {}

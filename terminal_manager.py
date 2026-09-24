@@ -1009,7 +1009,42 @@ def _tool_use_brief(block: dict) -> str:
     return f"🔧 {name}"
 
 
-def _extract_blocks(obj: dict, session: str, tool_done_ids: set, ask_answers: Optional[dict] = None) -> Optional[Tuple[str, list[dict], Optional[float]]]:
+# Which input field best describes a tool call in the UI (Claude-app style rows).
+_TOOL_INPUT_KEYS = ("command", "description", "file_path", "path", "pattern", "url", "query", "prompt", "notebook_path", "skill")
+
+
+def _tool_input_brief(inp: dict) -> dict:
+    """The few input fields the tool rows need, each capped so chat payloads stay small."""
+    out = {}
+    for key in _TOOL_INPUT_KEYS:
+        val = inp.get(key)
+        if isinstance(val, str) and val.strip():
+            val = val.strip()
+            out[key] = val if len(val) <= 300 else val[:300] + "…"
+    return out
+
+
+def _line_count(text) -> int:
+    if not isinstance(text, str) or not text:
+        return 0
+    return text.count("\n") + (0 if text.endswith("\n") else 1)
+
+
+def _tool_diff(name: str, inp: dict) -> Optional[list]:
+    """[added, removed] line counts for file-editing tools, like the Claude app shows."""
+    if name in ("Edit", "edit"):
+        return [_line_count(inp.get("new_string")), _line_count(inp.get("old_string"))]
+    if name == "MultiEdit":
+        edits = inp.get("edits") or []
+        return [sum(_line_count(e.get("new_string")) for e in edits if isinstance(e, dict)),
+                sum(_line_count(e.get("old_string")) for e in edits if isinstance(e, dict))]
+    if name in ("Write", "write"):
+        return [_line_count(inp.get("content")), 0]
+    return None
+
+
+def _extract_blocks(obj: dict, session: str, tool_done_ids: set, ask_answers: Optional[dict] = None,
+                    tool_error_ids: Optional[set] = None) -> Optional[Tuple[str, list[dict], Optional[float]]]:
     """Return (role, blocks, ts) for a JSONL entry, or None to skip. Block types:
       - {type:'text', text}
       - {type:'image', src, fname}
@@ -1088,6 +1123,15 @@ def _extract_blocks(obj: dict, session: str, tool_done_ids: set, ask_answers: Op
                 }
                 tool_name = b.get("name") or ""
                 inp = b.get("input") or {}
+                if isinstance(inp, dict):
+                    brief = _tool_input_brief(inp)
+                    if brief:
+                        tool_entry["input"] = brief
+                    diff = _tool_diff(tool_name, inp)
+                    if diff:
+                        tool_entry["diff"] = diff
+                if tool_error_ids and tid in tool_error_ids:
+                    tool_entry["error"] = True
                 if tool_name in ("Write", "Edit", "write", "edit", "NotebookEdit"):
                     fp = inp.get("file_path") or inp.get("path") or ""
                     if fp:
@@ -1414,6 +1458,7 @@ def read_chat_messages_from_jsonl(jsonl: Path, session_label: str, limit: int = 
         # AskUserQuestion results carry an `answers` dict under toolUseResult, which
         # we stash so the frontend can show what the user picked.
         tool_done_ids: set = set()
+        tool_error_ids: set = set()
         ask_answers: dict[str, dict] = {}
         raw_lines: list[str] = []
         try:
@@ -1435,6 +1480,8 @@ def read_chat_messages_from_jsonl(jsonl: Path, session_label: str, limit: int = 
                                     tid = b.get("tool_use_id")
                                     if tid:
                                         tool_done_ids.add(tid)
+                                        if b.get("is_error"):
+                                            tool_error_ids.add(tid)
                                         tur = obj.get("toolUseResult")
                                         if isinstance(tur, dict) and isinstance(tur.get("answers"), dict):
                                             ask_answers[tid] = {
@@ -1507,7 +1554,7 @@ def read_chat_messages_from_jsonl(jsonl: Path, session_label: str, limit: int = 
                         continue
                     if match:
                         seen_channel_ids.add(match.group(1))
-            m = _extract_blocks(obj, session_label, tool_done_ids, ask_answers)
+            m = _extract_blocks(obj, session_label, tool_done_ids, ask_answers, tool_error_ids)
             if m is None:
                 continue
             role, blocks, ts, source_uuid = m
@@ -1926,6 +1973,68 @@ def list_chat_messages(session: str, limit: int = 200, focus_uuid: Optional[str]
         messages = [message for message in messages if not _is_inflight_message(message)]
         messages.append(running)
     return messages
+
+
+_TOOL_DETAIL_FIELD_MAX = 4000
+_TOOL_DETAIL_OUTPUT_MAX = 16000
+
+
+def _tool_result_text(content) -> str:
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = []
+        for c in content:
+            if isinstance(c, dict):
+                if c.get("type") == "text":
+                    parts.append(c.get("text") or "")
+                elif c.get("type") == "image":
+                    parts.append("[图片]")
+        return "\n".join(parts)
+    return ""
+
+
+def tool_call_detail(session: str, tool_id: str) -> Optional[dict]:
+    """Full input and output of one Claude Code tool call, for the detail sheet."""
+    info = _pane_info(session) or {}
+    if info.get("kind") != "cc":
+        return None
+    jsonl = _claude_jsonl_for_pid(info.get("claude_pid"))
+    if jsonl is None:
+        return None
+    detail = None
+    try:
+        with open(jsonl, "r", encoding="utf-8", errors="replace") as f:
+            for ln in f:
+                if tool_id not in ln:
+                    continue
+                try:
+                    obj = json.loads(ln)
+                except json.JSONDecodeError:
+                    continue
+                content = (obj.get("message") or {}).get("content")
+                if not isinstance(content, list):
+                    continue
+                for b in content:
+                    if not isinstance(b, dict):
+                        continue
+                    if b.get("type") == "tool_use" and b.get("id") == tool_id:
+                        inp = b.get("input") if isinstance(b.get("input"), dict) else {}
+                        clipped = {}
+                        for k, v in inp.items():
+                            if isinstance(v, str) and len(v) > _TOOL_DETAIL_FIELD_MAX:
+                                v = v[:_TOOL_DETAIL_FIELD_MAX] + "\n…"
+                            clipped[k] = v
+                        detail = {"id": tool_id, "name": b.get("name") or "Tool", "input": clipped,
+                                  "output": None, "error": False, "done": False}
+                    elif b.get("type") == "tool_result" and b.get("tool_use_id") == tool_id and detail is not None:
+                        text = _tool_result_text(b.get("content"))
+                        if len(text) > _TOOL_DETAIL_OUTPUT_MAX:
+                            text = text[:_TOOL_DETAIL_OUTPUT_MAX] + "\n…（输出太长，已截断）"
+                        detail.update(output=text, error=bool(b.get("is_error")), done=True)
+    except OSError:
+        return None
+    return detail
 
 
 def _last_message_from_jsonl(jsonl_path: Path) -> Tuple[Optional[str], Optional[float]]:

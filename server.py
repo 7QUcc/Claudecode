@@ -852,6 +852,15 @@ def api_sessions_terminal_respond(name: str, req: dict, _=Depends(require_auth))
     return _tm.send_terminal_keys(name, keys)
 
 
+@app.get("/api/sessions/{name}/tool-detail/{tool_id}")
+def api_sessions_tool_detail(name: str, tool_id: str, _=Depends(require_auth)):
+    if not _tm.NAME_RE.match(name) or not re.fullmatch(r"[A-Za-z0-9_\-]{1,128}", tool_id):
+        raise HTTPException(400, "invalid id")
+    detail = _tm.tool_call_detail(name, tool_id)
+    if detail is None:
+        raise HTTPException(404, "找不到这个工具调用")
+    return detail
+
 @app.get("/api/sessions/{name}/compactions")
 def api_sessions_compactions(name: str, _=Depends(require_auth)):
     return {"name": name, "compactions": _tm.compaction_messages(name)}
