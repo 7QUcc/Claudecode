@@ -177,6 +177,26 @@ async def serve_root():
 async def serve_app():
     return FileResponse(os.path.join(static_path, "app.html"), headers={"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache"})
 
+# PWA: the service worker must be served from the root to control the whole app.
+@app.get("/sw.js")
+async def serve_sw():
+    return FileResponse(os.path.join(static_path, "sw.js"), media_type="application/javascript",
+                        headers={"Cache-Control": "no-cache", "Service-Worker-Allowed": "/"})
+
+@app.get("/manifest.webmanifest")
+async def serve_manifest():
+    return FileResponse(os.path.join(static_path, "manifest.webmanifest"), media_type="application/manifest+json",
+                        headers={"Cache-Control": "no-cache"})
+
+@app.get("/apple-touch-icon.png")
+@app.get("/apple-touch-icon-precomposed.png")
+async def serve_touch_icon():
+    return FileResponse(os.path.join(static_path, "icons", "apple-touch-icon.png"), media_type="image/png")
+
+@app.get("/favicon.ico")
+async def serve_favicon():
+    return FileResponse(os.path.join(static_path, "icons", "favicon-32.png"), media_type="image/png")
+
 # --- Helper modules ---
 import sys as _sys
 _cc_dir = os.path.dirname(os.path.abspath(__file__))

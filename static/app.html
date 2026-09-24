@@ -5,10 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Prism">
-<meta name="theme-color" content="#f5f3ef" id="metaThemeColor">
-<title>Prism</title>
-<link rel="icon" href="data:,">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="小克的家">
+<meta name="application-name" content="小克的家">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#FAF9F5" id="metaThemeColor">
+<title>小克的家</title>
+<!-- use-credentials: lets the manifest load behind Cloudflare Access -->
+<link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32.png">
 <link rel="stylesheet" href="static/vendor/xterm/xterm.css">
 <link rel="stylesheet" href="static/vendor/cropper.min.css">
 <style>
@@ -8750,5 +8756,6 @@ async function bootstrap() {
 
 bootstrap();
 </script>
+<script src="static/pwa.js"></script>
 </body>
 </html>
