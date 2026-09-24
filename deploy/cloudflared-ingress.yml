@@ -1,0 +1,14 @@
+# If your tunnel is managed with a local config file (~/.cloudflared/config.yml
+# or /etc/cloudflared/config.yml), add this rule ABOVE the final catch-all
+# "service: http_status:404" line, then: sudo systemctl restart cloudflared
+#
+# If your tunnel is managed in the Cloudflare dashboard instead, add a
+# Public Hostname there with the same values (see README).
+ingress:
+  - hostname: home.example.com          # ← 换成你自己的子域名
+    service: http://localhost:8001
+    originRequest:
+      # live chat / terminal streams stay open for a long time
+      connectTimeout: 30s
+      keepAliveTimeout: 90s
+      disableChunkedEncoding: false
