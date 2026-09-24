@@ -2,7 +2,7 @@
 // Caches only the app shell so the home-screen app opens instantly and still
 // shows its UI offline. API calls, live streams and uploads always go to the
 // network and are never cached.
-const SHELL_CACHE = 'xk-shell-v1';
+const SHELL_CACHE = 'xk-shell-v2';
 const SHELL = [
   '/',
   '/static/chat-page.js',
@@ -55,4 +55,35 @@ self.addEventListener('fetch', event => {
       return res;
     }).catch(() => caches.match(req.mode === 'navigate' ? '/' : req).then(r => r || Response.error()))
   );
+});
+
+// ---------- Web Push ----------
+self.addEventListener('push', event => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch (e) { data = { body: event.data && event.data.text() }; }
+  const title = data.title || '小克的家';
+  event.waitUntil(self.registration.showNotification(title, {
+    body: data.body || '',
+    tag: data.tag || undefined,
+    renotify: !!data.tag,
+    icon: '/static/icons/icon-192.png',
+    badge: '/static/icons/icon-192.png',
+    data: { url: data.url || '/', session: data.session || null },
+  }));
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const { url, session } = event.notification.data || {};
+  event.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const w of wins) {
+      if (new URL(w.url).origin === self.location.origin) {
+        await w.focus();
+        if (session) w.postMessage({ type: 'open-session', session });
+        return;
+      }
+    }
+    await self.clients.openWindow(url || '/');
+  })());
 });

@@ -1455,6 +1455,71 @@ def _codex_usage() -> dict:
 def api_usage(_=Depends(require_auth)):
     return {"claude": _cc_usage(), "codex": _codex_usage()}
 
+
+# --- Web Push (iOS 16.4+ home-screen app) ---
+import push as _push
+
+
+class _PushSubReq(BaseModel):
+    subscription: dict
+    prefs: Optional[dict] = None
+
+
+class _PushEndpointReq(BaseModel):
+    endpoint: str
+
+
+class _PresenceReq(BaseModel):
+    session: Optional[str] = None
+
+
+@app.get("/api/push/key")
+def api_push_key(_=Depends(require_auth)):
+    if not _push.AVAILABLE:
+        raise HTTPException(501, "服务器没装 pywebpush，推送不可用")
+    return {"key": _push.public_key()}
+
+
+@app.post("/api/push/subscribe")
+def api_push_subscribe(req: _PushSubReq, _=Depends(require_auth)):
+    try:
+        _push.subscribe(req.subscription, req.prefs)
+    except ValueError:
+        raise HTTPException(400, "订阅信息不完整")
+    return {"ok": True}
+
+
+@app.post("/api/push/unsubscribe")
+def api_push_unsubscribe(req: _PushEndpointReq, _=Depends(require_auth)):
+    _push.unsubscribe(req.endpoint)
+    return {"ok": True}
+
+
+@app.post("/api/push/status")
+def api_push_status(req: _PushEndpointReq, _=Depends(require_auth)):
+    return _push.status(req.endpoint)
+
+
+@app.post("/api/push/test")
+def api_push_test(req: _PushEndpointReq, _=Depends(require_auth)):
+    sent = _push.send("小克的家", "通知通了 🎉 以后我做完事、或者等你回复的时候，会在这里叫你。",
+                      kind="test", only_endpoint=req.endpoint)
+    if not sent:
+        raise HTTPException(404, "这台设备还没订阅通知")
+    return {"ok": True}
+
+
+@app.post("/api/push/presence")
+def api_push_presence(req: _PresenceReq, _=Depends(require_auth)):
+    """The app reports which session is on screen so we don't notify about it."""
+    _push.mark_presence(req.session)
+    return {"ok": True}
+
+
+@app.on_event("startup")
+def _start_push_watcher():
+    _push.start_watcher(_tm)
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", "8001"))
