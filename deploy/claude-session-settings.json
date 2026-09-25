@@ -2,5 +2,13 @@
   "alwaysThinkingEnabled": true,
   "showThinkingSummaries": true,
   "awaySummaryEnabled": false,
-  "switchModelsOnFlag": false
+  "switchModelsOnFlag": false,
+  "skillOverrides": {
+    "batch": "off",
+    "code-review": "off",
+    "simplify": "off",
+    "design-sync": "off",
+    "fewer-permission-prompts": "off",
+    "workflow-authoring": "off"
+  }
 }
