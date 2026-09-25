@@ -5,6 +5,7 @@ import base64
 import json
 import os
 import re
+import shlex
 import sqlite3
 import subprocess
 import threading
@@ -3025,7 +3026,7 @@ def validate_new_session(name: str, cwd: str) -> Optional[str]:
     if not cwd or not os.path.isdir(cwd):
         return "cwd must be an existing directory"
     real = os.path.realpath(cwd)
-    if not real.startswith(HOME):
+    if real != HOME and not real.startswith(HOME + os.sep):
         return f"cwd must be under {HOME}"
     return None
 
@@ -3040,12 +3041,13 @@ def create_session(name: str, cwd: str, session_type: str = "cc", cols: int = 80
     cols = max(20, min(500, int(cols)))
     rows = max(10, min(200, int(rows)))
     cwd_real = os.path.realpath(cwd)
+    cwd_arg = shlex.quote(cwd_real)
     if session_type == "shell":
-        wrapped = f"cd {cwd_real} && exec bash -l"
+        wrapped = f"cd {cwd_arg} && exec bash -l"
     elif session_type == "codex":
-        wrapped = f"cd {cwd_real} && while true; do codex; sleep 3; done"
+        wrapped = f"cd {cwd_arg} && while true; do codex; sleep 3; done"
     elif session_type == "opencode":
-        wrapped = f"cd {cwd_real} && while true; do opencode; sleep 3; done"
+        wrapped = f"cd {cwd_arg} && while true; do opencode; sleep 3; done"
     else:
         args = ["claude", "--dangerously-skip-permissions"]
         if with_telegram:
@@ -3059,7 +3061,7 @@ def create_session(name: str, cwd: str, session_type: str = "cc", cols: int = 80
             args.extend(["--resume", resume_sid])
         cmd = " ".join(args)
         # Ensure bun-based tooling is on PATH for dashboard-created sessions.
-        wrapped = f"export BUN_INSTALL=\"$HOME/.bun\"; export PATH=\"$BUN_INSTALL/bin:$PATH\"; cd {cwd_real} && while true; do {cmd}; sleep 3; done"
+        wrapped = f"export BUN_INSTALL=\"$HOME/.bun\"; export PATH=\"$BUN_INSTALL/bin:$PATH\"; cd {cwd_arg} && while true; do {cmd}; sleep 3; done"
     r = _run(["tmux", "new-session", "-d", "-s", name, "-x", str(cols), "-y", str(rows), "bash", "-c", wrapped], timeout=10)
     if r.returncode != 0:
         return {"ok": False, "error": r.stderr.strip() or "tmux failed"}
