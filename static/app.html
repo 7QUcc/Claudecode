@@ -5147,7 +5147,7 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
 <!-- 小克的家: Claude 暖白 theme + motion + PWA/iOS polish -->
 <link rel="stylesheet" href="static/theme.css">
 </head>
-<body class="claude" data-thinking-style="spark">
+<body class="claude" data-thinking-style="claude">
 
 <!-- 小克的家 spark mark -->
 <svg style="position:absolute;width:0;height:0" aria-hidden="true"><symbol id="xk-spark" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="2.3" stroke-linecap="round" fill="none"><path d="M12 12 22.19 11.47"/><path d="M12 12 19.13 16.81"/><path d="M12 12 17.34 20.22"/><path d="M12 12 11.43 20.18"/><path d="M12 12 7.28 21.27"/><path d="M12 12 4.09 15.86"/><path d="M12 12 2.41 12.50"/><path d="M12 12 5.04 7.30"/><path d="M12 12 6.55 3.61"/><path d="M12 12 12.60 3.42"/><path d="M12 12 16.27 3.62"/><path d="M12 12 19.46 8.36"/></g></symbol></svg>
@@ -5452,33 +5452,11 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
 
           <div class="st-group-title">Thinking 动画</div>
           <div class="st-card">
-            <button class="st-choice" type="button" data-thinking-style="spark" onclick="setThinkingAppearance('spark')">
+            <button class="st-choice" type="button" data-thinking-style="claude" onclick="setThinkingAppearance('claude')">
               <span class="st-choice-info">
-                <span class="st-choice-title">Claude 光芒</span>
-                <span class="st-preview xk-spark-preview"><svg class="xk-spark-spin" aria-hidden="true"><use href="#xk-spark"/></svg><span class="st-preview-text">Thinking…</span></span>
-                <span class="st-choice-note">橙色光芒边转边呼吸</span>
-              </span>
-              <span class="st-choice-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg></span>
-            </button>
-            <button class="st-choice" type="button" data-thinking-style="crab" onclick="setThinkingAppearance('crab')">
-              <span class="st-choice-info">
-                <span class="st-choice-title">像素小螃蟹</span>
-                <span class="st-choice-note">一只在忙活的像素小螃蟹</span>
-              </span>
-              <span class="st-choice-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg></span>
-            </button>
-            <button class="st-choice" type="button" data-thinking-style="sketch" onclick="setThinkingAppearance('sketch')">
-              <span class="st-choice-info">
-                <span class="st-choice-title">素描铅笔</span>
-                <span class="st-preview sketch-thinking">
-                  <svg class="st-preview-sketch" viewBox="0 0 72 38" fill="none" aria-hidden="true">
-                    <path d="M12.5 9.5c8.4-1.3 20.4-1 29.8-.5 5.5.3 10.8.9 16 1.8-.4 6.7-.7 12.7-1.1 18.1-9.1 1-18.6 1.2-28.5.7-5.8-.3-11.5-.8-17.2-1.6.1-6.3.5-12.4 1-18.5Z" stroke="rgba(51,46,39,0.5)" stroke-width="1.3" fill="rgba(251,248,241,0.46)"/>
-                    <path d="M18 16.5c7.3-.9 16.2-.9 25.8-.1M18 21.3c5.7-.6 12.6-.6 20.7.1M18 25.8c9.1-.9 18.8-.8 29 .2" stroke="rgba(51,46,39,0.58)" stroke-width="1.25"/>
-                    <path d="M48.5 27.5 61 15.1l3.5 3.2-12.3 12.5-5.1 1.5 1.4-4.8Z" stroke="rgba(51,46,39,0.64)" stroke-width="1.25" fill="rgba(211,184,145,0.24)"/>
-                  </svg>
-                  <span class="st-preview-text">✎ Drafting…</span>
-                </span>
-                <span class="st-choice-note">铅笔线稿，无外框</span>
+                <span class="st-choice-title">Claude 风格</span>
+                <span class="st-preview xk-spark-preview xk-claude-thinking-preview"><svg class="xk-spark-spin" aria-hidden="true"><use href="#xk-spark"/></svg><span class="st-preview-text">Thinking…</span></span>
+                <span class="st-choice-note">单色光芒轻微旋转和呼吸</span>
               </span>
               <span class="st-choice-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg></span>
             </button>
@@ -6042,15 +6020,17 @@ applyAppearance(readAppearance(), false);
 
 const THINKING_APPEARANCE_KEY = 'prism:thinking-appearance';
 const THINKING_APPEARANCE_LABELS = {
-  spark: 'Claude 光芒',
-  crab: '像素小螃蟹',
-  sketch: '素描铅笔',
+  claude: 'Claude 风格',
 };
-const THINKING_APPEARANCE_DEFAULT = 'spark';
+const THINKING_APPEARANCE_DEFAULT = 'claude';
 
 function readThinkingAppearance() {
   try {
     const saved = localStorage.getItem(THINKING_APPEARANCE_KEY);
+    if (saved === 'spark' || saved === 'crab' || saved === 'sketch') {
+      localStorage.setItem(THINKING_APPEARANCE_KEY, THINKING_APPEARANCE_DEFAULT);
+      return THINKING_APPEARANCE_DEFAULT;
+    }
     return THINKING_APPEARANCE_LABELS[saved] ? saved : THINKING_APPEARANCE_DEFAULT;
   } catch (e) {
     return THINKING_APPEARANCE_DEFAULT;

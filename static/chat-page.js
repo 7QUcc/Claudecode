@@ -2259,8 +2259,7 @@ let _inflightPhraseIdx = Math.floor(Math.random() * _INFLIGHT_THINKING_PHRASES.l
 let _inflightRotateTimer = null;
 
 function _inflightText() {
-  const p = _INFLIGHT_THINKING_PHRASES[_inflightPhraseIdx];
-  return p[0] + ' ' + p[1];
+  return 'Thinking…';
 }
 function _inflightCrabMarkup() {
   const state = _INFLIGHT_THINKING_PHRASES[_inflightPhraseIdx][2] || 'spark';
@@ -2314,24 +2313,13 @@ function _inflightSparkMarkup() {
   return '<svg class="ch-spark-thinker" aria-hidden="true"><use href="#xk-spark"/></svg>';
 }
 function _inflightThinkerMarkup() {
-  return _inflightSparkMarkup() + _inflightCrabMarkup() + _inflightSketchMarkup();
+  return _inflightSparkMarkup();
 }
 function _startInflightRotation() {
-  if (_inflightRotateTimer) return;
-  _inflightRotateTimer = setInterval(() => {
-    const targets = document.querySelectorAll('.ch-gradient-text.ch-inflight-text');
-    if (!targets.length) { clearInterval(_inflightRotateTimer); _inflightRotateTimer = null; return; }
-    _inflightPhraseIdx = (_inflightPhraseIdx + 1) % _INFLIGHT_THINKING_PHRASES.length;
-    targets.forEach(t => {
-      t.style.opacity = '0';
-      setTimeout(() => {
-        t.textContent = _inflightText();
-        const icon = t.closest('.ch-tool-group-head').querySelector('.ch-pixel-thinker');
-        if (icon) icon.innerHTML = _inflightThinkerMarkup();
-        t.style.opacity = '1';
-      }, 300);
-    });
-  }, 3000);
+  if (_inflightRotateTimer) {
+    clearInterval(_inflightRotateTimer);
+    _inflightRotateTimer = null;
+  }
 }
 
 function _buildReplyWaitingIndicator() {

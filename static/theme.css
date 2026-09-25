@@ -180,10 +180,52 @@ body[data-thinking-style="spark"] .ch-tool-group.inflight.thinking-inflight { ba
 body[data-thinking-style="spark"] .ch-tool-group.inflight.thinking-inflight .ch-gradient-text {
   font-family: var(--xk-sans, -apple-system, sans-serif);
 }
+
+/* Claude-style status: one quiet accent mark and fixed text. */
+body[data-thinking-style="claude"] .ch-tool-group.inflight.thinking-inflight {
+  background: transparent;
+  padding: 5px 0;
+  margin: 5px 0;
+}
+body[data-thinking-style="claude"] .ch-tool-group.inflight.thinking-inflight .ch-tool-group-head {
+  gap: 9px;
+}
+body[data-thinking-style="claude"] .ch-pixel-thinker {
+  width: 22px;
+  height: 22px;
+  animation: none;
+}
+body[data-thinking-style="claude"] .ch-pixel-thinker .ch-spark-thinker {
+  display: block;
+  width: 20px;
+  height: 20px;
+  color: var(--xk-accent, #C96442);
+  animation: xk-spark-spin 4.2s linear infinite, xk-breathe 1.8s ease-in-out infinite;
+}
+body[data-thinking-style="claude"] .ch-tool-group.inflight.thinking-inflight .ch-gradient-text,
+body[data-thinking-style="claude"] .ch-tool-group.inflight.thinking-inflight .label {
+  background: none;
+  color: var(--xk-muted, #6F6C63);
+  -webkit-text-fill-color: currentColor;
+  font-family: var(--xk-sans, -apple-system, sans-serif);
+  font-size: .95rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  animation: none;
+}
 @keyframes xk-spark-spin { to { rotate: 360deg; } }
 @keyframes xk-breathe { 50% { transform: scale(.82); opacity: .65; } }
 .xk-spark-preview { display: inline-flex; align-items: center; gap: 8px; }
 .xk-spark-spin { width: 20px; height: 20px; color: #C96442; animation: xk-spark-spin 3.2s linear infinite, xk-breathe 1.6s ease-in-out infinite; }
+.xk-claude-thinking-preview .st-preview-text {
+  background: none;
+  color: var(--xk-muted, #6F6C63);
+  -webkit-text-fill-color: currentColor;
+  font-family: var(--xk-sans, -apple-system, sans-serif);
+  font-weight: 500;
+  letter-spacing: 0;
+  animation: none;
+}
 html.claude .lg-preview.xk-claude {
   display: block; height: 34px; border-radius: 9px; margin: 6px 0 2px;
   background: linear-gradient(90deg, #F3F1EA 0 30%, #FAF9F5 30% 100%);
