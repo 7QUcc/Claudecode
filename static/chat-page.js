@@ -2334,6 +2334,31 @@ function _startInflightRotation() {
   }, 3000);
 }
 
+function _buildReplyWaitingIndicator() {
+  const wrap = document.createElement('div');
+  wrap.className = 'ch-tool-group inflight thinking-inflight ch-reply-waiting';
+  const head = document.createElement('div');
+  head.className = 'ch-tool-group-head';
+  head.innerHTML =
+    '<span class="ch-pixel-thinker" aria-hidden="true">' +
+      _inflightThinkerMarkup() +
+    '</span>' +
+    '<span class="label ch-inflight-text ch-gradient-text"></span>';
+  head.querySelector('.label').textContent = _inflightText();
+  _startInflightRotation();
+  wrap.appendChild(head);
+  return wrap;
+}
+
+function _chShouldShowReplyWaiting(messages, pendingMessages, terminalPrompt) {
+  if (terminalPrompt || _chHasLiveWork(messages)) return false;
+  const lastMessage = (messages || []).filter(message => message && message.role).slice(-1)[0];
+  if (lastMessage && lastMessage.role === 'user') return true;
+  return (pendingMessages || []).some(message =>
+    ['sending', 'pending', 'queued', 'direct'].includes(message.status)
+  );
+}
+
 // ===== 小克的家: Claude-app style tool rows + detail sheet =====
 const _XK_TOOL_KIND = {
   read: ['Read', 'NotebookRead', 'view_image', 'image_query', 'read_file'],
@@ -3848,6 +3873,8 @@ async function renderChatMessages(name, cachedData = null) {
     tailPending.forEach(pending => frag.appendChild(_chBuildPendingBubble(pending)));
     if (!chViewingArchive && !chViewingUnified && data.terminal_prompt) {
       frag.appendChild(_chBuildTerminalPrompt(data.terminal_prompt, name));
+    } else if (!chViewingArchive && !chViewingUnified && _chShouldShowReplyWaiting(msgs, pendingMsgs, data.terminal_prompt)) {
+      frag.appendChild(_buildReplyWaitingIndicator());
     }
     const disc = document.createElement('div');
     disc.className = 'ch-disclaimer';
