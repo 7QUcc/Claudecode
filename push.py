@@ -109,6 +109,14 @@ def mark_presence(session: Optional[str]) -> None:
         _presence[session] = time.time()
 
 
+def clear_presence(session: Optional[str] = None) -> None:
+    """Stop suppressing notifications for a session that left the foreground."""
+    if session:
+        _presence.pop(session, None)
+    else:
+        _presence.clear()
+
+
 # ---------- sending ----------
 
 def send(title: str, body: str, *, kind: str, session: Optional[str] = None,

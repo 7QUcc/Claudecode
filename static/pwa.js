@@ -62,10 +62,11 @@
     const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
     return Uint8Array.from(raw, c => c.charCodeAt(0));
   };
-  const authed = (path, body) => fetch('/api' + path, {
+  const authed = (path, body, options = {}) => fetch('/api' + path, {
     method: body === undefined ? 'GET' : 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (typeof TOKEN !== 'undefined' ? TOKEN : '') },
     body: body === undefined ? undefined : JSON.stringify(body),
+    ...options,
   }).then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.detail || r.status); return j; });
 
   async function currentSub() {
@@ -116,16 +117,34 @@
 
   // Tell the server which session is on screen, so it doesn't buzz the phone
   // about the conversation you're already reading.
+  let lastPresenceSession = null;
   function visibleSession() {
     if (document.visibilityState !== 'visible') return null;
     if (typeof chSub !== 'undefined' && chSub === 'detail' && typeof activeChat !== 'undefined' && activeChat) return activeChat;
     if (typeof codeSub !== 'undefined' && codeSub === 'detail' && typeof activeSession !== 'undefined' && activeSession) return activeSession;
     return null;
   }
+  function reportPresence(session, visible) {
+    if (typeof TOKEN !== 'undefined' && TOKEN) {
+      authed('/push/presence', { session, visible }, { keepalive: !visible }).catch(() => {});
+    }
+  }
   setInterval(() => {
     const s = visibleSession();
-    if (s && typeof TOKEN !== 'undefined' && TOKEN) authed('/push/presence', { session: s }).catch(() => {});
+    if (s !== lastPresenceSession) {
+      if (lastPresenceSession) reportPresence(lastPresenceSession, false);
+      lastPresenceSession = s;
+      if (s) reportPresence(s, true);
+    } else if (s) {
+      reportPresence(s, true);
+    }
   }, 20000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden' && lastPresenceSession) {
+      reportPresence(lastPresenceSession, false);
+      lastPresenceSession = null;
+    }
+  });
 
   // Open the session a notification was about.
   function openSession(name) {

@@ -1480,6 +1480,7 @@ class _PushEndpointReq(BaseModel):
 
 class _PresenceReq(BaseModel):
     session: Optional[str] = None
+    visible: bool = True
 
 
 @app.get("/api/push/key")
@@ -1521,7 +1522,10 @@ def api_push_test(req: _PushEndpointReq, _=Depends(require_auth)):
 @app.post("/api/push/presence")
 def api_push_presence(req: _PresenceReq, _=Depends(require_auth)):
     """The app reports which session is on screen so we don't notify about it."""
-    _push.mark_presence(req.session)
+    if req.visible:
+        _push.mark_presence(req.session)
+    else:
+        _push.clear_presence(req.session)
     return {"ok": True}
 
 
