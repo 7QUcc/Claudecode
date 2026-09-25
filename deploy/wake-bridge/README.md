@@ -33,9 +33,16 @@ Agent Space directory during package upgrades.
 
 The upstream adapter only supports a Claude Code TTY explicitly launched by
 `wakebridge-claude launch`. It does not attach to an already running Claude
-session, cold-start a session, or inject through the xiaoke frontend. The
-adapter is experimental; verify a new launched session before changing the
-existing xiaoke session startup path.
+session or cold-start one. When Wake Bridge is installed, xiaoke creates new
+Claude TTY sessions through the launcher. `claude-host.sh` adds only xiaoke's
+session settings and, when selected, the official Telegram channel. It does
+not replace the launcher's generated Wake Bridge MCP and channel configuration.
+
+Only one running Claude session should own the Telegram bot. A new session
+must opt in to Telegram, and the previous holder must release it first. The
+Host token is sourced from the private `daemon.env` inside the tmux pane so a
+long-lived tmux server does not need to inherit it. Existing sessions must be
+recreated through the launcher; they cannot be attached retroactively.
 
 The checked-in manifest template is
 `host-adapters.json.example`. It contains no credentials.

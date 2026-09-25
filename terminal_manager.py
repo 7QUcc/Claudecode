@@ -167,6 +167,10 @@ CHAT_INPUT_TAG_RE = re.compile(r"<chat-input\b[^>]*/>\s*", re.IGNORECASE)
 # CWD: must be an existing dir under user home
 HOME = str(Path.home())
 CLAUDE_SESSION_SETTINGS = Path(__file__).resolve().parent / "deploy" / "claude-session-settings.json"
+WAKEBRIDGE_CONFIG = Path.home() / ".local" / "state" / "wake-bridge" / "default" / "wakebridge.config.json"
+WAKEBRIDGE_ENV = WAKEBRIDGE_CONFIG.parent / "daemon.env"
+WAKEBRIDGE_CLAUDE = Path.home() / ".local" / "bin" / "wakebridge-claude"
+WAKEBRIDGE_CLAUDE_BIN = Path(__file__).resolve().parent / "deploy" / "wake-bridge" / "claude-host.sh"
 # Keep new sessions focused on file/terminal work, web access, MCP, skills,
 # and user questions. Task orchestration and notebook tools are omitted.
 CLAUDE_SESSION_TOOLS = (
@@ -208,9 +212,9 @@ def _pane_info(session: str) -> Optional[dict]:
     cwd = parts[1] or HOME
     cmd = parts[2]
     procs = _walk_descendants(pid)
-    claude_match = next(((p, a) for p, _c, a in procs if "claude" in a and "claude-plugins" not in a.split()[0:1]), None)
+    claude_match = next(((p, a) for p, c, a in procs if c == "claude"), None)
     if claude_match is None:
-        claude_match = next(((p, a) for p, _c, a in procs if "claude" in a), None)
+        claude_match = next(((p, a) for p, _c, a in procs if "claude" in a and "claude-plugins" not in a.split()[0:1]), None)
     claude_pid = claude_match[0] if claude_match else None
     claude_args = claude_match[1] if claude_match else ""
     opencode_candidates = [
@@ -3063,22 +3067,46 @@ def create_session(name: str, cwd: str, session_type: str = "cc", cols: int = 80
     elif session_type == "opencode":
         wrapped = f"cd {cwd_arg} && while true; do opencode; sleep 3; done"
     else:
-        args = ["claude", "--dangerously-skip-permissions"]
-        args.extend(["--tools", CLAUDE_SESSION_TOOLS])
-        if CLAUDE_SESSION_SETTINGS.is_file():
-            args.extend(["--settings", str(CLAUDE_SESSION_SETTINGS)])
-        if with_telegram:
-            # Wires the official Telegram channel plugin onto this session so
-            # bot DMs route here. Only one CC pane at a time can own the bot
-            # (single getUpdates consumer per token) — see transfer_telegram.
-            args.extend(["--channels", "plugin:telegram@claude-plugins-official"])
+        wakebridge_ready = all(path.is_file() for path in (
+            WAKEBRIDGE_CONFIG, WAKEBRIDGE_ENV, WAKEBRIDGE_CLAUDE, WAKEBRIDGE_CLAUDE_BIN,
+        ))
+        if WAKEBRIDGE_CLAUDE.is_file() and not wakebridge_ready:
+            return {"ok": False, "error": "Wake Bridge is installed but its configuration is incomplete"}
+        if wakebridge_ready:
+            args = [
+                str(WAKEBRIDGE_CLAUDE), "launch", "--experimental",
+                "--bridge-config", str(WAKEBRIDGE_CONFIG),
+                "--daemon-origin", "http://127.0.0.1:4311",
+                "--attention-channel", "default",
+                "--claude-bin", str(WAKEBRIDGE_CLAUDE_BIN), "--",
+                "--permission-mode", "bypassPermissions", "--tools", CLAUDE_SESSION_TOOLS,
+            ]
+        else:
+            args = ["claude", "--dangerously-skip-permissions", "--tools", CLAUDE_SESSION_TOOLS]
+            if CLAUDE_SESSION_SETTINGS.is_file():
+                args.extend(["--settings", str(CLAUDE_SESSION_SETTINGS)])
+            if with_telegram:
+                args.extend(["--channels", "plugin:telegram@claude-plugins-official"])
         if setting_sources:
             args.extend(["--setting-sources", setting_sources])
         if resume_sid:
             args.extend(["--resume", resume_sid])
         cmd = " ".join(shlex.quote(arg) for arg in args)
         # Ensure bun-based tooling is on PATH for dashboard-created sessions.
-        wrapped = f"export BUN_INSTALL=\"$HOME/.bun\"; export PATH=\"$BUN_INSTALL/bin:$PATH\"; cd {cwd_arg} && while true; do {cmd}; sleep 3; done"
+        setup = f"export BUN_INSTALL=\"$HOME/.bun\"; export PATH=\"$BUN_INSTALL/bin:$HOME/.local/bin:$PATH\"; "
+        if wakebridge_ready:
+            setup += (
+                f"export XIAOKE_WITH_TELEGRAM={'1' if with_telegram else '0'}; "
+                f"set -a; . {shlex.quote(str(WAKEBRIDGE_ENV))}; set +a; "
+            )
+        if wakebridge_ready:
+            wrapped = (
+                f"{setup}cd {cwd_arg} && while true; do {cmd}; "
+                "rc=$?; if [ \"$rc\" -ne 0 ]; then printf 'Wake Bridge session exited (%s)\\n' \"$rc\"; "
+                "exec bash; fi; sleep 3; done"
+            )
+        else:
+            wrapped = f"{setup}cd {cwd_arg} && while true; do {cmd}; sleep 3; done"
     r = _run(["tmux", "new-session", "-d", "-s", name, "-x", str(cols), "-y", str(rows), "bash", "-c", wrapped], timeout=10)
     if r.returncode != 0:
         return {"ok": False, "error": r.stderr.strip() or "tmux failed"}
