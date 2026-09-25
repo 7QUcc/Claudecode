@@ -1,0 +1,20 @@
+{
+  "model": "claude-opus-4-6",
+  "alwaysThinkingEnabled": true,
+  "showThinkingSummaries": true,
+  "awaySummaryEnabled": false,
+  "switchModelsOnFlag": false,
+  "cleanupPeriodDays": 99999,
+  "autoCompactEnabled": false,
+  "autoUpdates": false,
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    },
+    "claude-opus-4-6": {
+      "effortLevel": "medium"
+    }
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark"
+}

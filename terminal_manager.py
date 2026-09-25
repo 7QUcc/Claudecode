@@ -166,6 +166,7 @@ CHAT_INPUT_TAG_RE = re.compile(r"<chat-input\b[^>]*/>\s*", re.IGNORECASE)
 
 # CWD: must be an existing dir under user home
 HOME = str(Path.home())
+CLAUDE_SESSION_SETTINGS = Path(__file__).resolve().parent / "deploy" / "claude-session-settings.json"
 
 
 def _run(args, timeout=5) -> subprocess.CompletedProcess:
@@ -3057,6 +3058,8 @@ def create_session(name: str, cwd: str, session_type: str = "cc", cols: int = 80
         wrapped = f"cd {cwd_arg} && while true; do opencode; sleep 3; done"
     else:
         args = ["claude", "--dangerously-skip-permissions"]
+        if CLAUDE_SESSION_SETTINGS.is_file():
+            args.extend(["--settings", str(CLAUDE_SESSION_SETTINGS)])
         if with_telegram:
             # Wires the official Telegram channel plugin onto this session so
             # bot DMs route here. Only one CC pane at a time can own the bot
@@ -3066,7 +3069,7 @@ def create_session(name: str, cwd: str, session_type: str = "cc", cols: int = 80
             args.extend(["--setting-sources", setting_sources])
         if resume_sid:
             args.extend(["--resume", resume_sid])
-        cmd = " ".join(args)
+        cmd = " ".join(shlex.quote(arg) for arg in args)
         # Ensure bun-based tooling is on PATH for dashboard-created sessions.
         wrapped = f"export BUN_INSTALL=\"$HOME/.bun\"; export PATH=\"$BUN_INSTALL/bin:$PATH\"; cd {cwd_arg} && while true; do {cmd}; sleep 3; done"
     r = _run(["tmux", "new-session", "-d", "-s", name, "-x", str(cols), "-y", str(rows), "bash", "-c", wrapped], timeout=10)
@@ -3304,7 +3307,7 @@ def send_input(session: str, data: str) -> dict:
             )
             if set_buffer.returncode == 0:
                 r = subprocess.run(
-                    ["tmux", "paste-buffer", "-d", "-t", session],
+                    ["tmux", "paste-buffer", "-d", "-p", "-t", session],
                     capture_output=True, timeout=3,
                 )
                 if r.returncode != 0:
