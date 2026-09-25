@@ -25,8 +25,9 @@ log = logging.getLogger("push")
 DATA_DIR = Path(os.path.expanduser(os.environ.get("PRISM_DATA_DIR", "~/.local/share/prism")))
 KEY_PATH = DATA_DIR / "vapid_private.pem"
 SUBS_PATH = DATA_DIR / "push_subs.json"
-# Apple requires a contact URI in the VAPID claims.
-VAPID_SUBJECT = os.environ.get("PUSH_CONTACT", "mailto:xiaoke@localhost")
+# Apple rejects localhost mailto claims with 403 BadJwtToken. Use the public
+# HTTPS origin by default; deployments can override it with PUSH_CONTACT.
+VAPID_SUBJECT = os.environ.get("PUSH_CONTACT", "https://xiaoke.41297.site")
 POLL_SECONDS = float(os.environ.get("PUSH_POLL_SECONDS", "4"))
 # Skip a notification if the phone reported looking at that session this recently.
 PRESENCE_SECONDS = 45

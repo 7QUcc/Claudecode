@@ -2716,13 +2716,20 @@ def _read_last_usage(jsonl_path: Path) -> Optional[dict]:
         "output": int(usage.get("output_tokens") or 0),
     }
     tokens = breakdown["input"] + breakdown["cache_creation"] + breakdown["cache_read"]
-    window = _detect_session_window(jsonl_path)
-    if window is None:
-        # No /model command found anywhere. Look for [1M] markers in the tail
-        # (covers resumed sessions that inherited 1M from a parent context).
-        # Case-insensitive: claude-opus-4-7[1m] uses lowercase in the slug.
-        tail_lower = data.lower()
-        window = 1_000_000 if ("[1m]" in tail_lower or "(1m" in tail_lower) else 200_000
+    model = str(msg.get("model") or "unknown")
+    model_lower = model.lower()
+    # The assistant event carries the model that actually produced this turn.
+    # Prefer it over historical /model commands, which can contain stale 1M
+    # selections from earlier in a long-lived session.
+    if "[1m]" in model_lower or model_lower == "fable" or model_lower.startswith("claude-fable"):
+        window = 1_000_000
+    elif model_lower.startswith("claude-") or model_lower.startswith("claude_"):
+        window = 200_000
+    else:
+        window = _detect_session_window(jsonl_path)
+        if window is None:
+            tail_lower = data.lower()
+            window = 1_000_000 if ("[1m]" in tail_lower or "(1m" in tail_lower) else 200_000
     # Sanity: if model already saw more than the inferred window, it must be on
     # a larger one. The only standard tier above 200k is 1M.
     if tokens > window:
@@ -3331,7 +3338,12 @@ def send_input(session: str, data: str) -> dict:
                 pane = _run(["tmux", "capture-pane", "-p", "-t", session, "-S", "-12"], timeout=3)
                 if pane.returncode == 0:
                     prompt_tail = _last_claude_prompt_tail(ANSI_RE.sub("", pane.stdout or "")) or ""
-                    if "[Pasted text #" in prompt_tail:
+                    # Claude Code versions that render the pasted chat marker
+                    # directly may leave multiline input in the prompt after
+                    # the first Enter without showing a "[Pasted text #...]"
+                    # placeholder. Submit our tagged dashboard message once
+                    # more when it is still visibly parked in the prompt.
+                    if "[Pasted text #" in prompt_tail or "chat-input" in prompt_tail:
                         r = subprocess.run(
                             ["tmux", "send-keys", "-t", session, "Enter"],
                             capture_output=True, timeout=3,
