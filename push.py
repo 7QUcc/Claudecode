@@ -211,6 +211,8 @@ class Watcher:
         latest_user = None
         latest_assistant = None
         latest_assistant_text = None
+        last_tool_use = 0.0
+        assistant_texts = []
         for line in lines:
             try:
                 obj = json.loads(line)
@@ -238,18 +240,30 @@ class Watcher:
                     latest_user = ts
             elif obj.get("type") == "assistant":
                 parts = []
+                has_tool_use = False
                 if isinstance(content, str):
                     parts.append(content)
                 elif isinstance(content, list):
-                    parts.extend(
-                        block.get("text") or ""
-                        for block in content
-                        if isinstance(block, dict) and block.get("type") == "text"
-                    )
+                    for block in content:
+                        if not isinstance(block, dict):
+                            continue
+                        if block.get("type") == "tool_use":
+                            has_tool_use = True
+                        elif block.get("type") == "text":
+                            parts.append(block.get("text") or "")
                 text = " ".join(parts).strip()
+                if has_tool_use:
+                    last_tool_use = max(last_tool_use, ts)
                 if text:
-                    latest_assistant = ts
-                    latest_assistant_text = re.sub(r"\s+", " ", text).strip()[:180]
+                    assistant_texts.append((ts, text))
+
+        # Text accompanying a tool_use is a preamble, not a completed turn.
+        # Prefer the latest text written after all tool calls in the transcript.
+        for ts, text in reversed(assistant_texts):
+            if ts > last_tool_use:
+                latest_assistant = ts
+                latest_assistant_text = re.sub(r"\s+", " ", text).strip()[:180]
+                break
 
         if latest_user is None and latest_assistant is None:
             return None
