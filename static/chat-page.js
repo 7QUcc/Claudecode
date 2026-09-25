@@ -1440,8 +1440,8 @@ function buildArchiveCard() {
         </svg>
       </div>
       <div class="ch-archive-title">
-        <div class="ch-archive-name">Archive</div>
-        <div class="ch-archive-sub">归档的对话</div>
+        <div class="ch-archive-name">已归档</div>
+        <div class="ch-archive-sub">归档的对话，点开可以查看或恢复</div>
       </div>
       <svg class="ch-archive-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="6 9 12 15 18 9"/>
@@ -1778,9 +1778,10 @@ function buildChatRow(s) {
   const timeLabel = shortDateLabel(ts);
   const draftPreview = _chDraftPreview(s.name);
   const preview = (s.last_line || '').trim() || '（暂无消息）';
+  const initial = escapeHTML((Array.from(label || s.name || '?')[0] || '?').toUpperCase());
   const avatarHTML = s.has_avatar
     ? `<div class="ch-avatar ${avCls}"><img src="${avatarUrl(s)}" alt=""></div>`
-    : '';
+    : `<div class="ch-avatar ${avCls} xk-initial">${initial}</div>`;
   item.innerHTML = `
     ${avatarHTML}
     <div class="ch-body">
@@ -1789,6 +1790,14 @@ function buildChatRow(s) {
     </div>
     <div class="ch-time"></div>`;
   item.querySelector('.ch-name').textContent = label;
+  {
+    const badge = document.createElement('span');
+    badge.className = 'xk-badge';
+    badge.textContent = ({ cc: 'CC', codex: 'CX', opencode: 'OC', shell: 'SH' })[kind] || 'SH';
+    const dot = document.createElement('span');
+    dot.className = 'xk-dot' + ((Date.now() / 1000 - (ts || 0)) < 600 ? ' running' : '');
+    item.querySelector('.ch-name').append(' ', badge, dot);
+  }
   const previewEl = item.querySelector('.ch-preview');
   if (draftPreview) {
     previewEl.innerHTML = '<span class="ch-draft-prefix">[草稿]</span> ' + escapeHTML(draftPreview);

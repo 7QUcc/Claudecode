@@ -5181,21 +5181,43 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
         </svg>
       </button>
     </div>
-    <nav class="sb-nav">
-      <div class="sb-item" data-view="chats" onclick="switchView('chats')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3A6.5 6.5 0 0 1 9.5 16L3 16L4.76 13.96A6.5 6.5 0 0 1 9.5 3Z"/><path d="M10.78 19.61A6.5 6.5 0 0 0 13 20L19.5 20L17.74 17.96A6.5 6.5 0 0 0 19.11 11.28"/></svg>
-        <span class="sb-item-label">Chats</span>
+    <nav class="sb-nav xk-nav">
+      <button type="button" class="xk-sb-new" onclick="xkNav('new')">
+        <span class="xk-plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        <span class="sb-item-label">新建会话</span>
+      </button>
+      <div class="sb-item" onclick="xkNav('search')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="sb-item-label">搜索</span>
       </div>
-      <div class="sb-item" data-view="code" onclick="switchView('code')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 8 2 12 7 16"/><polyline points="17 8 22 12 17 16"/><line x1="14" y1="5" x2="10" y2="19"/></svg>
-        <span class="sb-item-label">Code</span>
+      <div class="sb-item" data-view="chats" onclick="xkNav('chats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>
+        <span class="sb-item-label">对话</span>
       </div>
-      <div class="sb-item" data-view="settings" onclick="switchView('settings')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-2.82 1.18V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 7.2 19.7l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3.1 14H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.3 7.2l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 10 3.1V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 2.8 1.21l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 20.9 10h.1a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>
-        <span class="sb-item-label">Settings</span>
+      <div class="sb-item" data-view="code" onclick="xkNav('code')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3M13 15h4"/></svg>
+        <span class="sb-item-label">会话面板</span><span class="xk-count" id="xkOnline"></span>
+      </div>
+      <div class="sb-item" onclick="xkNav('archived')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg>
+        <span class="sb-item-label">已归档</span>
       </div>
     </nav>
-    <div class="sb-foot">小克的家 · 基于 Prism（AGPL-3.0）</div>
+    <div class="xk-sec">最近</div>
+    <div class="xk-recents" id="xkRecents"></div>
+    <div class="xk-install" id="xkInstall">
+      <span class="xk-install-ic"><svg aria-hidden="true"><use href="#xk-spark"/></svg></span>
+      <span class="xk-install-txt">装到主屏幕<small>Safari 分享 → 添加到主屏幕</small></span>
+    </div>
+    <button type="button" class="xk-usage" id="xkUsage" onclick="xkNav('usage')" hidden>
+      <span class="xk-usage-row"><span id="xkUsageLabel">Claude Code · 5 小时</span><span id="xkUsagePct"></span></span>
+      <span class="xk-bar"><i id="xkUsageBar"></i></span>
+    </button>
+    <div class="sb-item xk-user" data-view="settings" onclick="xkNav('settings')">
+      <span class="xk-avatar">晨</span>
+      <span class="sb-item-label xk-user-txt">小晨<small>设置 · 外观 · 通知</small></span>
+      <svg class="xk-user-gear" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-2.82 1.18V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 7.2 19.7l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3.1 14H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.3 7.2l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 10 3.1V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 2.8 1.21l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 20.9 10h.1a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>
+    </div>
   </aside>
 
   <main class="main">
@@ -5218,7 +5240,7 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
           <button class="ic-btn cl-burger" onclick="toggleSidebar(true)" title="菜单" aria-label="菜单">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="4" y1="6.5" x2="20" y2="6.5"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17.5" x2="13" y2="17.5"/></svg>
           </button>
-          <div class="cl-title">Chats</div>
+          <div class="cl-title">对话</div>
           <button class="ic-btn primary" onclick="openNewSessionModal()" title="新建" aria-label="新建">
             <svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d="M12 5A7 7 0 0 1 12 19L5 19 6.9 16.8A7 7 0 0 1 12 5zM11.2 8.5h1.6v2.7H15.5v1.6H12.8v2.7h-1.6v-2.7H8.5v-1.6H11.2V8.5z"/></svg>
           </button>
@@ -5344,7 +5366,7 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
           <button class="ic-btn cl-burger" onclick="toggleSidebar(true)" title="菜单" aria-label="菜单">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="4" y1="6.5" x2="20" y2="6.5"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17.5" x2="13" y2="17.5"/></svg>
           </button>
-          <div class="cl-title">Settings</div>
+          <div class="cl-title">设置</div>
           <span style="width:40px"></span>
         </div>
         <div class="st-body">
@@ -5473,7 +5495,7 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
           <button class="ic-btn cl-burger" onclick="toggleSidebar(true)" title="菜单" aria-label="菜单">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="4" y1="6.5" x2="20" y2="6.5"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17.5" x2="13" y2="17.5"/></svg>
           </button>
-          <div class="cl-title">Code</div>
+          <div class="cl-title">会话面板</div>
           <button class="ic-btn primary" onclick="openNewSessionModal()" title="新建" aria-label="新建">
             <svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d="M12 5A7 7 0 0 1 12 19L5 19 6.9 16.8A7 7 0 0 1 12 5zM11.2 8.5h1.6v2.7H15.5v1.6H12.8v2.7h-1.6v-2.7H8.5v-1.6H11.2V8.5z"/></svg>
           </button>
@@ -6172,9 +6194,9 @@ function switchView(name, options = {}) {
   const prevView = currentView;
   currentView = name;
   document.body.setAttribute('data-current-view', name);
-  const titles = { chats: 'Chats', code: 'Code', settings: 'Settings' };
+  const titles = { chats: '对话', code: '会话面板', settings: '设置' };
   const t = document.getElementById('mTitle');
-  if (t) t.textContent = titles[name] || 'Prism';
+  if (t) t.textContent = titles[name] || '小克的家';
   document.querySelectorAll('.sb-item').forEach(el => {
     el.classList.toggle('active', el.getAttribute('data-view') === name);
   });
@@ -8796,5 +8818,6 @@ async function bootstrap() {
 bootstrap();
 </script>
 <script src="static/pwa.js"></script>
+<script src="static/xk-layout.js"></script>
 </body>
 </html>

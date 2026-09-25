@@ -2,7 +2,7 @@
 // Caches only the app shell so the home-screen app opens instantly and still
 // shows its UI offline. API calls, live streams and uploads always go to the
 // network and are never cached.
-const SHELL_CACHE = 'xk-shell-v2';
+const SHELL_CACHE = 'xk-shell-v3';
 const SHELL = [
   '/',
   '/static/chat-page.js',
@@ -10,6 +10,7 @@ const SHELL = [
   '/static/chat-code.js',
   '/static/pwa.js',
   '/static/theme.css',
+  '/static/xk-layout.js',
   '/static/vendor/xterm/xterm.css',
   '/static/vendor/xterm/xterm.js',
   '/static/vendor/xterm/addon-fit.js',
