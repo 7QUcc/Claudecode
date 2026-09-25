@@ -153,6 +153,8 @@ def send(title: str, body: str, *, kind: str, session: Optional[str] = None,
             log.warning("push failed: %s", exc)
     for endpoint in dead:
         unsubscribe(endpoint)
+    if sent:
+        log.info("push sent kind=%s session=%s count=%d", kind, session or "", sent)
     return sent
 
 
@@ -180,6 +182,84 @@ class Watcher:
     def _seen_recently(self, name: str) -> bool:
         return time.time() - _presence.get(name, 0) < PRESENCE_SECONDS
 
+    def _turn_activity(self, info: dict) -> Optional[dict]:
+        """Read turn boundaries from the agent transcript.
+
+        Claude's TUI status text changes between releases and may not include
+        the old ``esc to interrupt`` marker. The transcript is the stable
+        source: a turn is working while its latest user message is newer than
+        the latest assistant text message.
+        """
+        kind = info.get("kind")
+        if kind == "cc":
+            jsonl = self.tm._claude_jsonl_for_pid(info.get("claude_pid"))
+        elif kind == "codex":
+            jsonl = self.tm._find_codex_jsonl(info.get("codex_pid"))
+        else:
+            return None
+        if not jsonl or not jsonl.exists():
+            return None
+        try:
+            with open(jsonl, "rb") as f:
+                f.seek(0, 2)
+                size = f.tell()
+                f.seek(max(0, size - 512 * 1024))
+                lines = f.read().decode("utf-8", errors="replace").splitlines()
+        except OSError:
+            return None
+
+        latest_user = None
+        latest_assistant = None
+        latest_assistant_text = None
+        for line in lines:
+            try:
+                obj = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if obj.get("isSidechain"):
+                continue
+            ts = self.tm._parse_iso_ts(obj.get("timestamp"))
+            if not ts:
+                continue
+            message = obj.get("message") or {}
+            content = message.get("content")
+            if obj.get("type") == "user":
+                parts = []
+                if isinstance(content, str):
+                    parts.append(content)
+                elif isinstance(content, list):
+                    parts.extend(
+                        block.get("text") or ""
+                        for block in content
+                        if isinstance(block, dict) and block.get("type") == "text"
+                    )
+                text = " ".join(parts).strip()
+                if text and not text.startswith(("<command-", "<bash-", "<local-command-", "[Request interrupted")):
+                    latest_user = ts
+            elif obj.get("type") == "assistant":
+                parts = []
+                if isinstance(content, str):
+                    parts.append(content)
+                elif isinstance(content, list):
+                    parts.extend(
+                        block.get("text") or ""
+                        for block in content
+                        if isinstance(block, dict) and block.get("type") == "text"
+                    )
+                text = " ".join(parts).strip()
+                if text:
+                    latest_assistant = ts
+                    latest_assistant_text = re.sub(r"\s+", " ", text).strip()[:180]
+
+        if latest_user is None and latest_assistant is None:
+            return None
+        return {
+            "user_ts": latest_user or 0.0,
+            "assistant_ts": latest_assistant or 0.0,
+            "assistant_text": latest_assistant_text or "",
+            "working": bool(latest_user and (not latest_assistant or latest_user > latest_assistant)),
+        }
+
     def tick(self) -> None:
         if not _load_subs():
             self.state.clear()
@@ -194,7 +274,8 @@ class Watcher:
                 continue
             alive.add(name)
             title = self.tm.get_chat_name(name) or self.tm.get_display_name(name) or name
-            working = bool(_WORKING_RE.search(self._pane(name)))
+            activity = self._turn_activity(info)
+            working = activity["working"] if activity else bool(_WORKING_RE.search(self._pane(name)))
             prompt = None
             if not working and kind == "cc":
                 p = self.tm.detect_terminal_prompt(name)
@@ -202,11 +283,46 @@ class Watcher:
                     prompt = p.get("label") or "需要你选择"
             prev = self.state.get(name)
             if prev is None:  # first sighting: learn the state, don't notify
-                self.state[name] = {"working": working, "idle_polls": 0, "prompt": prompt}
+                self.state[name] = {
+                    "working": working,
+                    "idle_polls": 0,
+                    "prompt": prompt,
+                    "user_ts": activity["user_ts"] if activity else 0.0,
+                    "assistant_ts": activity["assistant_ts"] if activity else 0.0,
+                }
                 continue
             if prompt and prompt != prev["prompt"] and not self._seen_recently(name):
                 send(f"{title} 在等你", prompt, kind="waiting", session=name)
-            if working:
+            if activity:
+                user_ts = activity["user_ts"]
+                assistant_ts = activity["assistant_ts"]
+                new_user = user_ts > (prev.get("user_ts") or 0.0)
+                new_assistant = assistant_ts > (prev.get("assistant_ts") or 0.0)
+                prev["user_ts"] = user_ts
+                prev["assistant_ts"] = assistant_ts
+                if new_user and assistant_ts > user_ts:
+                    if not prompt and not self._seen_recently(name):
+                        send(
+                            f"{title} 做完了",
+                            activity["assistant_text"] or "这一轮做完了",
+                            kind="done",
+                            session=name,
+                        )
+                    prev["working"] = False
+                    prev["idle_polls"] = 0
+                elif new_assistant and prev["working"] and not prompt and not self._seen_recently(name):
+                    send(
+                        f"{title} 做完了",
+                        activity["assistant_text"] or "这一轮做完了",
+                        kind="done",
+                        session=name,
+                    )
+                    prev["working"] = False
+                    prev["idle_polls"] = 0
+                else:
+                    prev["working"] = working
+                    prev["idle_polls"] = 0
+            elif working:
                 prev["idle_polls"] = 0
                 prev["working"] = True
             elif prev["working"]:
