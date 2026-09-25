@@ -167,6 +167,12 @@ CHAT_INPUT_TAG_RE = re.compile(r"<chat-input\b[^>]*/>\s*", re.IGNORECASE)
 # CWD: must be an existing dir under user home
 HOME = str(Path.home())
 CLAUDE_SESSION_SETTINGS = Path(__file__).resolve().parent / "deploy" / "claude-session-settings.json"
+# Keep new sessions focused on file/terminal work, web access, MCP, skills,
+# and user questions. Task orchestration and notebook tools are omitted.
+CLAUDE_SESSION_TOOLS = (
+    "Read,Write,Edit,Glob,Grep,Bash,KillShell,AskUserQuestion,Skill,"
+    "ToolSearch,ReadMcpResource,WebFetch,WebSearch"
+)
 
 
 def _run(args, timeout=5) -> subprocess.CompletedProcess:
@@ -3058,6 +3064,7 @@ def create_session(name: str, cwd: str, session_type: str = "cc", cols: int = 80
         wrapped = f"cd {cwd_arg} && while true; do opencode; sleep 3; done"
     else:
         args = ["claude", "--dangerously-skip-permissions"]
+        args.extend(["--tools", CLAUDE_SESSION_TOOLS])
         if CLAUDE_SESSION_SETTINGS.is_file():
             args.extend(["--settings", str(CLAUDE_SESSION_SETTINGS)])
         if with_telegram:
