@@ -1,0 +1,22 @@
+# Template — deploy/install.sh fills in @APP_DIR@, @USER@, @HOME@ and @EXTRA_PATH@.
+[Unit]
+Description=小克的家 (Prism web frontend for Claude Code)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=@USER@
+WorkingDirectory=@APP_DIR@
+Environment=HOME=@HOME@
+# Where claude / node / codex were found at install time, plus the usual spots
+Environment=PATH=@EXTRA_PATH@@HOME@/.local/bin:@HOME@/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=@APP_DIR@/.venv/bin/python @APP_DIR@/server.py
+Restart=always
+RestartSec=3
+# Keep the tmux server (and the Claude Code sessions in it) alive when the
+# service restarts, so an update doesn't kill running conversations.
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
