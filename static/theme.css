@@ -372,3 +372,176 @@ html.claude .modal input[type="text"] { font-size: 16px; }
   html.claude .ch-msgs { padding-left: max(24px, calc((100% - 780px) / 2)); padding-right: max(24px, calc((100% - 780px) / 2)); }
   html.claude .ch-input-bar { width: min(780px, calc(100% - 48px)); margin-left: auto; margin-right: auto; }
 }
+
+/* ==========================================================================
+   小克的家 layout layer (static/xk-layout.js): sidebar, headers, lists
+   ========================================================================== */
+[hidden] { display: none !important; }
+
+/* ---------- sidebar ---------- */
+html.claude .shell { grid-template-columns: 272px 1fr; }
+html.claude .shell[data-sidebar="closed"] { grid-template-columns: 60px 1fr; }
+html.claude .sidebar { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px); }
+html.claude .sb-top { padding: 18px 16px 10px; min-height: 0; }
+html.claude .xk-nav { padding: 0 10px; gap: 2px; }
+html.claude .xk-nav .sb-item { padding: 9px 10px; gap: 12px; font-size: .98rem; }
+html.claude .xk-nav .sb-item svg { width: 21px; height: 21px; }
+.xk-sb-new {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 8px 8px; margin-bottom: 4px; border: 0; border-radius: 10px; background: none; cursor: pointer;
+  font: inherit; font-weight: 600; font-size: .98rem; color: var(--xk-text, #1F1E1B); text-align: left;
+}
+.xk-sb-new:hover { background: var(--xk-hover); }
+.xk-plus {
+  width: 28px; height: 28px; border-radius: 50%; flex: none; display: grid; place-items: center;
+  background: var(--xk-accent, #C96442); color: #fff; transition: transform .25s var(--xk-ease, ease);
+}
+.xk-plus svg { width: 16px; height: 16px; }
+.xk-sb-new:hover .xk-plus { transform: rotate(90deg); }
+.xk-count { margin-left: auto; font-size: .78rem; color: var(--xk-faint, #9A968B); font-variant-numeric: tabular-nums; }
+.xk-sec { font-size: .78rem; color: var(--xk-faint, #9A968B); padding: 16px 20px 4px; }
+.xk-recents { flex: 1; min-height: 0; overflow-y: auto; padding: 0 10px 8px; overscroll-behavior: contain; }
+.xk-recent {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 8px 10px; border: 0; border-radius: 10px;
+  background: none; cursor: pointer; text-align: left; font: inherit; font-size: .93rem; color: var(--xk-text, #1F1E1B);
+  transition: background .15s, transform .12s;
+}
+.xk-recent:hover { background: var(--xk-hover); }
+.xk-recent:active { transform: scale(.985); }
+.xk-recent.active { background: var(--xk-raised); }
+.xk-recent-t { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xk-recent-empty { padding: 8px 12px; font-size: .85rem; color: var(--xk-faint, #9A968B); }
+.xk-badge {
+  font: 600 10px/1 var(--xk-mono, ui-monospace, monospace); letter-spacing: .02em;
+  padding: 3px 5px; border-radius: 5px; background: var(--xk-raised, #EFEDE4); color: var(--xk-muted, #6F6C63);
+  vertical-align: 2px; flex: none;
+}
+.xk-recent.active .xk-badge { background: var(--xk-surface, #fff); }
+.xk-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--xk-faint, #9A968B); opacity: .45; flex: none; display: inline-block; vertical-align: 1px; }
+.xk-dot.running { background: var(--xk-ok, #3E8C58); opacity: 1; animation: xk-pulse 1.8s ease-in-out infinite; }
+@keyframes xk-pulse { 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--xk-ok, #3E8C58) 22%, transparent); } }
+.xk-install {
+  margin: 4px 12px 6px; padding: 10px 12px; border: 1px solid var(--xk-line, #E6E3D8); border-radius: 14px;
+  background: var(--xk-surface, #fff); display: flex; align-items: center; gap: 10px; font-size: .88rem;
+}
+.xk-install-ic { width: 34px; height: 34px; border-radius: 9px; background: #D97757; color: #FFF8F0; display: grid; place-items: center; flex: none; }
+.xk-install-ic svg { width: 22px; height: 22px; }
+.xk-install-txt small { display: block; color: var(--xk-muted, #6F6C63); font-size: .76rem; }
+.xk-usage {
+  display: grid; gap: 6px; width: calc(100% - 20px); margin: 2px 10px; padding: 8px 10px; border: 0; border-radius: 10px;
+  background: none; cursor: pointer; text-align: left; font: inherit; font-size: .78rem; color: var(--xk-muted, #6F6C63);
+}
+.xk-usage:hover { background: var(--xk-hover); }
+.xk-usage-row { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.xk-bar { height: 5px; border-radius: 5px; background: var(--xk-line, #E6E3D8); overflow: hidden; display: block; }
+.xk-bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--xk-accent, #C96442); transition: width .6s var(--xk-ease, ease); }
+.xk-bar i.hot { background: var(--xk-err, #BD4436); }
+html.claude .sidebar .xk-user {
+  margin: 4px 10px 0; padding: 12px 10px 8px; border-top: 1px solid var(--xk-line, #E6E3D8); border-radius: 0 0 10px 10px; gap: 10px;
+}
+.xk-avatar {
+  width: 32px; height: 32px; border-radius: 50%; flex: none; display: grid; place-items: center;
+  background: var(--xk-text, #1F1E1B); color: var(--xk-bg, #FAF9F5); font-weight: 600; font-size: .9rem;
+}
+.xk-user-txt { flex: 1; line-height: 1.25; }
+.xk-user-txt small { display: block; color: var(--xk-faint, #9A968B); font-size: .76rem; }
+html.claude .sidebar .xk-user svg.xk-user-gear { width: 17px; height: 17px; color: var(--xk-faint, #9A968B); stroke: currentColor; }
+html.claude .sb-foot { display: none; }
+/* collapsed desktop rail: icons only */
+html.claude .shell[data-sidebar="closed"] :is(.xk-sec, .xk-recents, .xk-install, .xk-usage, .xk-count, .xk-user-txt, .xk-user-gear) { display: none !important; }
+html.claude .shell[data-sidebar="closed"] .xk-sb-new { justify-content: center; padding: 8px 0; }
+html.claude .shell[data-sidebar="closed"] .xk-sb-new .sb-item-label { display: none; }
+html.claude .shell[data-sidebar="closed"] .sidebar .xk-user { justify-content: center; margin: 0 6px; padding: 10px 0; }
+
+/* ---------- list pages: big serif title, like the design ---------- */
+html.claude .cl-head { gap: 10px; }
+html.claude .cl-title {
+  flex: 1; text-align: left; padding-left: 4px;
+  font-family: var(--xk-serif); font-weight: 400; font-size: 1.75rem; letter-spacing: -.01em;
+}
+html.claude .ch-avatar.xk-initial {
+  display: grid; place-items: center; color: #fff; font-weight: 600; font-size: 1rem; border-radius: 12px;
+}
+html.claude .ch-avatar.cc.xk-initial { background: #C8633F; }
+html.claude .ch-avatar.codex.xk-initial { background: #3F7F74; }
+html.claude .ch-avatar.opencode.xk-initial { background: #B9801A; }
+html.claude .ch-avatar.shell.xk-initial { background: #5B6B80; }
+html.claude .ch-name { display: flex; align-items: center; gap: 6px; }
+/* session board: the last terminal line as a little dark peek, like the design */
+html.claude .cl-card { border-radius: 16px; }
+html.claude .cl-card .summary {
+  font-family: var(--xk-mono); font-size: .78rem; line-height: 1.5;
+  background: #1D1C1A; color: #E8E4D8; border-radius: 9px; padding: 8px 10px; margin: 6px 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+html.claude .cl-card .summary.empty { color: #8E8A7E; }
+
+/* ---------- session headers: title left, 对话 | 终端 switch ---------- */
+html.claude #chSwitchToCode,
+html.claude #codeChatToggle,
+html.claude .cd-actions-pill .cd-pill-btn[aria-label="新建"] { display: none !important; }
+html.claude .cd-head .cd-title-wrap {
+  position: static; transform: none; flex: 1; min-width: 0; max-width: none;
+  align-items: flex-start; padding: 0 2px; pointer-events: auto;
+}
+html.claude .cd-head .cd-title { font-size: 1rem; }
+html.claude .cd-head .cd-sub { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xk-seg {
+  position: relative; isolation: isolate; flex: none;
+  display: flex; gap: 2px; padding: 3px; border-radius: 11px; background: var(--xk-raised, #EFEDE4);
+}
+.xk-seg button {
+  display: flex; align-items: center; gap: 6px; padding: 6px 14px; border: 0; border-radius: 8px; background: none;
+  font: inherit; font-size: .86rem; color: var(--xk-muted, #6F6C63); cursor: pointer; transition: color .2s;
+}
+.xk-seg button.on { color: var(--xk-text, #1F1E1B); }
+.xk-seg button svg { width: 16px; height: 16px; }
+.xk-seg-thumb {
+  position: absolute; z-index: -1; top: 3px; bottom: 3px; left: 0; border-radius: 8px;
+  background: var(--xk-surface, #fff); box-shadow: 0 1px 3px rgba(0, 0, 0, .10);
+  transition: transform .34s var(--xk-ease, ease), width .34s var(--xk-ease, ease);
+}
+@media (min-width: 721px) {
+  html.claude .cd-head .xk-seg { position: absolute; left: 50%; transform: translateX(-50%); }
+  html.claude .cd-head .cd-title-wrap { max-width: calc(50% - 170px); }
+}
+@media (max-width: 720px) {
+  .xk-seg button { padding: 6px 10px; }
+  .xk-seg button span { display: none; }
+  html.claude #chatsView .cd-title-wrap { max-width: none; }
+  html.claude .cd-head { gap: 8px; }
+  html.claude .cl-title { font-size: 1.5rem; }
+}
+
+/* ---------- composer: "/" commands button ---------- */
+.xk-cmd code { font-family: var(--xk-mono, ui-monospace, monospace); font-size: .9rem; }
+/* base CSS styles the Code *page* via [data-view="code"]; keep that off the sidebar item */
+html.claude .sidebar .sb-item[data-view] { background: transparent; }
+html.claude .sidebar .sb-item[data-view].active { background: var(--xk-raised); }
+html.claude .sidebar .sb-item:hover { background: var(--xk-hover); }
+
+/* terminal as a rounded dark card with a light key row, like the design */
+html.claude .code-term-wrap { margin: 0 12px; border-radius: 14px; overflow: hidden; border: 1px solid var(--xk-line); }
+html.claude .code-keybar { background: transparent; border: 0; padding: 8px 12px 2px; }
+html.claude .code-keybar button {
+  background: var(--xk-surface); color: var(--xk-text); border: 1px solid var(--xk-line);
+  box-shadow: 0 1px 0 var(--xk-line-strong); border-radius: 8px;
+}
+html.claude .code-keybar button.active,
+html.claude .code-keybar button.on { background: var(--xk-accent); color: #fff; border-color: transparent; }
+html.claude .code-keybar .sep { background: var(--xk-line); }
+html.claude .cd-tabs { padding-left: 14px; padding-right: 14px; }
+
+/* desktop list pages: centred column like the design */
+@media (min-width: 900px) {
+  html.claude :is(.ch-list, .code-list, .st-list, .st-appearance) > * {
+    width: 100%; max-width: 820px; margin-left: auto; margin-right: auto;
+  }
+  html.claude .ch-list > .cl-search { width: calc(100% - 32px); max-width: 788px; }
+}
+
+/* phone drawer: dim the page behind in the theme's own colour */
+@media (max-width: 720px) {
+  html.claude .main::after { background: color-mix(in srgb, var(--xk-bg) 55%, transparent); }
+  html.claude[data-appearance="dark"] .main::after { background: rgba(0, 0, 0, 0.35); }
+}
