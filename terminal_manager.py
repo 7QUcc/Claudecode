@@ -170,7 +170,7 @@ CLAUDE_SESSION_SETTINGS = Path(__file__).resolve().parent / "deploy" / "claude-s
 # Keep new sessions focused on file/terminal work, web access, MCP, skills,
 # and user questions. Task orchestration and notebook tools are omitted.
 CLAUDE_SESSION_TOOLS = (
-    "Read,Write,Edit,Glob,Grep,Bash,KillShell,AskUserQuestion,Skill,"
+    "Read,Write,Edit,Glob,Grep,Bash,KillShell,ScheduleWakeup,AskUserQuestion,Skill,"
     "ToolSearch,ReadMcpResource,WebFetch,WebSearch"
 )
 
