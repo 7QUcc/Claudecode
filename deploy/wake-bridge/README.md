@@ -43,6 +43,8 @@ must opt in to Telegram, and the previous holder must release it first. The
 Host token is sourced from the private `daemon.env` inside the tmux pane so a
 long-lived tmux server does not need to inherit it. Existing sessions must be
 recreated through the launcher; they cannot be attached retroactively.
+For a Telegram-enabled session, only `TELEGRAM_BOT_TOKEN` is extracted from
+the existing private xiaoke `.env`; the dashboard password is not inherited.
 
 The checked-in manifest template is
 `host-adapters.json.example`. It contains no credentials.

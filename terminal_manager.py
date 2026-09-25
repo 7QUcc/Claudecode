@@ -167,6 +167,7 @@ CHAT_INPUT_TAG_RE = re.compile(r"<chat-input\b[^>]*/>\s*", re.IGNORECASE)
 # CWD: must be an existing dir under user home
 HOME = str(Path.home())
 CLAUDE_SESSION_SETTINGS = Path(__file__).resolve().parent / "deploy" / "claude-session-settings.json"
+XIAOKE_ENV = Path(__file__).resolve().parent / ".env"
 WAKEBRIDGE_CONFIG = Path.home() / ".local" / "state" / "wake-bridge" / "default" / "wakebridge.config.json"
 WAKEBRIDGE_ENV = WAKEBRIDGE_CONFIG.parent / "daemon.env"
 WAKEBRIDGE_CLAUDE = Path.home() / ".local" / "bin" / "wakebridge-claude"
@@ -3072,6 +3073,8 @@ def create_session(name: str, cwd: str, session_type: str = "cc", cols: int = 80
         ))
         if WAKEBRIDGE_CLAUDE.is_file() and not wakebridge_ready:
             return {"ok": False, "error": "Wake Bridge is installed but its configuration is incomplete"}
+        if with_telegram and wakebridge_ready and not XIAOKE_ENV.is_file():
+            return {"ok": False, "error": "Telegram token source is missing"}
         if wakebridge_ready:
             args = [
                 str(WAKEBRIDGE_CLAUDE), "launch", "--experimental",
@@ -3099,6 +3102,11 @@ def create_session(name: str, cwd: str, session_type: str = "cc", cols: int = 80
                 f"export XIAOKE_WITH_TELEGRAM={'1' if with_telegram else '0'}; "
                 f"set -a; . {shlex.quote(str(WAKEBRIDGE_ENV))}; set +a; "
             )
+            if with_telegram:
+                setup += (
+                    f"export TELEGRAM_BOT_TOKEN=\"$(. {shlex.quote(str(XIAOKE_ENV))}; "
+                    "printf %s \"$TELEGRAM_BOT_TOKEN\")\"; "
+                )
         if wakebridge_ready:
             wrapped = (
                 f"{setup}cd {cwd_arg} && while true; do {cmd}; "
