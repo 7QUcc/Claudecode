@@ -151,11 +151,9 @@ function _chQueueNewReplyReveal(name, messages) {
     return;
   }
   if (_chPendingLoadEarlier || _chLiveFocusSourceUuid || _chLiveFocusMessageId) return;
-  // Don't animate at all when the chat is already long — the reveal tick is
-  // O(n) per message, and stacking dozens makes opening the chat lag. Also
-  // skip reveal for any single text block longer than the per-block cap so a
-  // single huge code-paste reply doesn't strobe-paint for ages.
-  const revealEnabled = (messages || []).length <= _CH_REVEAL_MAX_MESSAGES;
+  // Keep the reveal for newly arrived replies even in a long chat. The cap is
+  // only for the amount of old transcript we inspect on the first refresh.
+  const revealEnabled = true;
   messages.forEach((message, index) => {
     const key = _chMessageKey(message, index);
     if (_chSeenLiveMessages.has(key)) return;
@@ -3699,8 +3697,11 @@ async function renderChatMessages(name, cachedData = null) {
     const msgs = data.messages || [];
     if (!chViewingArchive && !chViewingUnified) _chQueueNewReplyReveal(name, msgs);
     chMaybeSyncModelLabel(name);
-    if (!chViewingArchive && !chViewingUnified) _chScheduleChatRefresh(_chHasLiveWork(msgs) ? 900 : 3000);
     const pendingMsgs = (!chViewingArchive && !chViewingUnified) ? _chReconcilePending(name, msgs) : [];
+    if (!chViewingArchive && !chViewingUnified) {
+      const replyActive = _chHasLiveWork(msgs) || _chShouldShowReplyWaiting(msgs, pendingMsgs, data.terminal_prompt);
+      _chScheduleChatRefresh(replyActive ? 600 : 3000);
+    }
     if (!_chCompactionRecordsLoaded) renderCompactionHistory(data.compaction_overview || []);
     // Fingerprint also keys on chMsgLimit so bumping it via "load earlier"
     // bypasses the no-change short-circuit and forces a fresh render.
@@ -3829,6 +3830,12 @@ async function renderChatMessages(name, cachedData = null) {
             if (child.type === 'thinking') activity.appendChild(buildThinkingBlock(child));
             else if (child.type === 'tool_group') activity.appendChild(buildToolGroup(child));
           });
+        } else if (blk.type === 'wake_bridge') {
+          const notice = document.createElement('div');
+          notice.className = 'ch-wake-bridge-notice';
+          notice.textContent = blk.label || 'Wake Bridge 触发了一次';
+          notice.title = 'Wake Bridge';
+          activity.appendChild(notice);
         } else if (blk.type === 'delivery') {
           bubble.appendChild(buildDeliveryMark(blk));
         }

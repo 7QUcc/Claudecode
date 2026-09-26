@@ -912,6 +912,10 @@ _IMAGE_ATTR_RE = re.compile(
 _CHAT_INPUT_WRAP_RE = re.compile(r'<chat-input\s+sent_at="[^"]+">\s*(?P<inner>.*?)\s*</chat-input>', re.DOTALL | re.IGNORECASE)
 _CHAT_INPUT_PREFIX_RE = re.compile(r'<chat-input\b[^>]*/>\s*', re.IGNORECASE)
 _CHAT_INPUT_SENT_AT_RE = re.compile(r'<chat-input\b[^>]*\bsent_at="(?P<ts>[^"]+)"[^>]*/>', re.IGNORECASE)
+_WAKE_BRIDGE_CHANNEL_RE = re.compile(
+    r'<channel\b(?=[^>]*\bsource=["\']wakebridge_channel["\'])(?=[^>]*\bkind=["\']wakebridge_batch["\'])[^>]*>.*?</channel>',
+    re.DOTALL | re.IGNORECASE,
+)
 _PRISM_DATA_DIR = Path(os.path.expanduser(os.environ.get("PRISM_DATA_DIR", "~/.local/share/prism")))
 _LATEST_COMPACTION_CACHE = {}
 _COMPACTING_PANE_RE = re.compile(r"(?:Compacting|Compacting conversation|Compacting context)", re.IGNORECASE)
@@ -931,6 +935,11 @@ def _is_displayable_queued_prompt(prompt) -> bool:
     if "<channel" in prompt or "<chat-input" in prompt:
         return True
     return not prompt.lstrip().startswith("/")
+
+
+def _is_wake_bridge_batch(text: str) -> bool:
+    """Recognize Wake Bridge's internal delivery envelope without exposing it."""
+    return isinstance(text, str) and bool(_WAKE_BRIDGE_CHANNEL_RE.search(text))
 _TOOL_USE_SUMMARY = {
     "Read":   ("path",        "📄 Read {}"),
     "Edit":   ("file_path",   "✏️ Edit {}"),
@@ -1083,6 +1092,8 @@ def _extract_blocks(obj: dict, session: str, tool_done_ids: set, ask_answers: Op
             pending_group = None
 
     if isinstance(content, str):
+        if role == "user" and _is_wake_bridge_batch(content):
+            return role, [{"type": "wake_bridge", "label": "Wake Bridge 触发了一次"}], _chat_message_ts(obj, role, content), obj.get("uuid")
         cleaned = _clean_user_text(content) if role == "user" else content.strip()
         if not cleaned:
             return None
@@ -1099,7 +1110,11 @@ def _extract_blocks(obj: dict, session: str, tool_done_ids: set, ask_answers: Op
             t = b.get("type")
             if t == "text":
                 flush_group()
-                txt = (b.get("text") or "").strip()
+                raw_txt = (b.get("text") or "").strip()
+                if role == "user" and _is_wake_bridge_batch(raw_txt):
+                    blocks.append({"type": "wake_bridge", "label": "Wake Bridge 触发了一次"})
+                    continue
+                txt = raw_txt
                 if not txt:
                     continue
                 if role == "user":
@@ -1115,6 +1130,8 @@ def _extract_blocks(obj: dict, session: str, tool_done_ids: set, ask_answers: Op
                 if thinking:
                     blocks.append({"type": "thinking", "text": thinking, "done": True})
             elif t == "tool_use" and role == "assistant":
+                if (b.get("name") or "").startswith("mcp__wakebridge__"):
+                    continue
                 if b.get("name") in _TELEGRAM_REPLY_TOOLS:
                     # Render the Telegram reply as its actual text + a delivery
                     # mark, not a generic "called a tool" row.
