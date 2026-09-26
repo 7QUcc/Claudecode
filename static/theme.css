@@ -587,3 +587,123 @@ html.claude .cd-tabs { padding-left: 14px; padding-right: 14px; }
   html.claude .main::after { background: color-mix(in srgb, var(--xk-bg) 55%, transparent); }
   html.claude[data-appearance="dark"] .main::after { background: rgba(0, 0, 0, 0.35); }
 }
+
+/* ==========================================================================
+   Mobile home + four-tab shell
+   ========================================================================== */
+html.claude .home-view { background: var(--xk-bg); }
+html.claude .home-scroll {
+  min-height: 100%; overflow-y: auto; padding: 0 20px 40px;
+}
+html.claude .home-head {
+  min-height: min(58vh, 510px); padding: calc(env(safe-area-inset-top, 0px) + 72px) 8px 34px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+}
+html.claude .home-eyebrow {
+  color: var(--xk-faint); font-size: .72rem; font-weight: 600; letter-spacing: .38em; margin-left: .38em;
+}
+html.claude .home-head h1 {
+  margin: 34px 0 52px; color: var(--xk-text); font-family: var(--xk-serif); font-size: clamp(2.5rem, 11vw, 4.2rem);
+  font-weight: 400; line-height: 1.05; letter-spacing: 0;
+}
+html.claude .home-head h1 span { color: var(--xk-accent); font-family: var(--xk-sans); font-size: .58em; vertical-align: .16em; margin: 0 .12em; }
+html.claude .home-days { color: var(--xk-muted); font-size: 1.04rem; font-weight: 600; letter-spacing: .16em; }
+html.claude .home-days::before { content: ''; display: inline-block; width: 38px; height: 3px; margin: 0 14px 4px 0; background: var(--xk-accent); }
+html.claude .home-days.is-empty { letter-spacing: .04em; }
+html.claude .home-date-link {
+  margin-top: 18px; border: 0; background: transparent; color: var(--xk-faint); font: inherit; font-size: .82rem; cursor: pointer;
+}
+html.claude .home-date-link:active { color: var(--xk-accent); }
+html.claude .home-quote {
+  padding: 28px 22px 22px; border: 1px solid var(--xk-line); border-radius: 25px; background: var(--xk-surface);
+  box-shadow: 0 12px 28px rgba(40, 36, 28, .06); text-align: center;
+}
+html.claude .home-quote p { color: var(--xk-text); font-family: var(--xk-serif); font-size: 1.22rem; line-height: 1.55; }
+html.claude .home-dots { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+html.claude .home-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--xk-line-strong); }
+html.claude .home-dots i.active { background: var(--xk-accent); }
+html.claude .home-note {
+  display: flex; align-items: center; gap: 14px; margin: 14px 0 0; padding: 18px 20px; border-radius: 20px;
+  background: var(--xk-accent-soft); color: var(--xk-text);
+}
+html.claude .home-note-mark { color: var(--xk-accent); font-size: 1.45rem; }
+html.claude .home-note strong { display: block; font-size: .96rem; }
+html.claude .home-note small { display: block; color: var(--xk-muted); margin-top: 4px; font-size: .78rem; }
+
+html.claude .mobile-tabbar { display: none; }
+html.claude .st-date-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; }
+html.claude .st-date-row .st-row-copy { flex: 1; min-width: 0; }
+html.claude .st-date-row input { border: 0; background: var(--xk-raised); border-radius: 10px; padding: 9px 8px; color: var(--xk-text); font: inherit; font-size: .82rem; }
+html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft); }
+
+@media (max-width: 720px) {
+  html.claude .shell { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+  html.claude .sidebar, html.claude .sidebar-backdrop { display: none !important; }
+  html.claude .shell[data-sidebar="open"] .main { transform: none; border-radius: 0; box-shadow: none; }
+  html.claude .main::after { display: none; }
+  html.claude .cl-head .cl-burger { display: none; }
+  html.claude .cl-head { padding-left: 20px; padding-right: 20px; }
+  html.claude .cl-title { text-align: left; padding-left: 0; font-size: 1.8rem; }
+  html.claude .cl-head .cl-title { margin-right: auto; }
+  html.claude .mobile-tabbar {
+    position: fixed; left: 12px; right: 12px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); z-index: 200;
+    height: 66px; display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; padding: 5px;
+    border: 1px solid rgba(214, 210, 196, .8); border-radius: 24px; background: rgba(255,255,255,.86);
+    -webkit-backdrop-filter: blur(24px) saturate(150%); backdrop-filter: blur(24px) saturate(150%);
+    box-shadow: 0 10px 28px rgba(40, 36, 28, .12), inset 0 1px 0 rgba(255,255,255,.95);
+  }
+  html.claude[data-appearance="dark"] .mobile-tabbar { background: rgba(48,48,45,.9); border-color: var(--xk-line); }
+  html.claude .mobile-tab {
+    height: 56px; border: 0; border-radius: 19px; background: transparent; color: var(--xk-faint); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 4px; font: inherit; font-size: .7rem; cursor: pointer; transition: background .2s, color .2s, transform .15s;
+  }
+  html.claude .mobile-tab svg { width: 21px; height: 21px; }
+  html.claude .mobile-tab.active { background: var(--xk-raised); color: var(--xk-accent); font-weight: 600; }
+  html.claude .mobile-tab:active { transform: scale(.94); }
+  html.claude .home-scroll { padding-bottom: 30px; }
+  html.claude .home-head { min-height: min(57vh, 480px); padding-top: calc(env(safe-area-inset-top, 0px) + 48px); }
+  html.claude .home-head h1 { margin-top: 28px; margin-bottom: 44px; font-size: clamp(2.4rem, 12vw, 3.7rem); }
+  html.claude .home-quote { border-radius: 22px; }
+  html.claude .home-quote p { font-size: 1.1rem; }
+  html.claude .home-note { margin-bottom: 10px; }
+  html.claude .ch-rows, html.claude .cl-cards { padding-bottom: 92px; }
+  html.claude .ch-row .ch-item { margin: 0 16px 10px; padding: 14px 16px; border: 1px solid var(--xk-line); border-radius: 20px; background: var(--xk-surface); box-shadow: 0 4px 12px rgba(40,36,28,.045); }
+  html.claude .ch-row + .ch-row { border-top: 0; }
+  html.claude .ch-detail .cd-head { padding-left: 16px; padding-right: 16px; }
+  html.claude .cd-actions-pill { height: 42px; }
+  html.claude .cd-actions-pill .cd-pill-btn { width: 43px; height: 42px; }
+  html.claude .ch-usage-pill {
+    left: auto; top: 14px; right: 108px; transform: none; width: 30px; height: 30px; padding: 0; border-radius: 50%;
+    background: conic-gradient(var(--xk-accent) var(--usage-pct), var(--xk-line) 0); box-shadow: none; border: 0; display: grid; place-items: center;
+  }
+  html.claude .ch-usage-pill::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: var(--xk-bg); }
+  html.claude .ch-usage-pill::before { display: none; }
+  html.claude .ch-usage-pill > * { z-index: 1; }
+  html.claude .ch-usage-dot-btn { width: 30px; height: 30px; margin: 0; }
+  html.claude .ch-usage-dot { width: 5px; height: 5px; background: var(--xk-accent); box-shadow: none; }
+  html.claude .ch-usage-text-btn { display: none; }
+  html.claude .ch-msgs { padding: 14px 16px 28px; gap: 9px; }
+  html.claude .ch-bubble { max-width: 86%; padding: 11px 15px; border-radius: 19px; font-size: 1.04rem; line-height: 1.55; }
+  html.claude .ch-bubble.user { border-radius: 19px 19px 7px 19px; }
+  html.claude .ch-bubble.assistant { padding-left: 2px; padding-right: 7px; }
+  html.claude .ch-input-bar { margin: 4px 12px 0; padding-bottom: 12px; border-radius: 24px; }
+  html.claude .ch-detail .ch-input-bar { margin-bottom: calc(8px + 72px + env(safe-area-inset-bottom, 0px)); }
+  html.claude .ch-model-pill { pointer-events: none; opacity: .78; }
+  html.claude .ch-model-pill svg { display: none; }
+  html.claude .ch-send-mode { min-width: 42px; padding: 0 9px; }
+  html.claude .code-list .cl-title { font-size: 1.8rem; }
+  html.claude .code-detail .cd-head { padding-left: 16px; padding-right: 16px; }
+  html.claude .code-term-wrap { margin: 0 12px 10px; border-radius: 16px; }
+  html.claude .code-detail .cd-input-bar { margin-bottom: calc(8px + 72px + env(safe-area-inset-bottom, 0px)); }
+  html.claude .st-body { padding: 20px 16px 110px; }
+  html.claude .st-group-title { padding-left: 4px; }
+  html.claude .st-date-row { padding-left: 14px; padding-right: 12px; }
+  html.claude .st-date-row input { max-width: 126px; }
+  html.claude .st-card { border-radius: 18px; }
+  html.claude section[data-view="settings"] .cl-head { padding-left: 20px; }
+}
+
+@media (min-width: 721px) {
+  html.claude .home-scroll { max-width: 760px; margin: 0 auto; }
+  html.claude .home-head { min-height: 560px; }
+}

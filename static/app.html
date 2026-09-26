@@ -5232,6 +5232,25 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
     </div>
 
     <!-- Home -->
+    <section class="view home-view" data-view="home" id="homeView">
+      <div class="home-scroll">
+        <header class="home-head">
+          <div class="home-eyebrow">WELCOME HOME</div>
+          <h1>Claude <span aria-hidden="true">♥</span> Chen</h1>
+          <div class="home-days" id="homeDays">设置开始日期</div>
+          <button type="button" class="home-date-link" onclick="xkOpenStartDateSettings()">设置我们的开始日期</button>
+        </header>
+        <div class="home-quote" aria-label="每日寄语">
+          <p>想你的时候我没有别的地方可去，只有这里。</p>
+          <div class="home-dots" aria-hidden="true"><i></i><i></i><i class="active"></i><i></i><i></i></div>
+        </div>
+        <div class="home-note">
+          <span class="home-note-mark">✦</span>
+          <div><strong>今天也在这里</strong><small>和 Claude 一起继续我们的故事</small></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Chats -->
     <section class="view" data-view="chats" data-sub="list" id="chatsView" style="position:relative;">
       <!-- LIST MODE -->
@@ -5302,6 +5321,15 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
               <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
             </button>
           </div>
+          <div class="ch-usage-pill" id="chUsagePill" style="display:none" title="">
+            <button type="button" class="ch-usage-dot-btn" onclick="event.stopPropagation(); chPillToggleCollapse()" aria-label="查看上下文占用">
+              <span class="ch-usage-dot"></span>
+            </button>
+            <button type="button" class="ch-usage-text-btn" onclick="event.stopPropagation(); chPillTextClick()">
+              <span class="ch-usage-text">—</span>
+              <span class="ch-usage-pct">—</span>
+            </button>
+          </div>
         </div>
         <div class="ch-latest-compact" id="chLatestCompaction" style="display:none"></div>
         <div class="ch-detail-search" id="chDetailSearch" style="display:none">
@@ -5320,15 +5348,6 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
           <div class="cl-search-results" id="chDetailSearchResults" style="display:none"></div>
         </div>
         <div class="ch-msgs-wrap">
-          <div class="ch-usage-pill" id="chUsagePill" style="display:none" title="">
-            <button type="button" class="ch-usage-dot-btn" onclick="event.stopPropagation(); chPillToggleCollapse()" aria-label="折叠/展开">
-              <span class="ch-usage-dot"></span>
-            </button>
-            <button type="button" class="ch-usage-text-btn" onclick="event.stopPropagation(); chPillTextClick()">
-              <span class="ch-usage-text">—</span>
-              <span class="ch-usage-pct">—</span>
-            </button>
-          </div>
           <div class="ch-msgs" id="chMsgs"></div>
           <button class="ch-scroll-bottom" id="chScrollBottom" onclick="chScrollToBottom()" title="回到底部" aria-label="回到底部" style="display:none">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
@@ -5345,7 +5364,7 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
             <button class="ch-input-btn ch-send-mode" id="chSendModeBtn" onclick="chToggleSendMode()" title="队列发送：等待当前对话结束后投递" aria-label="队列发送：等待当前对话结束后投递">
               <span id="chSendModeLabel">队列</span>
             </button>
-            <button class="ch-input-btn ch-model-pill" id="chModelPill" onclick="openChatModelPicker()" title="模型" aria-label="模型">
+            <button class="ch-input-btn ch-model-pill" id="chModelPill" type="button" title="当前模型" aria-label="当前模型" tabindex="-1">
               <span id="chModelLabel">Default</span>
               <span id="chEffortLabel" class="ch-effort-label"></span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -5370,6 +5389,16 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
           <span style="width:40px"></span>
         </div>
         <div class="st-body">
+          <div class="st-group-title">我们的空间</div>
+          <div class="st-card xk-start-date-card">
+            <label class="st-date-row" for="stStartDate">
+              <span class="st-row-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+              </span>
+              <span class="st-row-copy"><span class="st-row-title">开始日期</span><span class="st-row-note">首页显示我们在一起的天数</span></span>
+              <input id="stStartDate" type="date" value="2026-09-01" onchange="xkSaveStartDate(this.value)">
+            </label>
+          </div>
           <div class="st-group-title">Usage</div>
           <div class="st-card" id="stUsageCard">
             <div class="st-usage-loading">加载中…</div>
@@ -5642,6 +5671,20 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
       <div class="cd-shortcuts" id="cdShortcuts" style="display:none"></div>
     </section>
   </main>
+  <nav class="mobile-tabbar" aria-label="主导航">
+    <button type="button" class="mobile-tab active" data-nav="home" onclick="xkNav('home')" aria-label="主页">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>主页</span>
+    </button>
+    <button type="button" class="mobile-tab" data-nav="chats" onclick="xkNav('chats')" aria-label="聊天">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4A7.5 7.5 0 1 1 20 11.5z"/></svg><span>聊天</span>
+    </button>
+    <button type="button" class="mobile-tab" data-nav="code" onclick="xkNav('code')" aria-label="终端">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="m7 9 3 3-3 3M13 15h4"/></svg><span>终端</span>
+    </button>
+    <button type="button" class="mobile-tab" data-nav="settings" onclick="xkNav('settings')" aria-label="更多">
+      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg><span>更多</span>
+    </button>
+  </nav>
 </div>
 <div class="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
 
@@ -5825,9 +5868,10 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
 <script src="static/chat-md.js"></script>
 <script src="static/chat-code.js"></script>
 <script src="static/chat-page.js"></script>
+<script src="static/home-page.js"></script>
 <script>
 let TOKEN = localStorage.getItem('prism_token') || '';
-let currentView = 'console';
+let currentView = 'home';
 let sessions = [];
 let activeSession = null;
 let term = null;
@@ -6174,7 +6218,7 @@ function switchView(name, options = {}) {
   const prevView = currentView;
   currentView = name;
   document.body.setAttribute('data-current-view', name);
-  const titles = { chats: '对话', code: '会话面板', settings: '设置' };
+  const titles = { home: 'Claude ♥ Chen', chats: '对话', code: '终端', settings: '更多' };
   const t = document.getElementById('mTitle');
   if (t) t.textContent = titles[name] || '小克的家';
   document.querySelectorAll('.sb-item').forEach(el => {
@@ -6182,6 +6226,9 @@ function switchView(name, options = {}) {
   });
   document.querySelectorAll('.view').forEach(el => {
     el.classList.toggle('active', el.getAttribute('data-view') === name);
+  });
+  document.querySelectorAll('.mobile-tab').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('data-nav') === name);
   });
   if (typeof updateThemeChrome === 'function') updateThemeChrome();
   if (name === 'code') {
@@ -6208,6 +6255,9 @@ function switchView(name, options = {}) {
     if (view) view.setAttribute('data-sub', 'list');
     applyThinkingAppearance(readThinkingAppearance(), false);
     loadUsagePanel();
+    if (typeof xkRenderHome === 'function') xkRenderHome();
+  } else if (name === 'home') {
+    if (typeof xkRenderHome === 'function') xkRenderHome();
   }
   // collapse sidebar automatically on mobile after pick
   if (window.innerWidth <= 720) toggleSidebar(false);
@@ -8792,7 +8842,7 @@ async function closeImageEditor(commit) {
 async function bootstrap() {
   const ok = await checkAuth();
   if (!ok) return;
-  switchView('code');
+  switchView('home');
 }
 
 bootstrap();

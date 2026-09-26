@@ -33,6 +33,9 @@
   }
   window.xkNav = function (where) {
     switch (where) {
+      case 'home':
+        switchView('home');
+        break;
       case 'new':
         if (typeof openNewSessionModal === 'function') openNewSessionModal();
         break;
@@ -163,16 +166,9 @@
   }
   let chatSeg = null, codeSeg = null;
   function installSegs() {
-    const chatHead = $('#chatsDetail .cd-head');
-    if (chatHead && !chatSeg) {
-      chatSeg = makeSeg('chat', () => switchToCodeFromChat());
-      chatHead.querySelector('.cd-title-wrap')?.after(chatSeg);
-    }
-    const codeHead = $('#codeDetail .cd-head');
-    if (codeHead && !codeSeg) {
-      codeSeg = makeSeg('term', () => switchToChatFromCode());
-      codeHead.querySelector('.cd-title-wrap')?.after(codeSeg);
-    }
+    // Chat and terminal are separate top-level mobile tabs. The old inline
+    // segmented switch is intentionally not injected into either detail view.
+    return;
   }
   function syncSegs() {
     const chatsView = document.getElementById('chatsView');
