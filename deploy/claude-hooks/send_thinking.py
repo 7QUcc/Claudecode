@@ -172,7 +172,7 @@ def _mark_sent(session_id: str, summary: str) -> None:
 
 
 def _send(token: str, chat_id: str, summary: str) -> None:
-    body = "🧠 思考摘要\n<blockquote expandable>" + html.escape(summary) + "</blockquote>"
+    body = "☁️ 思考摘要\n<blockquote expandable>" + html.escape(summary) + "</blockquote>"
     payload = urllib.parse.urlencode({
         "chat_id": chat_id,
         "text": body,
