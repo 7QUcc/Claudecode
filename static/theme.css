@@ -648,19 +648,22 @@ html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft);
   html.claude .cl-title { text-align: left; padding-left: 0; font-size: 1.8rem; }
   html.claude .cl-head .cl-title { margin-right: auto; }
   html.claude .mobile-tabbar {
-    position: fixed; left: 12px; right: 12px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); z-index: 200;
-    height: 66px; display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; padding: 5px;
-    border: 1px solid rgba(214, 210, 196, .8); border-radius: 24px; background: rgba(255,255,255,.86);
+    position: fixed; left: 50%; right: auto; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 200;
+    width: min(360px, calc(100vw - 72px)); height: 58px; transform: translateX(-50%);
+    display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; padding: 4px;
+    border: 1px solid rgba(214, 210, 196, .72); border-radius: 30px; background: rgba(255,255,255,.94);
     -webkit-backdrop-filter: blur(24px) saturate(150%); backdrop-filter: blur(24px) saturate(150%);
-    box-shadow: 0 10px 28px rgba(40, 36, 28, .12), inset 0 1px 0 rgba(255,255,255,.95);
+    box-shadow: 0 8px 22px rgba(40, 36, 28, .10), inset 0 1px 0 rgba(255,255,255,.98);
   }
-  html.claude[data-appearance="dark"] .mobile-tabbar { background: rgba(48,48,45,.9); border-color: var(--xk-line); }
+  html.claude[data-appearance="dark"] .mobile-tabbar { background: rgba(48,48,45,.94); border-color: var(--xk-line); }
   html.claude .mobile-tab {
-    height: 56px; border: 0; border-radius: 19px; background: transparent; color: var(--xk-faint); display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 4px; font: inherit; font-size: .7rem; cursor: pointer; transition: background .2s, color .2s, transform .15s;
+    height: 50px; border: 0; border-radius: 26px; background: transparent; color: #AAA9A4; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2px; font: inherit; font-size: .68rem; cursor: pointer; transition: background .2s, color .2s, transform .15s;
   }
-  html.claude .mobile-tab svg { width: 21px; height: 21px; }
-  html.claude .mobile-tab.active { background: var(--xk-raised); color: var(--xk-accent); font-weight: 600; }
+  html.claude .mobile-tab svg { width: 19px; height: 19px; }
+  html.claude .mobile-tab.active { background: #F2F1EE; color: var(--xk-accent); font-weight: 600; }
+  html.claude[data-appearance="dark"] .mobile-tab { color: #929089; }
+  html.claude[data-appearance="dark"] .mobile-tab.active { background: var(--xk-raised); }
   html.claude .mobile-tab:active { transform: scale(.94); }
   html.claude .home-scroll { padding-bottom: 30px; }
   html.claude .home-head { min-height: min(57vh, 480px); padding-top: calc(env(safe-area-inset-top, 0px) + 48px); }
@@ -717,23 +720,57 @@ html.claude .home-quote,
 html.claude .home-note,
 html.claude .ch-msg-bottom,
 html.claude .ch-disclaimer,
-html.claude .ch-tool-group:not(.ch-reply-waiting),
-html.claude .ch-thinking-strip,
 html.claude .ch-file-card.inline,
 html.claude .ch-compact-card,
 html.claude .ch-delivery-mark { display: none !important; }
 
+/* Tool calls and thinking summaries stay outside message bubbles. */
+html.claude .ch-tool-group,
+html.claude .ch-thinking-strip {
+  display: block !important;
+  align-self: flex-start;
+  width: min(86%, 620px);
+  max-width: 100%;
+}
+html.claude .ch-thinking-strip { display: flex !important; }
+html.claude .ch-tool-group.xk-tool-group {
+  width: min(86%, 620px);
+  margin: 2px 0;
+  padding: 0;
+}
+html.claude .ch-thinking-strip.xk-act {
+  width: min(86%, 620px);
+  margin: 2px 0;
+  padding: 5px 0;
+  font-size: .84rem;
+}
+html.claude .ch-tool-group.inflight.thinking-inflight {
+  display: inline-flex !important;
+  width: fit-content;
+  margin: 3px 0;
+}
+html.claude .ch-tool-group.inflight.thinking-inflight .label { font-size: .86rem; }
+
 html.claude .ch-bubble.assistant {
   align-self: flex-start;
   max-width: 86%;
-  padding: 11px 15px;
+  padding: 10px 14px;
   border: 1px solid var(--xk-line);
-  border-radius: 19px 19px 19px 7px;
+  border-radius: 23px 23px 23px 8px;
   background: var(--xk-surface);
 }
+html.claude .ch-bubble {
+  font-size: .94rem;
+  line-height: 1.55;
+  border-radius: 23px;
+}
+html.claude .ch-bubble.user { border-radius: 23px 23px 8px 23px; }
+html.claude .ch-bubble.assistant .ch-text { font-size: .96rem; line-height: 1.58; }
 html.claude .ch-bubble.assistant .ch-bubble-time { text-align: left; }
+html.claude .ch-input { font-size: 1rem; }
 html.claude .chat-new-fab { display: none; }
 html.claude .cd-menu-head { display: none; }
+html.claude .ch-usage-pill { display: none !important; }
 
 @media (max-width: 720px) {
   html.claude .home-view { overflow: hidden; }
@@ -787,15 +824,12 @@ html.claude .cd-menu-head { display: none; }
   }
   html.claude #chatsView[data-sub="detail"] .cd-sub { text-align: center; }
   html.claude #chatsView[data-sub="detail"] .ch-usage-pill {
-    top: 50%; right: 108px; left: auto;
-    transform: translateY(-50%);
+    display: none !important;
   }
-  html.claude #chatsView[data-sub="detail"] .ch-usage-pill:hover { transform: translateY(-50%) translateY(-1px); }
-  html.claude #chatsView[data-sub="detail"] .ch-usage-pill:active { transform: translateY(-50%) scale(.97); }
-  html.claude #chatsView[data-sub="detail"] .ch-bubble.assistant { max-width: 86%; padding: 11px 15px; }
+  html.claude #chatsView[data-sub="detail"] .ch-bubble.assistant { max-width: 86%; padding: 10px 14px; }
 
   /* The detail menu is a real secondary page on a phone, not a floating popup. */
-  html.claude #chatsView[data-sub="detail"] .cd-menu {
+  html.claude .cd-menu {
     position: absolute; inset: 0;
     width: auto; max-width: none; height: auto; min-height: 100%;
     overflow-y: auto; padding: 0 16px calc(24px + env(safe-area-inset-bottom, 0px));
@@ -817,6 +851,26 @@ html.claude .cd-menu-head { display: none; }
   html.claude .cd-menu-back svg { width: 20px; height: 20px; }
   html.claude .cd-menu-title { font: 600 1.05rem var(--xk-sans); color: var(--xk-text); }
   html.claude .cd-menu-head-spacer { width: 38px; }
+  html.claude .cd-menu-context {
+    margin: 0 0 12px; padding: 14px 14px 13px;
+    border: 1px solid var(--xk-line); border-radius: 18px;
+    background: var(--xk-surface); color: var(--xk-text);
+  }
+  html.claude .cd-menu-context-head {
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--xk-text); font-size: .86rem; font-weight: 600;
+  }
+  html.claude .cd-menu-progress {
+    height: 7px; margin: 10px 0 7px; overflow: hidden;
+    border-radius: 999px; background: var(--xk-raised);
+  }
+  html.claude .cd-menu-progress > span {
+    display: block; width: 0; height: 100%; border-radius: inherit;
+    background: var(--xk-accent); transition: width .35s ease, background .2s ease;
+  }
+  html.claude .cd-menu-context[data-state="warn"] .cd-menu-progress > span { background: #D79A45; }
+  html.claude .cd-menu-context[data-state="alarm"] .cd-menu-progress > span { background: #C65D54; }
+  html.claude .cd-menu-context-meta { color: var(--xk-muted); font-size: .74rem; font-variant-numeric: tabular-nums; }
   html.claude .cd-menu-item {
     min-height: 56px; padding: 15px 12px; border-radius: 14px;
     border-bottom: 1px solid var(--xk-line); font-size: .98rem;

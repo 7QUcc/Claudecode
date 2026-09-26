@@ -3776,6 +3776,7 @@ async function renderChatMessages(name, cachedData = null) {
       bubble.className = 'ch-bubble ' + (m.role === 'user' ? 'user' : 'assistant');
       if (m.id != null) bubble.dataset.messageId = String(m.id);
       if (m.source_uuid) bubble.dataset.sourceUuid = String(m.source_uuid);
+      const activity = document.createDocumentFragment();
       blocks.forEach(blk => {
         if (blk.type === 'text') {
           let visibleText = blk.text || '';
@@ -3815,24 +3816,24 @@ async function renderChatMessages(name, cachedData = null) {
             bubble.appendChild(img);
           }
         } else if (blk.type === 'tool_group') {
-          bubble.appendChild(buildToolGroup(blk));
+          activity.appendChild(buildToolGroup(blk));
           (blk.tools || []).forEach(t => {
             if (t.file && t.file.path && t.done) {
-              bubble.appendChild(_buildInlineFileCard(t.file));
+              activity.appendChild(_buildInlineFileCard(t.file));
             }
           });
         } else if (blk.type === 'thinking') {
-          bubble.appendChild(buildThinkingBlock(blk));
+          activity.appendChild(buildThinkingBlock(blk));
         } else if (blk.type === 'process_group') {
           (blk.children || []).forEach(child => {
-            if (child.type === 'thinking') bubble.appendChild(buildThinkingBlock(child));
-            else if (child.type === 'tool_group') bubble.appendChild(buildToolGroup(child));
+            if (child.type === 'thinking') activity.appendChild(buildThinkingBlock(child));
+            else if (child.type === 'tool_group') activity.appendChild(buildToolGroup(child));
           });
         } else if (blk.type === 'delivery') {
           bubble.appendChild(buildDeliveryMark(blk));
         }
       });
-      const hasVisibleContent = blocks.some(b => b.type === 'text' || b.type === 'image' || b.type === 'delivery');
+      const hasVisibleContent = bubble.childNodes.length > 0;
       const messageTime = _messageTimestamp(m.ts);
       if (messageTime && hasVisibleContent) {
         const timestamp = document.createElement('div');
@@ -3840,7 +3841,8 @@ async function renderChatMessages(name, cachedData = null) {
         timestamp.textContent = messageTime;
         bubble.appendChild(timestamp);
       }
-      frag.appendChild(bubble);
+      if (hasVisibleContent) frag.appendChild(bubble);
+      if (activity.childNodes.length) frag.appendChild(activity);
     });
     const tailPending = pendingMsgs
       .filter(pending => (pending.placement || 'queueTail') === 'terminalTail' || (pending.placement || 'queueTail') === 'queueTail')
@@ -4052,26 +4054,28 @@ function _chPillSetCollapsed(name, v) {
 }
 
 function _chRenderUsage(data) {
-  const pill = document.getElementById('chUsagePill');
-  if (!pill) return;
+  const context = document.getElementById('cdMenuContext');
+  const pctEl = document.getElementById('cdMenuUsagePct');
+  const textEl = document.getElementById('cdMenuUsageText');
+  const bar = document.getElementById('cdMenuUsageBar');
+  if (!context || !pctEl || !textEl || !bar) return;
   if (!data || !data.available) {
-    pill.style.display = 'none';
+    context.dataset.state = 'unavailable';
+    pctEl.textContent = '—';
+    textEl.textContent = '暂时无法读取上下文占用';
+    bar.style.width = '0%';
     return;
   }
-  pill.style.display = '';
   const pct = Math.min(100, Math.max(0, Number(data.pct) || 0));
   let state = 'ok';
   if (pct >= 85) state = 'alarm';
   else if (pct >= 60) state = 'warn';
-  pill.dataset.state = state;
-  pill.style.setProperty('--usage-pct', pct.toFixed(1) + '%');
-  const txt = pill.querySelector('.ch-usage-text');
-  const pctEl = pill.querySelector('.ch-usage-pct');
-  if (txt) txt.textContent = _chFormatTokens(data.tokens) + ' / ' + _chFormatTokens(data.window);
-  if (pctEl) pctEl.textContent = (pct < 10 ? pct.toFixed(1) : pct.toFixed(0)) + '%';
-  pill.title = `${data.model || ''} · ${(data.tokens || 0).toLocaleString()} / ${(data.window || 0).toLocaleString()} tokens`;
-  if (_chPillIsCollapsed(activeChat)) pill.classList.add('collapsed');
-  else pill.classList.remove('collapsed');
+  context.dataset.state = state;
+  bar.style.width = pct.toFixed(1) + '%';
+  pctEl.textContent = (pct < 10 ? pct.toFixed(1) : pct.toFixed(0)) + '%';
+  textEl.textContent = _chFormatTokens(data.tokens) + ' / ' + _chFormatTokens(data.window) + (data.model ? ' · ' + data.model : '');
+  const progress = bar.parentElement;
+  if (progress) progress.setAttribute('aria-valuenow', pct.toFixed(1));
 }
 
 function chPillToggleCollapse(name) {
@@ -4365,6 +4369,7 @@ function openChatEdit(s) {
   m.classList.add('open');
 }
 function openChatEditFromDetail(evt) {
+  if (evt && typeof evt.stopPropagation === 'function') evt.stopPropagation();
   const anchor = (evt && evt.currentTarget) || document.querySelector('.cd-actions-pill .cd-pill-btn:last-child');
   // Archive detail: route to the archive-specific action sheet (Rename + Delete only)
   if (chViewingArchive) {
