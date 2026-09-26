@@ -102,12 +102,11 @@ def _latest_user_is_telegram(transcript_path: str) -> bool:
             entry = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if entry.get("type") != "user" or entry.get("isMeta"):
+        if entry.get("type") != "user":
             continue
         content = (entry.get("message") or {}).get("content")
         if isinstance(content, str):
-            if content.strip():
-                latest_user_text = content
+            text = content
         elif isinstance(content, list):
             text = "\n".join(
                 block.get("text", "")
@@ -116,10 +115,19 @@ def _latest_user_is_telegram(transcript_path: str) -> bool:
                 and block.get("type") != "tool_result"
                 and isinstance(block.get("text"), str)
             )
-            # Claude Code stores tool results as user entries. They are not a
-            # new prompt and must not hide the preceding Telegram message.
-            if text.strip():
-                latest_user_text = text
+        else:
+            text = ""
+
+        if not text.strip():
+            continue
+        if re.search(
+            r"<channel\b[^>]*\bsource\s*=\s*(?:[\"'][^\"']*telegram[^\"']*[\"']|[^\s>]*telegram[^\s>]*)",
+            text,
+            re.I,
+        ) or not entry.get("isMeta"):
+            # Telegram plugin prompts are marked as meta; internal meta
+            # records without a channel marker must not hide them.
+            latest_user_text = text
     return bool(re.search(
         r"<channel\b[^>]*\bsource\s*=\s*(?:[\"'][^\"']*telegram[^\"']*[\"']|[^\s>]*telegram[^\s>]*)",
         latest_user_text,
