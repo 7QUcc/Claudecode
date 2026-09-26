@@ -102,7 +102,7 @@ def _latest_user_is_telegram(transcript_path: str) -> bool:
             entry = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if entry.get("type") != "user":
+        if entry.get("type") != "user" or entry.get("isMeta"):
             continue
         content = (entry.get("message") or {}).get("content")
         if isinstance(content, str):
@@ -120,7 +120,11 @@ def _latest_user_is_telegram(transcript_path: str) -> bool:
             # new prompt and must not hide the preceding Telegram message.
             if text.strip():
                 latest_user_text = text
-    return bool(re.search(r"<channel\b[^>]*\bsource=[\"']telegram[\"']", latest_user_text, re.I))
+    return bool(re.search(
+        r"<channel\b[^>]*\bsource\s*=\s*(?:[\"'][^\"']*telegram[^\"']*[\"']|[^\s>]*telegram[^\s>]*)",
+        latest_user_text,
+        re.I,
+    ))
 
 
 def _allowed_chats() -> list[str]:
