@@ -592,6 +592,7 @@ html.claude .cd-tabs { padding-left: 14px; padding-right: 14px; }
    Mobile home + four-tab shell
    ========================================================================== */
 html.claude .home-view { background: var(--xk-bg); }
+html.claude .home-head h1 { font-family: "Snell Roundhand", "Segoe Script", var(--xk-serif); }
 html.claude .home-scroll {
   min-height: 100%; overflow-y: auto; padding: 0 20px 40px;
 }
@@ -642,6 +643,7 @@ html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft);
   html.claude .shell[data-sidebar="open"] .main { transform: none; border-radius: 0; box-shadow: none; }
   html.claude .main::after { display: none; }
   html.claude .cl-head .cl-burger { display: none; }
+  html.claude body[data-current-view="home"] .m-topbar { display: none !important; }
   html.claude .cl-head { padding-left: 20px; padding-right: 20px; }
   html.claude .cl-title { text-align: left; padding-left: 0; font-size: 1.8rem; }
   html.claude .cl-head .cl-title { margin-right: auto; }
@@ -670,6 +672,7 @@ html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft);
   html.claude .ch-row .ch-item { margin: 0 16px 10px; padding: 14px 16px; border: 1px solid var(--xk-line); border-radius: 20px; background: var(--xk-surface); box-shadow: 0 4px 12px rgba(40,36,28,.045); }
   html.claude .ch-row + .ch-row { border-top: 0; }
   html.claude .ch-detail .cd-head { padding-left: 16px; padding-right: 16px; }
+  html.claude #chatsView[data-sub="detail"] .cd-title-wrap { max-width: calc(100vw - 238px); }
   html.claude .cd-actions-pill { height: 42px; }
   html.claude .cd-actions-pill .cd-pill-btn { width: 43px; height: 42px; }
   html.claude .ch-usage-pill {
