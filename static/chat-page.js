@@ -1419,10 +1419,6 @@ function renderChatRows() {
     empty.textContent = '还没有聊天 — 去 Code 里新建一个';
     wrap.appendChild(empty);
   }
-  // Archive entry always at the bottom — gated behind a click so it doesn't
-  // dilute the live conversation list. Expand state is sticky for the session
-  // so closing-and-reopening Chats keeps the panel as the user left it.
-  wrap.appendChild(buildArchiveCard());
 }
 
 // Search is surfaced in Chat; the unified store is backend-only.
@@ -3845,15 +3841,6 @@ async function renderChatMessages(name, cachedData = null) {
         bubble.appendChild(timestamp);
       }
       frag.appendChild(bubble);
-      if (m.role === 'assistant') {
-        const plainText = blocks.filter(b => b.type === 'text').map(b => b.text).join('\n\n').trim();
-        if (plainText && (!revealState || revealState.done)) {
-          const row = document.createElement('div');
-          row.className = 'ch-msg-bottom';
-          row.appendChild(buildAssistantActions(plainText, idx));
-          frag.appendChild(row);
-        }
-      }
     });
     const tailPending = pendingMsgs
       .filter(pending => (pending.placement || 'queueTail') === 'terminalTail' || (pending.placement || 'queueTail') === 'queueTail')
@@ -4387,13 +4374,8 @@ function openChatEditFromDetail(evt) {
     return;
   }
   if (!activeChat) return;
-  const s = sessions.find(x => x.name === activeChat);
-  if (!s) return;
-  if (typeof openChatActionSheet === 'function' && anchor) {
-    openChatActionSheet(s, anchor);
-  } else {
-    openChatEdit(s);
-  }
+  activeSession = activeChat;
+  toggleDetailMenu();
 }
 function closeChatEditModal() {
   document.getElementById('chatEditModal').classList.remove('open');

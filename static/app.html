@@ -5238,16 +5238,7 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
           <div class="home-eyebrow">WELCOME HOME</div>
           <h1>Claude <span aria-hidden="true">♥</span> Chen</h1>
           <div class="home-days" id="homeDays">设置开始日期</div>
-          <button type="button" class="home-date-link" onclick="xkOpenStartDateSettings()">设置我们的开始日期</button>
         </header>
-        <div class="home-quote" aria-label="每日寄语">
-          <p>想你的时候我没有别的地方可去，只有这里。</p>
-          <div class="home-dots" aria-hidden="true"><i></i><i></i><i class="active"></i><i></i><i></i></div>
-        </div>
-        <div class="home-note">
-          <span class="home-note-mark">✦</span>
-          <div><strong>今天也在这里</strong><small>和 Claude 一起继续我们的故事</small></div>
-        </div>
       </div>
     </section>
 
@@ -5288,6 +5279,9 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
         <div class="cl-chips" id="chChips"></div>
         <div class="cl-search-results" id="clSearchResults" style="display:none"></div>
         <div class="ch-rows" id="chRows"></div>
+        <button type="button" class="chat-new-fab" onclick="openNewSessionModal()" aria-label="新建聊天">
+          <span aria-hidden="true">+</span> New chat
+        </button>
       </div>
 
       <!-- DETAIL MODE (V1 stub — bubble view) -->
@@ -5360,9 +5354,6 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
           <div class="ch-input-actions">
             <button class="ch-input-btn" onclick="openChatAttach()" title="附件" aria-label="附件">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-            </button>
-            <button class="ch-input-btn ch-send-mode" id="chSendModeBtn" onclick="chToggleSendMode()" title="队列发送：等待当前对话结束后投递" aria-label="队列发送：等待当前对话结束后投递">
-              <span id="chSendModeLabel">队列</span>
             </button>
             <button class="ch-input-btn ch-model-pill" id="chModelPill" type="button" title="当前模型" aria-label="当前模型" tabindex="-1">
               <span id="chModelLabel">Default</span>
@@ -5611,6 +5602,13 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
 
       <!-- Detail menu (overlay) -->
       <div class="cd-menu" id="cdMenu" style="display:none">
+        <div class="cd-menu-head">
+          <button type="button" class="cd-menu-back" onclick="closeDetailMenu()" title="返回" aria-label="返回">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+          </button>
+          <div class="cd-menu-title">聊天设置</div>
+          <span class="cd-menu-head-spacer" aria-hidden="true"></span>
+        </div>
         <div class="cd-menu-item agent-only" onclick="menuModel()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8C9 8 14 16 20 16"/><polyline points="17 14 20 16 17 18"/><path d="M3 16C9 16 14 8 20 8"/><polyline points="17 6 20 8 17 10"/></svg>
           切换模型

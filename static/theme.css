@@ -710,3 +710,120 @@ html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft);
   html.claude .home-scroll { max-width: 760px; margin: 0 auto; }
   html.claude .home-head { min-height: 560px; }
 }
+
+/* Final mobile pass: keep the home surface compact and the conversation focused. */
+html.claude .home-date-link,
+html.claude .home-quote,
+html.claude .home-note,
+html.claude .ch-msg-bottom,
+html.claude .ch-disclaimer,
+html.claude .ch-tool-group:not(.ch-reply-waiting),
+html.claude .ch-thinking-strip,
+html.claude .ch-file-card.inline,
+html.claude .ch-compact-card,
+html.claude .ch-delivery-mark { display: none !important; }
+
+html.claude .ch-bubble.assistant {
+  align-self: flex-start;
+  max-width: 86%;
+  padding: 11px 15px;
+  border: 1px solid var(--xk-line);
+  border-radius: 19px 19px 19px 7px;
+  background: var(--xk-surface);
+}
+html.claude .ch-bubble.assistant .ch-bubble-time { text-align: left; }
+html.claude .chat-new-fab { display: none; }
+html.claude .cd-menu-head { display: none; }
+
+@media (max-width: 720px) {
+  html.claude .home-view { overflow: hidden; }
+  html.claude .home-scroll {
+    height: 100%; min-height: 0; overflow: hidden;
+    padding: 0 20px;
+  }
+  html.claude .home-head {
+    min-height: 0;
+    padding: calc(env(safe-area-inset-top, 0px) + 24px) 8px 0;
+    justify-content: flex-start;
+  }
+  html.claude .home-head h1 {
+    margin: 18px 0 28px;
+    font-size: clamp(2.35rem, 11vw, 3.5rem);
+  }
+  html.claude .home-days { font-size: .98rem; }
+
+  html.claude .cl-head .primary { display: none; }
+  html.claude .ch-list { overflow: hidden; }
+  html.claude .ch-rows { padding-bottom: 132px; }
+  html.claude .chat-new-fab {
+    position: absolute; right: 20px;
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    z-index: 20;
+    display: inline-flex; align-items: center; gap: 8px;
+    min-height: 48px; padding: 0 18px;
+    border: 0; border-radius: 999px;
+    background: var(--xk-accent); color: #fff;
+    box-shadow: 0 10px 24px rgba(173, 77, 48, .24);
+    font: 600 .93rem var(--xk-sans); letter-spacing: 0;
+  }
+  html.claude .chat-new-fab span { font-size: 1.45rem; line-height: 1; font-weight: 400; }
+  html.claude .chat-new-fab:active { transform: scale(.96); }
+
+  html.claude .shell:has(#chatsView.active[data-sub="detail"]) { padding-bottom: 0; }
+  html.claude:has(#chatsView.active[data-sub="detail"]) .mobile-tabbar { display: none !important; }
+  html.claude:has(#chatsView.active[data-sub="detail"]) .ch-detail .ch-input-bar {
+    margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  }
+  html.claude #chatsView[data-sub="detail"] .cd-head { min-height: 64px; }
+  html.claude #chatsView[data-sub="detail"] .cd-title-wrap {
+    position: absolute; left: 50%; top: env(safe-area-inset-top, 0px); bottom: 12px;
+    transform: translateX(-50%);
+    width: max-content; max-width: calc(100% - 176px);
+    padding: 0; align-items: center; text-align: center;
+    pointer-events: none;
+  }
+  html.claude #chatsView[data-sub="detail"] .cd-title {
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  html.claude #chatsView[data-sub="detail"] .cd-sub { text-align: center; }
+  html.claude #chatsView[data-sub="detail"] .ch-usage-pill {
+    top: 50%; right: 108px; left: auto;
+    transform: translateY(-50%);
+  }
+  html.claude #chatsView[data-sub="detail"] .ch-usage-pill:hover { transform: translateY(-50%) translateY(-1px); }
+  html.claude #chatsView[data-sub="detail"] .ch-usage-pill:active { transform: translateY(-50%) scale(.97); }
+  html.claude #chatsView[data-sub="detail"] .ch-bubble.assistant { max-width: 86%; padding: 11px 15px; }
+
+  /* The detail menu is a real secondary page on a phone, not a floating popup. */
+  html.claude #chatsView[data-sub="detail"] .cd-menu {
+    position: absolute; inset: 0;
+    width: auto; max-width: none; height: auto; min-height: 100%;
+    overflow-y: auto; padding: 0 16px calc(24px + env(safe-area-inset-bottom, 0px));
+    border: 0; border-radius: 0; background: var(--xk-bg);
+    box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+  }
+  html.claude .cd-menu-head {
+    position: sticky; top: 0; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 64px; margin: 0 -16px 12px; padding: env(safe-area-inset-top, 0px) 16px 0;
+    background: color-mix(in srgb, var(--xk-bg) 90%, transparent);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  }
+  html.claude .cd-menu-back {
+    width: 38px; height: 38px; display: grid; place-items: center;
+    border: 1px solid var(--xk-line); border-radius: 50%; background: var(--xk-surface);
+    color: var(--xk-text); padding: 0;
+  }
+  html.claude .cd-menu-back svg { width: 20px; height: 20px; }
+  html.claude .cd-menu-title { font: 600 1.05rem var(--xk-sans); color: var(--xk-text); }
+  html.claude .cd-menu-head-spacer { width: 38px; }
+  html.claude .cd-menu-item {
+    min-height: 56px; padding: 15px 12px; border-radius: 14px;
+    border-bottom: 1px solid var(--xk-line); font-size: .98rem;
+  }
+  html.claude .cd-menu-item:hover { background: var(--xk-hover); }
+  html.claude .cd-menu-sep { margin: 12px 4px; background: var(--xk-line); }
+  html.claude .ch-model-pill { pointer-events: none; opacity: .78; }
+  html.claude .ch-model-pill svg { display: none; }
+  html.claude .ch-send-mode { display: none !important; }
+}
