@@ -116,6 +116,39 @@ function _chAssistantText(message) {
     .join('\n\n')
     .trim();
 }
+function _chSplitAssistantReply(text) {
+  const normalized = String(text || '').replace(/\r\n?/g, '\n').trim();
+  if (!normalized) return [];
+  const parts = [];
+  const paragraphs = normalized.split(/\n\s*\n+/).map(part => part.trim()).filter(Boolean);
+  paragraphs.forEach(paragraph => {
+    const lines = paragraph.split('\n');
+    const isStructured = /```/.test(paragraph) || lines.some(line =>
+      /^\s*(?:[-*+]\s+|\d+[.)]\s+|#{1,6}\s+|>\s+)/.test(line)
+    );
+    if (isStructured || paragraph.length <= 120) {
+      parts.push(paragraph);
+      return;
+    }
+    const sentences = paragraph.match(/[^。！？!?；;\n]+(?:[。！？!?；;]+|$)/g) || [paragraph];
+    if (sentences.length < 2) {
+      parts.push(paragraph);
+      return;
+    }
+    let current = '';
+    sentences.forEach(sentence => {
+      const next = current ? current + sentence : sentence;
+      if (current && (current.length >= 90 || next.length > 220)) {
+        parts.push(current.trim());
+        current = sentence;
+      } else {
+        current = next;
+      }
+    });
+    if (current.trim()) parts.push(current.trim());
+  });
+  return parts;
+}
 function _chNextRevealEnd(text, shown) {
   if (shown >= text.length) return text.length;
   const minEnd = Math.min(text.length, shown + _CH_REVEAL_MIN_CHARS);
@@ -3773,6 +3806,43 @@ async function renderChatMessages(name, cachedData = null) {
         frag.appendChild(card);
         return;
       }
+      const messageTime = _messageTimestamp(m.ts);
+      const canSplitAssistant = m.role === 'assistant' && blocks.length > 0 && blocks.every(blk => blk.type === 'text');
+      if (canSplitAssistant) {
+        const visibleTextParts = [];
+        blocks.forEach(blk => {
+          let visibleText = blk.text || '';
+          if (revealState && !revealState.done) {
+            const blockStart = consumedTextChars + (consumedTextChars ? 2 : 0);
+            const visibleChars = Math.max(0, Math.min(visibleText.length, revealState.shown - blockStart));
+            visibleText = visibleText.slice(0, visibleChars);
+            consumedTextChars = blockStart + (blk.text || '').length;
+          }
+          if (visibleText) visibleTextParts.push(visibleText);
+        });
+        const replyParts = _chSplitAssistantReply(visibleTextParts.join('\n\n'));
+        replyParts.forEach((replyPart, partIndex) => {
+          const bubble = document.createElement('div');
+          bubble.className = 'ch-bubble assistant';
+          if (partIndex === 0) {
+            if (m.id != null) bubble.dataset.messageId = String(m.id);
+            if (m.source_uuid) bubble.dataset.sourceUuid = String(m.source_uuid);
+          }
+          const t = document.createElement('div');
+          t.className = 'ch-text';
+          t.innerHTML = chMdRender(replyPart);
+          wireCodeBlocks(t);
+          bubble.appendChild(t);
+          if (messageTime && partIndex === replyParts.length - 1) {
+            const timestamp = document.createElement('div');
+            timestamp.className = 'ch-bubble-time';
+            timestamp.textContent = messageTime;
+            bubble.appendChild(timestamp);
+          }
+          frag.appendChild(bubble);
+        });
+        return;
+      }
       const bubble = document.createElement('div');
       bubble.className = 'ch-bubble ' + (m.role === 'user' ? 'user' : 'assistant');
       if (m.id != null) bubble.dataset.messageId = String(m.id);
@@ -3841,7 +3911,6 @@ async function renderChatMessages(name, cachedData = null) {
         }
       });
       const hasVisibleContent = bubble.childNodes.length > 0;
-      const messageTime = _messageTimestamp(m.ts);
       if (messageTime && hasVisibleContent) {
         const timestamp = document.createElement('div');
         timestamp.className = 'ch-bubble-time';

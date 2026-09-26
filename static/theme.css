@@ -816,7 +816,7 @@ html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft);
   html.claude .ch-usage-dot-btn { width: 30px; height: 30px; margin: 0; }
   html.claude .ch-usage-dot { width: 5px; height: 5px; background: var(--xk-accent); box-shadow: none; }
   html.claude .ch-usage-text-btn { display: none; }
-  html.claude .ch-msgs { padding: 14px 16px 28px; gap: 9px; }
+  html.claude .ch-msgs { padding: 14px 16px 28px; gap: 11px; }
   html.claude .ch-bubble { max-width: 86%; padding: 11px 15px; border-radius: 19px; font-size: 1.04rem; line-height: 1.55; }
   html.claude .ch-bubble.user { border-radius: 19px 19px 7px 19px; }
   html.claude .ch-bubble.assistant { padding-left: 2px; padding-right: 7px; }
