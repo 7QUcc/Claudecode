@@ -649,15 +649,15 @@ html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft);
   html.claude .cl-head .cl-title { margin-right: auto; }
   html.claude .mobile-tabbar {
     position: fixed; left: 50%; right: auto; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 200;
-    width: min(360px, calc(100vw - 72px)); height: 58px; transform: translateX(-50%);
-    display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; padding: 4px;
+    width: min(360px, calc(100vw - 32px)); height: 56px; transform: translateX(-50%);
+    display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; padding: 4px;
     border: 1px solid rgba(214, 210, 196, .72); border-radius: 30px; background: rgba(255,255,255,.94);
     -webkit-backdrop-filter: blur(24px) saturate(150%); backdrop-filter: blur(24px) saturate(150%);
     box-shadow: 0 8px 22px rgba(40, 36, 28, .10), inset 0 1px 0 rgba(255,255,255,.98);
   }
   html.claude[data-appearance="dark"] .mobile-tabbar { background: rgba(48,48,45,.94); border-color: var(--xk-line); }
   html.claude .mobile-tab {
-    height: 50px; border: 0; border-radius: 26px; background: transparent; color: #AAA9A4; display: flex; flex-direction: column;
+    height: 48px; border: 0; border-radius: 26px; background: transparent; color: #AAA9A4; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 2px; font: inherit; font-size: .68rem; cursor: pointer; transition: background .2s, color .2s, transform .15s;
   }
   html.claude .mobile-tab svg { width: 19px; height: 19px; }
@@ -794,7 +794,7 @@ html.claude .ch-usage-pill { display: none !important; }
   html.claude .ch-rows { padding-bottom: 132px; }
   html.claude .chat-new-fab {
     position: absolute; right: 20px;
-    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
     z-index: 20;
     display: inline-flex; align-items: center; gap: 8px;
     min-height: 48px; padding: 0 18px;
@@ -880,4 +880,29 @@ html.claude .ch-usage-pill { display: none !important; }
   html.claude .ch-model-pill { pointer-events: none; opacity: .78; }
   html.claude .ch-model-pill svg { display: none; }
   html.claude .ch-send-mode { display: none !important; }
+}
+
+/* Keep mobile navigation calm: the desktop motion reads as a slide on a phone. */
+@media (max-width: 720px) {
+  html.claude .view.active,
+  html.claude [data-view="chats"][data-sub="detail"] .ch-detail,
+  html.claude [data-view="code"][data-sub="detail"] .code-detail,
+  html.claude [data-view="chats"][data-sub="list"] .ch-list,
+  html.claude [data-view="code"][data-sub="list"] .code-list,
+  html.claude section[data-view="settings"][data-sub="list"] .st-list,
+  html.claude section[data-view="settings"][data-sub="appearance"] .st-appearance {
+    animation: xk-fade .18s ease-out;
+  }
+
+  html.claude .ch-tool-group,
+  html.claude .ch-thinking-strip,
+  html.claude .xk-act,
+  html.claude .ch-tool-row,
+  html.claude .ch-tool-group .label,
+  html.claude .ch-thinking-strip .ch-ts-text {
+    font-size: .75rem;
+  }
+  html.claude .ch-tool-group.inflight.thinking-inflight .label {
+    font-size: .75rem;
+  }
 }
