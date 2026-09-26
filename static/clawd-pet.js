@@ -2,6 +2,7 @@
   'use strict';
 
   const PET_ID = 'xkClawdPet';
+  const POSITION_KEY = 'xk:clawd-pet-position:v1';
   const ASSET_ROOT = 'static/assets/clawd/';
   const ASSETS = {
     idle: ASSET_ROOT + 'clawd-idle.gif',
@@ -29,6 +30,7 @@
   let lastAssistantCount = 0;
   let lastChatKey = '';
   let lastState = '';
+  let drag = null;
 
   function isVisible(element) {
     if (!element) return false;
@@ -55,9 +57,73 @@
     if (!pet || !image || !ASSETS[nextState] || lastState === nextState) return;
     lastState = nextState;
     pet.dataset.state = nextState;
-    pet.title = '小克 · ' + LABELS[nextState];
+    pet.title = '小克 · ' + LABELS[nextState] + ' · 可拖动调整位置';
     pet.setAttribute('aria-label', pet.title);
     image.src = ASSETS[nextState];
+  }
+
+  function clampPosition(left, top) {
+    const rect = pet.getBoundingClientRect();
+    const width = rect.width || pet.offsetWidth;
+    const height = rect.height || pet.offsetHeight;
+    return {
+      left: Math.max(6, Math.min(window.innerWidth - width - 6, left)),
+      top: Math.max(6, Math.min(window.innerHeight - height - 6, top)),
+    };
+  }
+
+  function setPosition(left, top) {
+    const position = clampPosition(left, top);
+    pet.style.right = 'auto';
+    pet.style.bottom = 'auto';
+    pet.style.left = position.left + 'px';
+    pet.style.top = position.top + 'px';
+  }
+
+  function savePosition() {
+    try {
+      const rect = pet.getBoundingClientRect();
+      localStorage.setItem(POSITION_KEY, JSON.stringify({ left: rect.left, top: rect.top }));
+    } catch (e) { /* localStorage may be unavailable */ }
+  }
+
+  function restorePosition() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(POSITION_KEY) || 'null');
+      if (saved && Number.isFinite(saved.left) && Number.isFinite(saved.top)) setPosition(saved.left, saved.top);
+    } catch (e) { /* ignore malformed or unavailable local storage */ }
+  }
+
+  function startDrag(event) {
+    if (!pet || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    pet.classList.add('is-dragging');
+    const rect = pet.getBoundingClientRect();
+    drag = {
+      pointerId: event.pointerId,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      startX: event.clientX,
+      startY: event.clientY,
+    };
+    if (pet.setPointerCapture) pet.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  }
+
+  function moveDrag(event) {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    setPosition(event.clientX - drag.offsetX, event.clientY - drag.offsetY);
+    event.preventDefault();
+  }
+
+  function finishDrag(event) {
+    if (!drag || (event && event.pointerId !== drag.pointerId)) return;
+    if (pet.releasePointerCapture && pet.hasPointerCapture && pet.hasPointerCapture(drag.pointerId)) {
+      pet.releasePointerCapture(drag.pointerId);
+    }
+    savePosition();
+    drag = null;
+    pet.classList.remove('is-dragging');
+    scheduleRefresh();
   }
 
   function readState() {
@@ -114,6 +180,19 @@
     if (!pet) return;
     image = pet.querySelector('img');
     if (!image) return;
+    pet.addEventListener('pointerdown', startDrag);
+    pet.addEventListener('pointermove', moveDrag);
+    pet.addEventListener('pointerup', finishDrag);
+    pet.addEventListener('pointercancel', finishDrag);
+    window.addEventListener('resize', () => {
+      if (!pet.style.left || !pet.style.top) return;
+      const left = Number.parseFloat(pet.style.left);
+      const top = Number.parseFloat(pet.style.top);
+      if (!Number.isFinite(left) || !Number.isFinite(top)) return;
+      setPosition(left, top);
+      savePosition();
+    });
+    restorePosition();
     observer = new MutationObserver(scheduleRefresh);
     observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style', 'data-sub'] });
     window.addEventListener('hashchange', scheduleRefresh);

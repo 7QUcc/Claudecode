@@ -3,24 +3,34 @@
   right: 18px;
   bottom: 22px;
   z-index: 24;
-  width: 76px;
-  height: 76px;
+  width: 112px;
+  height: 112px;
   display: grid;
   place-items: center;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   filter: drop-shadow(0 9px 12px rgba(42, 35, 28, .16));
+  will-change: transform, left, top;
   transition: transform .28s cubic-bezier(.32,.72,.28,1), filter .28s ease;
+}
+
+#xkClawdPet.is-dragging {
+  cursor: grabbing;
+  transition: none;
+  transform: none !important;
+  filter: drop-shadow(0 12px 18px rgba(42, 35, 28, .24));
 }
 
 #xkClawdPet::before {
   content: '';
   position: absolute;
-  left: 17px;
-  right: 17px;
-  bottom: 8px;
-  height: 8px;
+  left: 25px;
+  right: 25px;
+  bottom: 10px;
+  height: 10px;
   border-radius: 50%;
   background: rgba(70, 57, 46, .18);
   filter: blur(4px);
@@ -31,10 +41,11 @@
 #xkClawdPet img {
   position: relative;
   z-index: 1;
-  width: 72px;
-  height: 72px;
+  width: 106px;
+  height: 106px;
   object-fit: contain;
   image-rendering: pixelated;
+  -webkit-user-drag: none;
 }
 
 #xkClawdPet[data-state="thinking"],
@@ -61,19 +72,19 @@
   #xkClawdPet {
     right: 9px;
     bottom: calc(84px + env(safe-area-inset-bottom, 0px));
-    width: 66px;
-    height: 66px;
+    width: 96px;
+    height: 96px;
   }
 
   #xkClawdPet img {
-    width: 64px;
-    height: 64px;
+    width: 90px;
+    height: 90px;
   }
 
   #xkClawdPet::before {
-    left: 14px;
-    right: 14px;
-    bottom: 6px;
+    left: 21px;
+    right: 21px;
+    bottom: 8px;
   }
 
   body:has(#chatsView.active[data-sub="detail"]) #xkClawdPet {
