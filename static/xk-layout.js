@@ -70,6 +70,7 @@
         setTimeout(() => document.getElementById('homeUsageCard')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 60);
         break;
     }
+    syncListSwitches();
     closeSidebarOnPhone();
   };
 
@@ -189,6 +190,15 @@
     syncSegs.codeWas = codeShown;
   }
 
+  function syncListSwitches() {
+    const mode = typeof currentView !== 'undefined' && currentView === 'code' ? 'term' : 'chat';
+    document.querySelectorAll('.xk-list-switch').forEach(box => {
+      box.querySelectorAll('[data-list-mode]').forEach(btn => {
+        btn.setAttribute('aria-selected', String(btn.dataset.listMode === mode));
+      });
+    });
+  }
+
   // ---------- "/" commands in the chat composer ----------
   function installSlashButton() {
     const actions = $('#chInputBar .ch-input-actions');
@@ -252,6 +262,7 @@
     installSlashButton();
     renderRecents();
     syncSegs();
+    syncListSwitches();
   }
   function boot() {
     const standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;

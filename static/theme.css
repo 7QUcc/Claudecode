@@ -114,10 +114,33 @@ html.claude .cd-title { color: var(--xk-text); }
 html.claude .cd-sub { color: var(--xk-faint); }
 html.claude .cl-head,
 html.claude .cd-head {
-  background: color-mix(in srgb, var(--xk-bg) var(--xk-glass-fill), transparent);
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html.claude #chatsView[data-agent-kind="codex"][data-sub="detail"] .cd-head::after { display: none !important; }
+
+/* The list header owns the chat/terminal switch on mobile. */
+html.claude .xk-list-switch {
+  display: flex; align-items: center; gap: 2px; flex: none;
+  padding: 3px; border: 1px solid var(--xk-line); border-radius: 13px;
+  background: color-mix(in srgb, var(--xk-surface) 64%, transparent);
+  box-shadow: var(--xk-shadow);
   -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
   backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
 }
+html.claude .xk-list-switch-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  min-width: 48px; height: 32px; padding: 0 8px; border: 0; border-radius: 9px;
+  background: transparent; color: var(--xk-muted); font: 600 .76rem var(--xk-sans);
+  cursor: pointer; transition: background .18s, color .18s, transform .15s;
+}
+html.claude .xk-list-switch-btn svg { width: 15px; height: 15px; }
+html.claude .xk-list-switch-btn[aria-selected="true"] {
+  background: var(--xk-surface); color: var(--xk-text); box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+html.claude .xk-list-switch-btn:active { transform: scale(.95); }
 
 /* ---------- lists ---------- */
 html.claude .ch-row,
@@ -173,10 +196,10 @@ html.claude .ch-msg-action { color: var(--xk-muted); }
 
 /* Activity rows: "Thought process ›", "Ran 3 commands, read 2 files +12 -3 ›" */
 .xk-act {
-  display: flex; align-items: center; gap: 12px;
-  width: 100%; min-height: 40px; margin: 4px 0; padding: 4px 0;
+  display: flex; align-items: center; gap: 8px;
+  width: fit-content; max-width: 100%; min-height: 36px; margin: 4px 0; padding: 4px 0;
   border: 0; background: none; text-align: left; cursor: pointer;
-  font: 400 1rem/1.3 var(--xk-sans, -apple-system, sans-serif);
+  font: 400 .86rem/1.3 var(--xk-sans, -apple-system, sans-serif);
   color: var(--xk-muted, #6F6C63);
   -webkit-user-select: none; user-select: none;
   transition: opacity .15s;
@@ -184,13 +207,13 @@ html.claude .ch-msg-action { color: var(--xk-muted); }
 .xk-act:active { opacity: .5; }
 .xk-act-lead { width: 22px; height: 22px; flex: none; color: var(--xk-muted, #6F6C63); }
 .xk-act-lead.xk-warn, .xk-warn { color: var(--xk-err, #BD4436); }
-.xk-act-text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xk-act-text { flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .xk-act-text em.xk-bad, .xk-bad { font-style: normal; color: var(--xk-err, #BD4436); }
 .xk-bad-text { color: var(--xk-err, #BD4436); }
 .xk-act-diff { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .xk-add { color: var(--xk-ok, #3E8C58); }
 .xk-del { color: var(--xk-err, #BD4436); }
-.xk-act-go { width: 18px; height: 18px; flex: none; color: var(--xk-muted, #6F6C63); }
+.xk-act-go { width: 16px; height: 16px; margin-left: -2px; flex: none; color: var(--xk-muted, #6F6C63); }
 .xk-act-spin {
   width: 18px; height: 18px; margin: 0 2px; flex: none; border-radius: 50%;
   border: 2px solid var(--xk-line-strong, #D6D2C4); border-top-color: var(--xk-accent, #C96442);
@@ -209,7 +232,7 @@ html.claude .ch-msg-action { color: var(--xk-muted); }
 /* the old pill-shaped strips become plain rows */
 html.claude .ch-tool-group.xk-tool-group { background: none; padding: 0; margin: 2px 0; border-radius: 0; }
 html.claude .ch-thinking-strip.xk-act { background: none; padding: 4px 0; border-radius: 0; margin: 4px 0; }
-html.claude .ch-thinking-strip.xk-act .ch-ts-text { font-size: 1rem; opacity: 1; }
+html.claude .ch-thinking-strip.xk-act .ch-ts-text { font-size: .82rem; opacity: 1; }
 
 /* thinking-in-progress: Claude spark */
 .ch-spark-thinker { display: none; }
@@ -828,7 +851,7 @@ html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft);
   html.claude .code-list .cl-title { font-size: 1.8rem; }
   html.claude .code-detail .cd-head { padding-left: 16px; padding-right: 16px; }
   html.claude .code-term-wrap { margin: 0 12px 10px; border-radius: 16px; }
-  html.claude .code-detail .cd-input-bar { margin-bottom: calc(8px + 72px + env(safe-area-inset-bottom, 0px)); }
+  html.claude .code-detail .cd-input-bar { margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); }
   html.claude .st-body { padding: 20px 16px 110px; }
   html.claude .st-group-title { padding-left: 4px; }
   html.claude .st-date-row { padding-left: 14px; padding-right: 12px; }
@@ -867,7 +890,8 @@ html.claude .ch-tool-group.xk-tool-group {
   padding: 0;
 }
 html.claude .ch-thinking-strip.xk-act {
-  width: min(86%, 620px);
+  width: fit-content;
+  max-width: 100%;
   margin: 2px 0;
   padding: 5px 0;
   font-size: .84rem;
@@ -948,6 +972,8 @@ html.claude .ch-usage-pill { display: none !important; }
 
   html.claude .shell:has(#chatsView.active[data-sub="detail"]) { padding-bottom: 0; }
   html.claude:has(#chatsView.active[data-sub="detail"]) .mobile-tabbar { display: none !important; }
+  html.claude .shell:has(#codeView.active[data-sub="detail"]) { padding-bottom: 0; }
+  html.claude:has(#codeView.active[data-sub="detail"]) .mobile-tabbar { display: none !important; }
   html.claude:has(#chatsView.active[data-sub="detail"]) .ch-detail .ch-input-bar {
     margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
   }

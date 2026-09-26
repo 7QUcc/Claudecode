@@ -3,8 +3,8 @@
   right: 18px;
   bottom: 22px;
   z-index: 24;
-  width: 148px;
-  height: 148px;
+  width: 180px;
+  height: 180px;
   display: grid;
   place-items: center;
   pointer-events: auto;
@@ -27,10 +27,10 @@
 #xkClawdPet::before {
   content: '';
   position: absolute;
-  left: 33px;
-  right: 33px;
-  bottom: 13px;
-  height: 13px;
+  left: 39px;
+  right: 39px;
+  bottom: 15px;
+  height: 15px;
   border-radius: 50%;
   background: rgba(70, 57, 46, .18);
   filter: blur(4px);
@@ -41,8 +41,8 @@
 #xkClawdPet img {
   position: relative;
   z-index: 1;
-  width: 140px;
-  height: 140px;
+  width: 170px;
+  height: 170px;
   object-fit: contain;
   image-rendering: pixelated;
   -webkit-user-drag: none;
@@ -72,20 +72,20 @@
   #xkClawdPet {
     right: 9px;
     bottom: calc(84px + env(safe-area-inset-bottom, 0px));
-    width: 128px;
-    height: 128px;
+    width: 160px;
+    height: 160px;
   }
 
   #xkClawdPet img {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
   }
 
   #xkClawdPet::before {
-    left: 28px;
-    right: 28px;
-    bottom: 10px;
-    height: 11px;
+    left: 34px;
+    right: 34px;
+    bottom: 12px;
+    height: 13px;
   }
 
   body:has(#chatsView.active[data-sub="detail"]) #xkClawdPet {
