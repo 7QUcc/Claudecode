@@ -19,8 +19,10 @@ from pathlib import Path
 
 
 MAX_SUMMARY_CHARS = 2600
+CONTEXT_ALERT_THRESHOLD = 0.90
 STATE_DIR = Path.home() / ".cache" / "claude-telegram-thinking"
 ACCESS_FILE = Path.home() / ".claude" / "channels" / "telegram" / "access.json"
+CONTEXT_STATE_DIR = STATE_DIR / "context"
 
 
 def _redact(text: str) -> str:
@@ -146,6 +148,87 @@ def _allowed_chats() -> list[str]:
         return []
 
 
+def _latest_context_usage(transcript_path: str) -> dict | None:
+    path = Path(transcript_path)
+    if not path.is_file():
+        return None
+    try:
+        with path.open("rb") as handle:
+            handle.seek(0, os.SEEK_END)
+            size = handle.tell()
+            handle.seek(max(0, size - 512 * 1024))
+            raw = handle.read().decode("utf-8", errors="replace")
+    except OSError:
+        return None
+
+    for line in reversed(raw.splitlines()):
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if entry.get("type") != "assistant" or entry.get("isSidechain"):
+            continue
+        usage = (entry.get("message") or {}).get("usage") or {}
+        if not usage:
+            continue
+        breakdown = {
+            "input": int(usage.get("input_tokens") or 0),
+            "cache_creation": int(usage.get("cache_creation_input_tokens") or 0),
+            "cache_read": int(usage.get("cache_read_input_tokens") or 0),
+        }
+        tokens = sum(breakdown.values())
+        if not tokens:
+            continue
+        model = str((entry.get("message") or {}).get("model") or "").lower()
+        if "[1m]" in model or model == "fable" or model.startswith("claude-fable"):
+            window = 1_000_000
+        elif model.startswith("claude-") or model.startswith("claude_"):
+            window = 200_000
+        else:
+            return None
+        if tokens > window:
+            window = 1_000_000
+        return {
+            "tokens": tokens,
+            "window": window,
+            "pct": tokens / window,
+        }
+    return None
+
+
+def _context_marker_path(session_id: str) -> Path:
+    digest = hashlib.sha256(session_id.encode("utf-8")).hexdigest()
+    return CONTEXT_STATE_DIR / (digest + ".json")
+
+
+def _context_alerted(session_id: str) -> bool:
+    try:
+        data = json.loads(_context_marker_path(session_id).read_text(encoding="utf-8"))
+        return bool(data.get("alerted"))
+    except (OSError, json.JSONDecodeError, AttributeError):
+        return False
+
+
+def _clear_context_alert(session_id: str) -> None:
+    try:
+        _context_marker_path(session_id).unlink()
+    except FileNotFoundError:
+        pass
+    except OSError:
+        pass
+
+
+def _mark_context_alerted(session_id: str, usage: dict) -> None:
+    try:
+        CONTEXT_STATE_DIR.mkdir(parents=True, exist_ok=True)
+        _context_marker_path(session_id).write_text(
+            json.dumps({"alerted": True, "tokens": usage["tokens"], "window": usage["window"]}),
+            encoding="utf-8",
+        )
+    except OSError:
+        pass
+
+
 def _marker_path(session_id: str) -> Path:
     return STATE_DIR / (hashlib.sha256(session_id.encode("utf-8")).hexdigest() + ".json")
 
@@ -171,8 +254,7 @@ def _mark_sent(session_id: str, summary: str) -> None:
         pass
 
 
-def _send(token: str, chat_id: str, summary: str) -> None:
-    body = "☁️ 思考摘要\n<blockquote expandable>" + html.escape(summary) + "</blockquote>"
+def _send_body(token: str, chat_id: str, body: str) -> None:
     payload = urllib.parse.urlencode({
         "chat_id": chat_id,
         "text": body,
@@ -186,6 +268,36 @@ def _send(token: str, chat_id: str, summary: str) -> None:
             raise RuntimeError("Telegram returned HTTP %s" % response.status)
 
 
+def _send(token: str, chat_id: str, summary: str) -> None:
+    body = "☁️ 思考摘要\n<blockquote expandable>" + html.escape(summary) + "</blockquote>"
+    _send_body(token, chat_id, body)
+
+
+def _maybe_send_context_alert(token: str, chat_ids: list[str], session_id: str, transcript: str) -> None:
+    usage = _latest_context_usage(transcript)
+    if not usage or usage["pct"] < CONTEXT_ALERT_THRESHOLD:
+        _clear_context_alert(session_id)
+        return
+    if _context_alerted(session_id):
+        return
+
+    percent = usage["pct"] * 100
+    body = (
+        "☁️ 上下文提醒\n"
+        f"当前占用约 <b>{usage['tokens']:,} / {usage['window']:,}</b> tokens（{percent:.1f}%）。\n"
+        "建议现在压缩一下上下文，避免后续对话遗忘或失败。"
+    )
+    sent = False
+    for chat_id in chat_ids:
+        try:
+            _send_body(token, chat_id, body)
+            sent = True
+        except Exception:
+            continue
+    if sent:
+        _mark_context_alerted(session_id, usage)
+
+
 def main() -> None:
     event = _load_input()
     token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
@@ -194,20 +306,25 @@ def main() -> None:
     if not token or not isinstance(transcript, str):
         return
 
-    summary = _thinking_summary(transcript)
-    if not summary or not _latest_user_is_telegram(transcript) or _already_sent(session_id, summary):
+    if not _latest_user_is_telegram(transcript):
+        return
+    chat_ids = _allowed_chats()
+    if not chat_ids:
         return
 
-    sent = False
-    for chat_id in _allowed_chats():
-        try:
-            _send(token, chat_id, summary)
-            sent = True
-        except Exception:
-            # A notification failure must never block Claude from stopping.
-            continue
-    if sent:
-        _mark_sent(session_id, summary)
+    summary = _thinking_summary(transcript)
+    if summary and not _already_sent(session_id, summary):
+        sent = False
+        for chat_id in chat_ids:
+            try:
+                _send(token, chat_id, summary)
+                sent = True
+            except Exception:
+                continue
+        if sent:
+            _mark_sent(session_id, summary)
+
+    _maybe_send_context_alert(token, chat_ids, session_id, transcript)
 
 
 if __name__ == "__main__":
