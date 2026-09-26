@@ -5239,6 +5239,12 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
           <h1>Claude <span aria-hidden="true">♥</span> Chen</h1>
           <div class="home-days" id="homeDays">设置开始日期</div>
         </header>
+        <section class="home-usage-wrap" aria-label="订阅额度">
+          <div class="home-section-label">订阅额度</div>
+          <div class="st-card home-usage-card" id="homeUsageCard">
+            <div class="st-usage-loading">加载中…</div>
+          </div>
+        </section>
       </div>
     </section>
 
@@ -5374,11 +5380,6 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
               <input id="stStartDate" type="date" value="2026-09-01" onchange="xkSaveStartDate(this.value)">
             </label>
           </div>
-          <div class="st-group-title">Usage</div>
-          <div class="st-card" id="stUsageCard">
-            <div class="st-usage-loading">加载中…</div>
-          </div>
-
           <div class="st-group-title">通知</div>
           <div class="st-card xk-push" id="stPushCard">
             <div class="st-usage-loading">加载中…</div>
@@ -5464,6 +5465,53 @@ html.sketch[data-appearance="dark"] body.sketch .btn-secondary {
               </span>
               <span class="st-choice-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg></span>
             </button>
+          </div>
+
+          <div class="st-group-title">自定义主题</div>
+          <div class="st-card xk-theme-editor">
+            <div class="xk-theme-preview" id="xkThemePreview" aria-hidden="true">
+              <div class="xk-theme-preview-head"><span>Claude</span><i></i></div>
+              <div class="xk-theme-preview-bubble assistant">准备好开始了。</div>
+              <div class="xk-theme-preview-bubble user">今天也一起工作。</div>
+            </div>
+            <div class="xk-theme-control">
+              <label class="xk-theme-control-head" for="xkBubbleRadius">
+                <span>聊天气泡圆润度</span><output id="xkBubbleRadiusValue">23px</output>
+              </label>
+              <input id="xkBubbleRadius" type="range" min="8" max="34" step="1" value="23" oninput="updateCustomTheme('bubbleRadius', this.value)">
+            </div>
+            <div class="xk-theme-control">
+              <label class="xk-theme-control-head" for="xkToneShift">
+                <span>界面色调</span><output id="xkToneShiftValue">暖白</output>
+              </label>
+              <input id="xkToneShift" type="range" min="-42" max="42" step="1" value="0" oninput="updateCustomTheme('toneShift', this.value)">
+              <div class="xk-tone-scale" aria-hidden="true"><span>冷</span><span>中性</span><span>暖</span></div>
+            </div>
+            <div class="xk-theme-control">
+              <label class="xk-theme-control-head" for="xkGlassBlur">
+                <span>毛玻璃模糊</span><output id="xkGlassBlurValue">24px</output>
+              </label>
+              <input id="xkGlassBlur" type="range" min="0" max="42" step="1" value="24" oninput="updateCustomTheme('glassBlur', this.value)">
+            </div>
+            <div class="xk-theme-control">
+              <label class="xk-theme-control-head" for="xkGlassMix">
+                <span>毛玻璃不透明度</span><output id="xkGlassMixValue">78%</output>
+              </label>
+              <input id="xkGlassMix" type="range" min="42" max="96" step="1" value="78" oninput="updateCustomTheme('glassMix', this.value)">
+            </div>
+            <div class="xk-theme-control">
+              <label class="xk-theme-control-head" for="xkGlassSaturation">
+                <span>毛玻璃饱和度</span><output id="xkGlassSaturationValue">145%</output>
+              </label>
+              <input id="xkGlassSaturation" type="range" min="100" max="190" step="1" value="145" oninput="updateCustomTheme('glassSaturation', this.value)">
+            </div>
+            <div class="xk-theme-control">
+              <label class="xk-theme-control-head" for="xkShadowAlpha">
+                <span>阴影强度</span><output id="xkShadowAlphaValue">12%</output>
+              </label>
+              <input id="xkShadowAlpha" type="range" min="0" max="26" step="1" value="12" oninput="updateCustomTheme('shadowAlpha', this.value)">
+            </div>
+            <button type="button" class="xk-theme-reset" onclick="resetCustomTheme()">恢复默认外观</button>
           </div>
         </div>
       </div>
@@ -6059,6 +6107,95 @@ if (_appearanceMQL && _appearanceMQL.addEventListener) {
 
 applyAppearance(readAppearance(), false);
 
+/* --- Claude theme controls: local, instant, and independent of conversations --- */
+const CUSTOM_THEME_KEY = 'prism:custom-theme';
+const CUSTOM_THEME_DEFAULTS = {
+  bubbleRadius: 23,
+  toneShift: 0,
+  glassBlur: 24,
+  glassMix: 78,
+  glassSaturation: 145,
+  shadowAlpha: 12,
+};
+
+function clampCustomTheme(key, value) {
+  const ranges = {
+    bubbleRadius: [8, 34], toneShift: [-42, 42], glassBlur: [0, 42],
+    glassMix: [42, 96], glassSaturation: [100, 190], shadowAlpha: [0, 26],
+  };
+  const range = ranges[key] || [0, 100];
+  const number = Number(value);
+  return Math.max(range[0], Math.min(range[1], Number.isFinite(number) ? number : CUSTOM_THEME_DEFAULTS[key]));
+}
+
+function readCustomTheme() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CUSTOM_THEME_KEY) || '{}');
+    return Object.keys(CUSTOM_THEME_DEFAULTS).reduce((result, key) => {
+      result[key] = clampCustomTheme(key, saved[key] == null ? CUSTOM_THEME_DEFAULTS[key] : saved[key]);
+      return result;
+    }, {});
+  } catch (e) {
+    return { ...CUSTOM_THEME_DEFAULTS };
+  }
+}
+
+function customToneLabel(value) {
+  if (value <= -18) return '冷调';
+  if (value <= -5) return '偏冷';
+  if (value >= 18) return '暖调';
+  if (value >= 5) return '偏暖';
+  return '中性';
+}
+
+function applyCustomTheme(settings, persist) {
+  const next = Object.keys(CUSTOM_THEME_DEFAULTS).reduce((result, key) => {
+    result[key] = clampCustomTheme(key, settings[key]);
+    return result;
+  }, {});
+  const root = document.documentElement;
+  const toneRatio = (next.toneShift + 42) / 84;
+  const cool = [207, 220, 238];
+  const warm = [235, 201, 180];
+  const tone = cool.map((value, index) => Math.round(value + (warm[index] - value) * toneRatio));
+  root.style.setProperty('--xk-bubble-radius', next.bubbleRadius + 'px');
+  root.style.setProperty('--xk-tone-wash', 'rgba(' + tone.join(', ') + ', .22)');
+  root.style.setProperty('--xk-glass-blur', next.glassBlur + 'px');
+  root.style.setProperty('--xk-glass-mix', next.glassMix + '%');
+  root.style.setProperty('--xk-glass-saturation', next.glassSaturation + '%');
+  root.style.setProperty('--xk-shadow-alpha', (next.shadowAlpha / 100).toFixed(2));
+  root.style.setProperty('--xk-shadow-alpha-soft', (next.shadowAlpha / 220).toFixed(2));
+  Object.keys(next).forEach(key => {
+    const input = document.getElementById('xk' + key.charAt(0).toUpperCase() + key.slice(1));
+    if (input) input.value = next[key];
+  });
+  const values = {
+    BubbleRadius: next.bubbleRadius + 'px', ToneShift: customToneLabel(next.toneShift),
+    GlassBlur: next.glassBlur + 'px', GlassMix: next.glassMix + '%',
+    GlassSaturation: next.glassSaturation + '%', ShadowAlpha: next.shadowAlpha + '%',
+  };
+  Object.entries(values).forEach(([key, value]) => {
+    const output = document.getElementById('xk' + key + 'Value');
+    if (output) output.textContent = value;
+  });
+  if (persist) {
+    try { localStorage.setItem(CUSTOM_THEME_KEY, JSON.stringify(next)); } catch (e) {}
+  }
+}
+
+function updateCustomTheme(key, value) {
+  const next = readCustomTheme();
+  if (!Object.prototype.hasOwnProperty.call(next, key)) return;
+  next[key] = value;
+  applyCustomTheme(next, true);
+}
+
+function resetCustomTheme() {
+  applyCustomTheme(CUSTOM_THEME_DEFAULTS, true);
+}
+
+applyCustomTheme(readCustomTheme(), false);
+
 const THINKING_APPEARANCE_KEY = 'prism:thinking-appearance';
 const THINKING_APPEARANCE_LABELS = {
   claude: 'Claude 风格',
@@ -6096,11 +6233,15 @@ function setThinkingAppearance(style) {
 }
 
 async function loadUsagePanel() {
-  const card = document.getElementById('stUsageCard');
-  if (!card) return;
+  const cards = Array.from(document.querySelectorAll('#homeUsageCard, #stUsageCard'));
+  if (!cards.length) return;
+  const card = document.createElement('div');
   try {
     const r = await fetch(API + '/usage', { headers: { Authorization: 'Bearer ' + TOKEN } });
-    if (!r.ok) { card.innerHTML = '<div class="st-usage-loading">加载失败</div>'; return; }
+    if (!r.ok) {
+      cards.forEach(target => { target.innerHTML = '<div class="st-usage-loading">加载失败</div>'; });
+      return;
+    }
     const data = await r.json();
     card.innerHTML = '';
     const cc = data.claude;
@@ -6191,8 +6332,9 @@ async function loadUsagePanel() {
       card.appendChild(sec);
     }
     if (!card.children.length) card.innerHTML = '<div class="st-usage-loading">无可用数据</div>';
+    cards.forEach(target => { target.innerHTML = card.innerHTML; });
   } catch (e) {
-    card.innerHTML = '<div class="st-usage-loading">网络错误</div>';
+    cards.forEach(target => { target.innerHTML = '<div class="st-usage-loading">网络错误</div>'; });
   }
 }
 

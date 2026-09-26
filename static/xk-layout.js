@@ -66,9 +66,8 @@
         if (typeof backToSettingsList === 'function') backToSettingsList();
         break;
       case 'usage':
-        switchView('settings');
-        if (typeof backToSettingsList === 'function') backToSettingsList();
-        setTimeout(() => document.getElementById('stUsageCard')?.scrollIntoView({ block: 'start', behavior: 'smooth' }), 60);
+        switchView('home');
+        setTimeout(() => document.getElementById('homeUsageCard')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 60);
         break;
     }
     closeSidebarOnPhone();
@@ -264,6 +263,10 @@
     setInterval(tick, 700);
     refreshUsage();
     setInterval(refreshUsage, 5 * 60 * 1000);
+    if (typeof loadUsagePanel === 'function') {
+      loadUsagePanel();
+      setInterval(loadUsagePanel, 5 * 60 * 1000);
+    }
     window.addEventListener('resize', () => {
       if (chatSeg && !chatSeg.hidden) placeThumb(chatSeg, 'chat', true);
       if (codeSeg && !codeSeg.hidden) placeThumb(codeSeg, 'term', true);
