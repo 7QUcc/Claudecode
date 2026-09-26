@@ -106,13 +106,20 @@ def _latest_user_is_telegram(transcript_path: str) -> bool:
             continue
         content = (entry.get("message") or {}).get("content")
         if isinstance(content, str):
-            latest_user_text = content
+            if content.strip():
+                latest_user_text = content
         elif isinstance(content, list):
-            latest_user_text = "\n".join(
+            text = "\n".join(
                 block.get("text", "")
                 for block in content
-                if isinstance(block, dict) and isinstance(block.get("text"), str)
+                if isinstance(block, dict)
+                and block.get("type") != "tool_result"
+                and isinstance(block.get("text"), str)
             )
+            # Claude Code stores tool results as user entries. They are not a
+            # new prompt and must not hide the preceding Telegram message.
+            if text.strip():
+                latest_user_text = text
     return bool(re.search(r"<channel\b[^>]*\bsource=[\"']telegram[\"']", latest_user_text, re.I))
 
 

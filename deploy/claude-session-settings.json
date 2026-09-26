@@ -3,6 +3,19 @@
   "showThinkingSummaries": true,
   "awaySummaryEnabled": false,
   "switchModelsOnFlag": false,
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/cc/.claude/hooks/send_thinking.py",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  },
   "skillOverrides": {
     "batch": "off",
     "code-review": "off",
