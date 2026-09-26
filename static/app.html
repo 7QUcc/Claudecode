@@ -6162,6 +6162,7 @@ function applyCustomTheme(settings, persist) {
   root.style.setProperty('--xk-tone-wash', 'rgba(' + tone.join(', ') + ', .22)');
   root.style.setProperty('--xk-glass-blur', next.glassBlur + 'px');
   root.style.setProperty('--xk-glass-mix', next.glassMix + '%');
+  root.style.setProperty('--xk-glass-fill', Math.max(28, next.glassMix - 20) + '%');
   root.style.setProperty('--xk-glass-saturation', next.glassSaturation + '%');
   root.style.setProperty('--xk-shadow-alpha', (next.shadowAlpha / 100).toFixed(2));
   root.style.setProperty('--xk-shadow-alpha-soft', (next.shadowAlpha / 220).toFixed(2));
@@ -6343,6 +6344,7 @@ function openAppearanceSettings() {
   if (view) view.setAttribute('data-sub', 'appearance');
   applyTheme(readTheme(), false);
   applyAppearance(readAppearance(), false);
+  applyCustomTheme(readCustomTheme(), false);
   applyThinkingAppearance(readThinkingAppearance(), false);
 }
 

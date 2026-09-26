@@ -29,6 +29,7 @@ html.claude {
   --xk-bubble-radius: 23px;
   --xk-glass-blur: 24px;
   --xk-glass-mix: 78%;
+  --xk-glass-fill: 58%;
   --xk-glass-saturation: 145%;
   --xk-shadow-alpha: .12;
   --xk-shadow-alpha-soft: .06;
@@ -99,7 +100,8 @@ html.claude .sb-foot { color: var(--xk-faint); }
 /* ---------- headers & round buttons ---------- */
 html.claude .ic-btn,
 html.claude .cd-actions-pill {
-  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.48), rgba(255,255,255,0) 42%);
   border: 1px solid var(--xk-line);
   box-shadow: var(--xk-shadow);
   -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
@@ -112,7 +114,7 @@ html.claude .cd-title { color: var(--xk-text); }
 html.claude .cd-sub { color: var(--xk-faint); }
 html.claude .cl-head,
 html.claude .cd-head {
-  background: color-mix(in srgb, var(--xk-bg) var(--xk-glass-mix), transparent);
+  background: color-mix(in srgb, var(--xk-bg) var(--xk-glass-fill), transparent);
   -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
   backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
 }
@@ -125,7 +127,8 @@ html.claude .cl-row:active { background: var(--xk-hover); }
 html.claude .cl-search,
 html.claude .cl-search-input { background: transparent; }
 html.claude .cl-search {
-  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.40), rgba(255,255,255,0) 42%);
   box-shadow: var(--xk-shadow);
   -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
   backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
@@ -135,14 +138,23 @@ html.claude .cl-chip.active,
 html.claude .cl-sr-chip.active { background: var(--xk-text); color: var(--xk-bg); border-color: transparent; }
 html.claude .cl-card,
 html.claude .ch-archive-card {
-  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.40), rgba(255,255,255,0) 42%);
   border: 1px solid var(--xk-line); box-shadow: var(--xk-shadow);
   -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
   backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
 }
 
 /* ---------- conversation ---------- */
-html.claude .ch-bubble.user { background: var(--xk-raised); color: var(--xk-text); border-radius: var(--xk-bubble-radius); }
+html.claude .ch-bubble.user {
+  background: color-mix(in srgb, var(--xk-raised) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.34), rgba(255,255,255,0) 42%);
+  color: var(--xk-text);
+  border-radius: var(--xk-bubble-radius) var(--xk-bubble-radius) max(7px, calc(var(--xk-bubble-radius) * .35)) var(--xk-bubble-radius) !important;
+  box-shadow: var(--xk-shadow);
+  -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
+  backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
+}
 html.claude .ch-bubble.user .ch-bubble-time { color: var(--xk-faint); }
 html.claude .ch-bubble.assistant { color: var(--xk-text); }
 /* Claude writes its replies in a serif, like a letter. */
@@ -270,7 +282,8 @@ html.claude .lg-preview.xk-claude::after {
 /* ---------- composer ---------- */
 html.claude .ch-input-bar,
 html.claude .cd-input-bar .cd-input-shell {
-  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.46), rgba(255,255,255,0) 42%);
   border: 1px solid var(--xk-line-strong);
   box-shadow: var(--xk-shadow);
   -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
@@ -289,7 +302,8 @@ html.claude .cd-input-send:active { background: var(--xk-accent-hover); }
 
 /* ---------- settings ---------- */
 html.claude .st-card {
-  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.46), rgba(255,255,255,0) 42%);
   border: 1px solid var(--xk-line); box-shadow: var(--xk-shadow);
   -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
   backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
@@ -343,11 +357,14 @@ html.claude .xk-theme-preview-bubble {
   border-radius: var(--xk-bubble-radius); box-shadow: var(--xk-shadow);
 }
 html.claude .xk-theme-preview-bubble.assistant {
-  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.45), rgba(255,255,255,0) 42%);
   border-bottom-left-radius: 7px;
 }
 html.claude .xk-theme-preview-bubble.user {
-  justify-self: end; background: var(--xk-raised);
+  justify-self: end;
+  background: color-mix(in srgb, var(--xk-raised) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.34), rgba(255,255,255,0) 42%);
   border-bottom-right-radius: 7px;
 }
 html.claude .xk-theme-control { padding: 12px 0 2px; }
@@ -366,7 +383,8 @@ html.claude .xk-tone-scale {
 }
 html.claude .xk-theme-reset {
   width: 100%; margin-top: 16px; padding: 10px 12px; border: 1px solid var(--xk-line-strong);
-  border-radius: 12px; background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+  border-radius: 12px; background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.42), rgba(255,255,255,0) 42%);
   color: var(--xk-text); font: inherit; font-size: .82rem; cursor: pointer;
   box-shadow: var(--xk-shadow);
 }
@@ -678,7 +696,8 @@ html.claude .cd-tabs { padding-left: 14px; padding-right: 14px; }
 }
 html.claude .sidebar .xk-install,
 html.claude .sidebar .xk-usage {
-  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.42), rgba(255,255,255,0) 42%);
   border-color: var(--xk-line);
   box-shadow: var(--xk-shadow);
   -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
@@ -709,7 +728,7 @@ html.claude .home-days { color: var(--xk-muted); font-size: 1.04rem; font-weight
 html.claude .home-days::before { content: ''; display: inline-block; width: 38px; height: 3px; margin: 0 14px 4px 0; background: var(--xk-accent); }
 html.claude .home-days.is-empty { letter-spacing: .04em; }
 html.claude .home-usage-wrap {
-  width: min(620px, 100%); margin: 0 auto; padding: 0 0 28px;
+  width: min(620px, 100%); margin: 34px auto 0; padding: 0 0 28px;
 }
 html.claude .home-section-label {
   margin: 0 4px 9px; color: var(--xk-faint); font-size: .77rem; font-weight: 600;
@@ -758,12 +777,13 @@ html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft);
     width: min(360px, calc(100vw - 32px)); height: 56px; transform: translateX(-50%);
     display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; padding: 4px;
     border: 1px solid var(--xk-line-strong); border-radius: 30px;
-    background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+    background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+    background-image: linear-gradient(145deg, rgba(255,255,255,.48), rgba(255,255,255,0) 42%);
     -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
     backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
     box-shadow: var(--xk-shadow), inset 0 1px 0 rgba(255,255,255,.65);
   }
-  html.claude[data-appearance="dark"] .mobile-tabbar { background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent); border-color: var(--xk-line); }
+  html.claude[data-appearance="dark"] .mobile-tabbar { background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent); border-color: var(--xk-line); }
   html.claude .mobile-tab {
     height: 48px; border: 0; border-radius: 26px; background: transparent; color: #AAA9A4; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 2px; font: inherit; font-size: .68rem; cursor: pointer; transition: background .2s, color .2s, transform .15s;
@@ -780,7 +800,7 @@ html.claude .st-date-row input:focus { outline: 2px solid var(--xk-accent-soft);
   html.claude .home-quote p { font-size: 1.1rem; }
   html.claude .home-note { margin-bottom: 10px; }
   html.claude .ch-rows, html.claude .cl-cards { padding-bottom: 92px; }
-  html.claude .ch-row .ch-item { margin: 0 16px 10px; padding: 14px 16px; border: 1px solid var(--xk-line); border-radius: 20px; background: var(--xk-surface); box-shadow: 0 4px 12px rgba(40,36,28,.045); }
+  html.claude .ch-row .ch-item { margin: 0 16px 10px; padding: 14px 16px; border: 1px solid var(--xk-line); border-radius: 20px; background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent); background-image: linear-gradient(145deg, rgba(255,255,255,.40), rgba(255,255,255,0) 42%); box-shadow: var(--xk-shadow); -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation)); backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation)); }
   html.claude .ch-row + .ch-row { border-top: 0; }
   html.claude .ch-detail .cd-head { padding-left: 16px; padding-right: 16px; }
   html.claude #chatsView[data-sub="detail"] .cd-title-wrap { max-width: calc(100vw - 238px); }
@@ -871,8 +891,9 @@ html.claude .ch-bubble.assistant {
   max-width: 86%;
   padding: 10px 14px;
   border: 1px solid var(--xk-line);
-  border-radius: var(--xk-bubble-radius) var(--xk-bubble-radius) var(--xk-bubble-radius) 8px;
-  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-mix), transparent);
+  border-radius: var(--xk-bubble-radius) var(--xk-bubble-radius) var(--xk-bubble-radius) max(7px, calc(var(--xk-bubble-radius) * .35)) !important;
+  background: color-mix(in srgb, var(--xk-surface) var(--xk-glass-fill), transparent);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.48), rgba(255,255,255,0) 42%);
   box-shadow: var(--xk-shadow);
   -webkit-backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
   backdrop-filter: blur(var(--xk-glass-blur)) saturate(var(--xk-glass-saturation));
@@ -882,7 +903,7 @@ html.claude .ch-bubble {
   line-height: 1.55;
   border-radius: var(--xk-bubble-radius);
 }
-html.claude .ch-bubble.user { border-radius: var(--xk-bubble-radius) var(--xk-bubble-radius) 8px var(--xk-bubble-radius); }
+html.claude .ch-bubble.user { border-radius: var(--xk-bubble-radius) var(--xk-bubble-radius) max(7px, calc(var(--xk-bubble-radius) * .35)) var(--xk-bubble-radius) !important; }
 html.claude .ch-bubble.assistant .ch-text { font-size: .96rem; line-height: 1.58; }
 html.claude .ch-bubble.assistant .ch-bubble-time { text-align: left; }
 html.claude .ch-input { font-size: 1rem; }
@@ -906,7 +927,7 @@ html.claude .ch-usage-pill { display: none !important; }
     font-size: clamp(2.35rem, 11vw, 3.5rem);
   }
   html.claude .home-days { font-size: .98rem; }
-  html.claude .home-usage-wrap { padding-bottom: 12px; }
+  html.claude .home-usage-wrap { margin-top: 42px; padding-bottom: 12px; }
 
   html.claude .cl-head .primary { display: none; }
   html.claude .ch-list { overflow: hidden; }
