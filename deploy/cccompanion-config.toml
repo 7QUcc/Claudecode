@@ -1,5 +1,5 @@
 [server]
-host = "100.82.181.117"
+host = "100.68.76.100"
 port = 8795
 strict_auth = true
 allow_public_bind = false
