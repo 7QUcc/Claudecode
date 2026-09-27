@@ -1,0 +1,20 @@
+[Unit]
+Description=CcCompanion iPhone companion server
+After=network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=cc
+WorkingDirectory=/home/cc/CcCompanion/apns-server
+Environment=HOME=/home/cc
+Environment=PATH=/home/cc/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/cc/CcCompanion/apns-server/.venv/bin/python3 /home/cc/CcCompanion/apns-server/push.py --config /home/cc/CcCompanion/apns-server/config.toml
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

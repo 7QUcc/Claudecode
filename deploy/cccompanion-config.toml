@@ -1,0 +1,11 @@
+[server]
+host = "100.82.181.117"
+port = 8795
+strict_auth = true
+allow_public_bind = false
+allow_remote_control = true
+allowed_ips = ["100.64.0.0/10"]
+default_session = "CcCompanion"
+
+[vault]
+root = ""
