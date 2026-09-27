@@ -13,15 +13,6 @@
             "timeout": 20
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "umask 077; CCC_SERVER_URL=http://127.0.0.1:8795 /home/cc/CcCompanion/apns-server/claude_hooks/ccc_stop_hook.sh",
-            "timeout": 20
-          }
-        ]
       }
     ]
   },
