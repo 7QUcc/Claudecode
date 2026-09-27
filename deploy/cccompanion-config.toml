@@ -1,10 +1,10 @@
 [server]
-host = "100.68.76.100"
+host = "127.0.0.1"
 port = 8795
 strict_auth = true
 allow_public_bind = false
 allow_remote_control = true
-allowed_ips = ["100.64.0.0/10"]
+allowed_ips = ["127.0.0.1/32"]
 default_session = "CcCompanion"
 
 [vault]
