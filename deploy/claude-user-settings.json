@@ -17,6 +17,15 @@
             "timeout": 20
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/cc/.claude/hooks/send_tool_usage.py",
+            "timeout": 20
+          }
+        ]
       }
     ]
   },
