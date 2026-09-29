@@ -7,9 +7,7 @@
 -    `/status — check your pairing state`
 +    `/status — check your pairing state\n` +
 +    `/context — show context-window usage`
-@@ -732,0 +734,18 @@
-+})
-+
+@@ -734,0 +736,18 @@
 +// xiaoke-context-command: serve usage without a Claude turn or another bot poller.
 +bot.command('context', async ctx => {
 +  const gated = dmCommandGate(ctx)
@@ -26,3 +24,7 @@
 +  } catch {
 +    await ctx.reply('上下文用量暂时不可用，请稍后重试。')
 +  }
++})
++
+@@ -1018,0 +1038 @@
++              { command: 'context', description: 'Show context-window usage' },

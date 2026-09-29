@@ -1,6 +1,7 @@
 # Telegram context command
 
-`/context` is handled by the existing Telegram channel, not forwarded to Claude.
+`/context` appears in the Telegram command menu and is handled by the existing
+Telegram channel, not forwarded to Claude.
 Only an already-paired user in a private chat can use it. The command invokes
 `telegram_context.py`, which reads the same latest-assistant usage data as the
 Xiaoke frontend. It reports the latest model-call snapshot, not live tokens
