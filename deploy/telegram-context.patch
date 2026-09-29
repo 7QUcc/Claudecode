@@ -1,0 +1,28 @@
+--- server.ts
++++ server.ts
+@@ -24 +24 @@
+-import { execFileSync } from 'child_process'
++import { execFile, execFileSync } from 'child_process'
+@@ -708 +708,2 @@
+-    `/status — check your pairing state`
++    `/status — check your pairing state\n` +
++    `/context — show context-window usage`
+@@ -732,0 +734,18 @@
++})
++
++// xiaoke-context-command: serve usage without a Claude turn or another bot poller.
++bot.command('context', async ctx => {
++  const gated = dmCommandGate(ctx)
++  if (!gated || !gated.access.allowFrom.includes(gated.senderId)) return
++
++  const python = join(homedir(), 'xiaoke', '.venv', 'bin', 'python')
++  const helper = join(homedir(), 'xiaoke', 'deploy', 'telegram_context.py')
++  try {
++    const message = await new Promise<string>((resolve, reject) => {
++      execFile(python, [helper], { encoding: 'utf8', timeout: 6000, maxBuffer: 8192 },
++        (error, stdout) => error ? reject(error) : resolve(stdout.trim()))
++    })
++    await ctx.reply(message || '上下文用量暂时不可用。')
++  } catch {
++    await ctx.reply('上下文用量暂时不可用，请稍后重试。')
++  }
